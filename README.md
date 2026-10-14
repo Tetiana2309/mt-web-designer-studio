@@ -45,7 +45,10 @@ npm run preview   # serve the production build locally
 .
 ├── public/images/    # Optimized WebP images (protected, do not modify)
 ├── src/
-│   ├── index.css     # Tailwind CSS entry
+│   ├── assets/icons/ # SVG icons used by the Hero
+│   ├── components/   # Hero.tsx (static Hero section)
+│   ├── App.tsx
+│   ├── index.css     # Tailwind CSS entry and colour/font tokens from Figma
 │   └── main.tsx      # React entry point
 ├── index.html
 ├── vite.config.ts
