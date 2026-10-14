@@ -1,11 +1,20 @@
 import arrowIcon from '../assets/icons/arrow.svg'
 
+import InfiniteSpiral from './InfiniteSpiral'
+
+const previewImages = [1, 2, 3, 4, 5].map(
+  (n) => `${import.meta.env.BASE_URL}images/Preview%20${n}.webp`,
+)
+
 const navItems = ['home', 'about us', 'portfolio', 'contacts']
 const socialItems = ['telegram', 'whatsapp', 'email']
 
 export default function Hero() {
   return (
     <section className="relative min-h-screen overflow-hidden bg-canvas font-sans text-ink">
+      {/* BACKGROUND SPIRAL */}
+      <InfiniteSpiral images={previewImages} />
+
       {/* HEADER */}
       <header className="absolute top-5 right-10 left-10 flex h-9.5 items-start justify-between">
         {/* LOGO */}
