@@ -1,48 +1,97 @@
 import arrowIcon from '../assets/icons/arrow.svg'
-import underline from '../assets/icons/underline.svg'
 
-const navItems = ['home', 'About us', 'Portfolio', 'Contacts']
+const navItems = ['home', 'about us', 'portfolio', 'contacts']
 const socialItems = ['telegram', 'whatsapp', 'email']
 
 export default function Hero() {
   return (
     <section className="relative min-h-screen overflow-hidden bg-canvas font-sans text-ink">
-      <header className="absolute top-5 right-10 left-10 flex h-[38px] items-start justify-between">
-        <p className="mt-1.5 text-2xl leading-[1.1] font-bold tracking-[-0.72px] text-accent">
+      {/* HEADER */}
+      <header className="absolute top-5 right-10 left-10 flex h-9.5 items-start justify-between">
+        {/* LOGO */}
+        <button
+          type="button"
+          aria-label="M&T — Home"
+          className="nav-link mt-1.5 font-sans text-[24px] leading-[1.1] font-bold tracking-[-0.72px] text-accent!"
+        >
           M&amp;T
-        </p>
+        </button>
 
-        <nav aria-label="Main" className="absolute top-[9px] left-1/2 -translate-x-1/2">
-          <ul className="flex items-center gap-7 text-lg leading-[1.1] tracking-[-0.54px] whitespace-nowrap lowercase">
+        {/* NAVIGATION */}
+        <nav
+          aria-label="Main navigation"
+          className="absolute top-2.25 left-1/2 -translate-x-1/2"
+        >
+          <ul className="flex items-center gap-7 whitespace-nowrap">
             {navItems.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item}>
+                <button
+                  type="button"
+                  className="nav-link font-sans text-[20px] leading-[1.1] font-medium tracking-[-0.54px] lowercase"
+                >
+                  {item}
+                </button>
+              </li>
             ))}
           </ul>
         </nav>
 
-        <div className="flex w-[208px] flex-col gap-3.5">
+        {/* HEADER CTA */}
+        <div className="flex w-52 flex-col items-start gap-3.5">
           <button
             type="button"
-            className="flex w-[208px] items-center gap-16 text-[22px] leading-[1.1] font-bold tracking-[-0.66px] whitespace-nowrap text-accent uppercase"
+            className="cta-button flex w-52 items-center gap-16 whitespace-nowrap text-[22px] leading-[1.1] font-bold tracking-[-0.66px] text-accent uppercase"
           >
-            Let&apos;s talk
-            <img src={arrowIcon} alt="" width={29.5} height={22.1} className="max-w-none" />
+            <span className="cta-text shrink-0">
+              Let&apos;s talk
+            </span>
+
+            <img
+              src={arrowIcon}
+              alt=""
+              width={30}
+              height={23}
+              className="cta-arrow block shrink-0"
+            />
           </button>
-          <img src={underline} alt="" width={208} height={3} className="-mt-[3px] max-w-none" />
+
+          {/* UNDERLINE */}
+          <div
+            aria-hidden="true"
+            className="h-0.75 w-52 shrink-0 bg-accent"
+          />
         </div>
       </header>
 
-      <h1 className="absolute top-[calc(50%-226px)] left-[calc(50%-min(542px,28.23vw))] w-[min(1085px,56.5vw)] text-[min(184px,9.583vw)] leading-[0.86] font-medium tracking-[-0.03em]">
-        <span className="font-extralight">We create websites that </span>
-        <span className="text-accent">drive results.</span>
+      {/* HERO TITLE */}
+      <h1 className="absolute top-[calc(50%-226px)] left-[calc(50%-min(542px,28.23vw))] w-[min(1085px,56.5vw)] text-[min(184px,9.583vw)] leading-[0.86] tracking-[-0.03em]">
+        <span className="font-extralight text-ink">
+          We create websites that{' '}
+        </span>
+
+        <span className="font-medium text-accent">
+          drive results.
+        </span>
       </h1>
 
-      <footer className="absolute right-10 bottom-5 left-10 flex h-5 items-start justify-between text-lg leading-[1.1] tracking-[-0.54px] whitespace-nowrap lowercase opacity-85">
+      {/* FOOTER */}
+      <footer className="absolute right-10 bottom-5 left-10 flex h-5.5 items-start justify-between whitespace-nowrap font-sans text-[20px] leading-[1.1] font-medium tracking-[-0.6px] text-ink lowercase">
         <p>© 2026 All rights reserved.</p>
-        <p className="absolute left-[48.696%]">We listen. We think. We deliver.</p>
-        <ul className="flex items-center gap-[34px]">
+
+        <p className="absolute left-[48.696%]">
+          We listen. We think. We deliver.
+        </p>
+
+        <ul className="flex items-center gap-8.5">
           {socialItems.map((item) => (
-            <li key={item}>{item}</li>
+            <li key={item}>
+              <button
+                type="button"
+                className="nav-link font-sans text-[20px] leading-[1.1] font-medium tracking-[-0.6px] lowercase"
+              >
+                {item}
+              </button>
+            </li>
           ))}
         </ul>
       </footer>
