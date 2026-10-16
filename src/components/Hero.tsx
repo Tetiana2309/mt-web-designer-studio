@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { navItems, socialItems } from '../navigation'
 import CtaButton from './CtaButton'
@@ -22,8 +23,8 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-dvh overflow-hidden bg-canvas font-sans text-ink">
-      {/* BACKGROUND SPIRAL (desktop only) */}
-      <div className="hidden min-[1280px]:block">
+      {/* BACKGROUND SPIRAL — ALL SCREEN SIZES */}
+      <div className="pointer-events-none absolute inset-0">
         <InfiniteSpiral images={previewImages} />
       </div>
 
@@ -77,12 +78,14 @@ export default function Hero() {
         </header>
 
         {/* HERO TITLE */}
-        <h1 className="absolute top-[calc(50%-3.2em)] left-1/2 w-[6.15em] -translate-x-1/2 text-[clamp(40px,7.5vw,96px)] leading-[1.1] tracking-[-0.03em] min-[1280px]:top-[calc(50%-min(226px,11.77vw))] min-[1280px]:left-[calc(50%-min(542px,28.23vw))] min-[1280px]:w-[min(1085px,56.5vw)] min-[1280px]:translate-x-0 min-[1280px]:text-[min(184px,9.583vw)] min-[1280px]:leading-[0.86]">
+        <h1 className="absolute top-[calc(50%-3.2em)] left-1/2 w-[6.15em] -translate-x-1/2 text-[clamp(60px,7.5vw,96px)] leading-[1.1] tracking-[-0.03em] min-[1280px]:top-[calc(50%-min(226px,11.77vw))] min-[1280px]:left-[calc(50%-min(542px,28.23vw))] min-[1280px]:w-[min(1085px,56.5vw)] min-[1280px]:translate-x-0 min-[1280px]:text-[min(184px,9.583vw)] min-[1280px]:leading-[0.86]">
           <span className="font-light text-ink min-[1280px]:font-extralight">
             We create websites that{' '}
           </span>
 
-          <span className="font-semibold text-accent min-[1280px]:font-medium">drive results.</span>
+          <span className="font-semibold text-accent min-[1280px]:font-medium">
+            drive results.
+          </span>
         </h1>
 
         {/* CTA (mobile / tablet) */}
@@ -92,7 +95,9 @@ export default function Hero() {
 
         {/* FOOTER */}
         <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink lowercase min-[1280px]:right-[clamp(24px,2.0833vw,40px)] min-[1280px]:bottom-[clamp(14px,1.0417vw,20px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
-          <p className="hidden min-[1280px]:block">© 2026 All rights reserved.</p>
+          <p className="hidden min-[1280px]:block">
+            © 2026 All rights reserved.
+          </p>
 
           <p className="absolute left-1/2 -translate-x-1/2 opacity-85 min-[1280px]:left-[48.696%] min-[1280px]:translate-x-0 min-[1280px]:opacity-100">
             We listen. We think. We deliver.

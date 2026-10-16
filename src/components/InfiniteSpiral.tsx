@@ -3,20 +3,15 @@ import { memo, useEffect, useRef, useState } from 'react'
 
 export interface InfiniteSpiralProps {
   images: string[]
-  /** Cards travelled per second. */
   speed?: number
   radius?: number
   cardWidth?: number
-  /** Defaults to the images' aspect ratio. */
   cardHeight?: number
   verticalSpacing?: number
   perspective?: number
   cardRadius?: number
-  /** Extra scale applied to cards at the front of the spiral. */
   centerScale?: number
-  /** Blur in px applied to cards at the back of the spiral. */
   edgeBlur?: number
-  /** Opacity multiplier of cards at the back of the spiral. */
   edgeFade?: number
   cardsPerTurn?: number
   direction?: 'up' | 'down'
@@ -28,8 +23,11 @@ export interface InfiniteSpiralProps {
 
 const TAU = Math.PI * 2
 
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value))
+
 const smoothstep = (x: number) => {
-  const c = Math.min(1, Math.max(0, x))
+  const c = clamp(x, 0, 1)
   return c * c * (3 - 2 * c)
 }
 
@@ -60,17 +58,67 @@ function InfiniteSpiral({
     height: 0,
   })
 
-  const height = cardHeight ?? Math.round(cardWidth * (824 / 800))
+  const isDesktop = size.width >= 1280
+  const isTablet = size.width >= 768 && !isDesktop
 
-  // Enough cards to cover the viewport and loop seamlessly.
-  const count = size.height
-    ? Math.ceil(
-        (size.height + 2 * (height + verticalSpacing)) /
-          verticalSpacing,
-      ) + 1
-    : 0
+  // Responsive card dimensions.
+  // Desktop values remain unchanged.
 
-  // Track viewport dimensions.
+  const responsiveCardWidth = isDesktop
+    ? cardWidth
+    : Math.min(
+        cardWidth,
+        clamp(size.width * 0.16, 100, 155),
+      )
+
+  const responsiveCardHeight =
+    cardHeight !== undefined
+      ? isDesktop
+        ? cardHeight
+        : cardHeight * (responsiveCardWidth / cardWidth)
+      : Math.round(responsiveCardWidth * (824 / 800))
+
+  // Responsive vertical spacing.
+
+  const responsiveSpacing = isDesktop
+    ? verticalSpacing
+    : Math.min(
+        verticalSpacing,
+        clamp(55 + (size.width - 390) * 0.0265, 55, 75),
+      )
+
+  // Responsive radius.
+  // Preserve the original desktop geometry.
+
+  const effectiveRadius = isDesktop
+    ? Math.max(radius, size.width * 0.4)
+    : Math.max(
+        isTablet ? 200 : 120,
+        size.width * 0.34,
+      )
+
+  const effectivePerspective =
+    perspective * (effectiveRadius / radius)
+
+  // Slightly softer cards on smaller screens.
+
+  const effectiveOpacity = isDesktop
+    ? cardOpacity
+    : cardOpacity * (isTablet ? 0.82 : 0.73)
+
+  // Enough cards for seamless looping.
+
+  const count =
+    size.height > 0 && images.length > 0
+      ? Math.ceil(
+          (size.height +
+            2 * (responsiveCardHeight + responsiveSpacing)) /
+            responsiveSpacing,
+        ) + 1
+      : 0
+
+  // Observe container dimensions.
+
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
@@ -92,17 +140,13 @@ function InfiniteSpiral({
     return () => observer.disconnect()
   }, [])
 
-  // Responsive 3D spiral geometry.
-  const effectiveRadius = Math.max(radius, size.width * 0.4)
-
-  const effectivePerspective =
-    perspective * (effectiveRadius / radius)
+  // Animate the spiral.
 
   useEffect(() => {
     if (!count || images.length === 0) return
 
     const dir = direction === 'up' ? 1 : -1
-    const fadeZone = size.height * 0.22
+    const fadeZone = Math.max(1, size.height * 0.22)
     const R = effectiveRadius
 
     const reduceMotion = window.matchMedia(
@@ -114,10 +158,9 @@ function InfiniteSpiral({
         const el = cardRefs.current[k]
         if (!el) continue
 
-        // Continuous position along the spiral.
         const u = (((k - dir * t) % count) + count) % count
 
-        const y = (u - count / 2) * verticalSpacing
+        const y = (u - count / 2) * responsiveSpacing
 
         const theta =
           (u * TAU) / cardsPerTurn +
@@ -126,28 +169,25 @@ function InfiniteSpiral({
         const x = R * Math.sin(theta)
         const z = R * Math.cos(theta)
 
-        // Depth: 0 = back, 1 = front.
+        // 0 = back, 1 = front.
         const depth = (Math.cos(theta) + 1) / 2
 
-        // Original perspective-based scaling.
-        // Near cards are larger, distant cards are smaller.
+        // Keep the original 3D scaling.
         const scale = 1 + (centerScale - 1) * depth
 
         // Blur increases with distance.
         const blur = edgeBlur * (1 - depth)
 
-        // Smooth opacity fading near viewport edges.
+        // Fade at the top and bottom.
         const edge = smoothstep(
           (size.height / 2 - Math.abs(y)) / fadeZone,
         )
 
-        // Depth and edge-based opacity.
         const opacity =
-          cardOpacity *
+          effectiveOpacity *
           (edgeFade + (1 - edgeFade) * depth) *
           edge
 
-        // Update styles directly without React re-renders.
         el.style.transform =
           `translate3d(${x.toFixed(2)}px, ` +
           `${y.toFixed(2)}px, ` +
@@ -172,7 +212,6 @@ function InfiniteSpiral({
       last = now
 
       place(t)
-
       frame = requestAnimationFrame(tick)
     }
 
@@ -197,10 +236,9 @@ function InfiniteSpiral({
   }, [
     count,
     size,
-    images.length,
     speed,
     effectiveRadius,
-    verticalSpacing,
+    responsiveSpacing,
     cardsPerTurn,
     direction,
     rotation,
@@ -208,8 +246,9 @@ function InfiniteSpiral({
     centerScale,
     edgeBlur,
     edgeFade,
-    cardOpacity,
+    effectiveOpacity,
     grayscale,
+    images.length,
   ])
 
   return (
@@ -234,10 +273,10 @@ function InfiniteSpiral({
               }}
               className="absolute top-1/2 left-1/2 overflow-hidden will-change-[transform,opacity,filter]"
               style={{
-                width: cardWidth,
-                height,
-                marginLeft: -cardWidth / 2,
-                marginTop: -height / 2,
+                width: responsiveCardWidth,
+                height: responsiveCardHeight,
+                marginLeft: -responsiveCardWidth / 2,
+                marginTop: -responsiveCardHeight / 2,
                 borderRadius: cardRadius,
                 opacity: 0,
               }}
