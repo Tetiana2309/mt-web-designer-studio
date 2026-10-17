@@ -146,9 +146,12 @@ export default function MobileMenu({
 
     // STEP 3: Pause with complete M&T logo.
 
-    timeline.to({}, {
-      duration: 0.15,
-    })
+    timeline.to(
+      {},
+      {
+        duration: 0.15,
+      },
+    )
 
     // STEP 4: Transparent background.
 
@@ -156,7 +159,7 @@ export default function MobileMenu({
       backgroundColor: 'transparent',
     })
 
-    // STEP 5: Reveal Hero.
+    // STEP 5: Reveal page.
 
     timeline.to(stripes, {
       yPercent: (index: number) =>
@@ -205,10 +208,38 @@ export default function MobileMenu({
       '(min-width: 1280px)',
     )
 
-    const previousOverflow =
-      document.documentElement.style.overflow
+    // ========================================
+    // SCROLL LOCK — FIXED
+    // ========================================
 
-    document.documentElement.style.overflow = 'hidden'
+    const html = document.documentElement
+
+    const previousOverflow = html.style.overflow
+
+    // Lock background scrolling
+    // only while the mobile menu is mounted.
+    html.style.overflow = 'hidden'
+
+    const restoreScroll = () => {
+      const preloaderIsActive = Boolean(
+        document.querySelector(
+          '[role="status"][aria-label="Loading M&T Web Designer Studio"]',
+        ),
+      )
+
+      if (preloaderIsActive) {
+        // Preloader still owns the scroll lock.
+        html.style.overflow = 'hidden'
+        return
+      }
+
+      // Recover from a stale lock left by
+      // the preloader or an earlier menu.
+      html.style.overflow =
+        previousOverflow === 'hidden'
+          ? ''
+          : previousOverflow
+    }
 
     // ========================================
     // KEYBOARD HANDLING
@@ -221,7 +252,10 @@ export default function MobileMenu({
         return
       }
 
-      if (event.key !== 'Tab' || closingRef.current) {
+      if (
+        event.key !== 'Tab' ||
+        closingRef.current
+      ) {
         return
       }
 
@@ -378,8 +412,11 @@ export default function MobileMenu({
     return () => {
       timelineRef.current?.kill()
 
-      document.documentElement.style.overflow =
-        previousOverflow
+      // ======================================
+      // RESTORE SCROLL ON MENU UNMOUNT
+      // ======================================
+
+      restoreScroll()
 
       document.removeEventListener(
         'keydown',
@@ -394,7 +431,7 @@ export default function MobileMenu({
   }, [closeMenu, stripeCount])
 
   // ==========================================
-  // JSX
+  // JSX — ORIGINAL DESIGN
   // ==========================================
 
   return (
@@ -471,7 +508,7 @@ export default function MobileMenu({
                 onClick={closeMenu}
                 className="group/swap nav-link block cursor-pointer text-[1em] leading-[1.1] font-normal tracking-[-0.03em] lowercase"
               >
-                {/* GSAP ANIMATES THE OUTER WRAPPER */}
+                {/* GSAP ANIMATES OUTER WRAPPER */}
 
                 <span
                   ref={(element) => {
@@ -623,4 +660,5 @@ export default function MobileMenu({
     </div>
   )
 }
+
 

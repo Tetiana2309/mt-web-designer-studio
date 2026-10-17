@@ -64,7 +64,7 @@ const MOBILE_SIGNATURE_LEFT =
 const MOBILE_SIGNATURE_TOP = -24
 
 // ----------------------------------------
-// ANIMATION SETTINGS
+// ANIMATION SETTINGS — UNCHANGED
 // ----------------------------------------
 
 const FINAL_ZOOM = 2.4
@@ -119,8 +119,6 @@ function getLogoConfig(): LogoConfig {
 
   if (typeof window !== 'undefined') {
     if (isMobile) {
-      // Keep the final logo inside the
-      // mobile viewport with side spacing.
       const availableWidth = Math.max(
         1,
         window.innerWidth - 48,
@@ -139,7 +137,6 @@ function getLogoConfig(): LogoConfig {
           (height * MOBILE_FINAL_ZOOM),
       )
     } else {
-      // Original desktop scaling.
       const availableWidth =
         window.innerWidth - 40
 
@@ -208,7 +205,6 @@ function getLogoConfig(): LogoConfig {
 
 export default function Preloader() {
   const [finished, setFinished] = useState(false)
-
   const [config] = useState(getLogoConfig)
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -216,8 +212,13 @@ export default function Preloader() {
   const zoomRef = useRef<HTMLDivElement>(null)
   const compositionRef = useRef<HTMLDivElement>(null)
 
-  const partRefs = useRef<(HTMLSpanElement | null)[]>([])
-  const wordRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const partRefs = useRef<
+    (HTMLSpanElement | null)[]
+  >([])
+
+  const wordRefs = useRef<
+    (HTMLSpanElement | null)[]
+  >([])
 
   // ========================================
   // GSAP ANIMATION
@@ -229,7 +230,12 @@ export default function Preloader() {
     const zoom = zoomRef.current
     const composition = compositionRef.current
 
-    if (!root || !background || !zoom || !composition) {
+    if (
+      !root ||
+      !background ||
+      !zoom ||
+      !composition
+    ) {
       return
     }
 
@@ -247,39 +253,75 @@ export default function Preloader() {
       '(prefers-reduced-motion: reduce)',
     ).matches
 
-    const previousOverflow =
-      document.documentElement.style.overflow
+    // ========================================
+    // SCROLL LOCK — FIXED
+    // ========================================
 
-    document.documentElement.style.overflow =
-      'hidden'
+    const html = document.documentElement
+
+    const previousOverflow =
+      html.style.overflow
+
+    let scrollLocked = true
+
+    html.style.overflow = 'hidden'
+
+    const releaseScroll = () => {
+      if (!scrollLocked) return
+
+      scrollLocked = false
+
+      // Keep scrolling locked while
+      // the existing mobile menu is open.
+      const menuIsOpen = Boolean(
+        document.querySelector(
+          '[role="dialog"][aria-label="Menu"]',
+        ),
+      )
+
+      if (menuIsOpen) return
+
+      // Restore the original value.
+      // Also recover from a stale hidden
+      // value left by a previous loader.
+      html.style.overflow =
+        previousOverflow === 'hidden'
+          ? ''
+          : previousOverflow
+    }
 
     let cancelled = false
 
     const finish = () => {
-      if (!cancelled) {
-        setFinished(true)
-      }
+      if (cancelled) return
+
+      // Unlock as soon as the
+      // preloader animation finishes.
+      releaseScroll()
+
+      setFinished(true)
     }
 
-    // ------------------------------------
+    // ========================================
     // REDUCED MOTION
-    // ------------------------------------
+    // ========================================
 
     if (reducedMotion) {
-      const delayed = gsap.delayedCall(0.05, finish)
+      const delayed = gsap.delayedCall(
+        0.05,
+        finish,
+      )
 
       return () => {
         cancelled = true
         delayed.kill()
-
-        document.documentElement.style.overflow =
-          previousOverflow
+        releaseScroll()
       }
     }
 
-    // ------------------------------------
-    // INITIAL STATE
-    // ------------------------------------
+    // ========================================
+    // INITIAL STATE — UNCHANGED
+    // ========================================
 
     gsap.set(root, {
       autoAlpha: 1,
@@ -308,9 +350,9 @@ export default function Preloader() {
       yPercent: 120,
     })
 
-    // ------------------------------------
-    // ANIMATION TIMELINE
-    // ------------------------------------
+    // ========================================
+    // ANIMATION TIMELINE — UNCHANGED
+    // ========================================
 
     const timeline = gsap.timeline({
       paused: true,
@@ -392,17 +434,18 @@ export default function Preloader() {
 
     timeline.play()
 
-    // ------------------------------------
-    // CLEANUP
-    // ------------------------------------
+    // ========================================
+    // CLEANUP — FIXED
+    // ========================================
 
     return () => {
       cancelled = true
 
       timeline.kill()
 
-      document.documentElement.style.overflow =
-        previousOverflow
+      // Always release our scroll lock
+      // when the effect is cleaned up.
+      releaseScroll()
     }
   }, [config])
 
@@ -411,7 +454,7 @@ export default function Preloader() {
   }
 
   // ========================================
-  // JSX
+  // JSX — ORIGINAL DESIGN
   // ========================================
 
   return (
