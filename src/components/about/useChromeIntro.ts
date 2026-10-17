@@ -27,6 +27,7 @@ export default function useChromeIntro(rootRef: RefObject<HTMLElement | null>) {
       const query = (selector: string) => gsap.utils.toArray<HTMLElement>(selector, root)
 
       const logo = query('[data-hero-logo]')
+      const mobileTrigger = query('[data-hero-mobile-trigger]')
       const navLinks = query('[data-hero-nav-mask] [data-hero-link-reveal]')
       const ctaTexts = query('[data-cta-intro-text]')
       const ctaArrows = query('[data-cta-intro-arrow]')
@@ -36,6 +37,7 @@ export default function useChromeIntro(rootRef: RefObject<HTMLElement | null>) {
       const socialLinks = query('[data-hero-social-mask] [data-hero-link-reveal]')
 
       gsap.set(logo, { autoAlpha: 0, yPercent: 110, scaleX: 0.9, transformOrigin: '50% 50%' })
+      gsap.set(mobileTrigger, { autoAlpha: 0, yPercent: 110 })
       gsap.set(navLinks, { autoAlpha: 0, yPercent: 115 })
       gsap.set(ctaTexts, { autoAlpha: 0, x: -26 })
       gsap.set(ctaArrows, { autoAlpha: 0, x: 26 })
@@ -50,6 +52,7 @@ export default function useChromeIntro(rootRef: RefObject<HTMLElement | null>) {
           gsap.set(
             [
               ...logo,
+              ...mobileTrigger,
               ...navLinks,
               ...ctaTexts,
               ...ctaArrows,
@@ -71,6 +74,11 @@ export default function useChromeIntro(rootRef: RefObject<HTMLElement | null>) {
       timeline.to(
         navLinks,
         { autoAlpha: 1, yPercent: 0, duration: 0.83, stagger: 0.1, ease: 'expo.out' },
+        INTRO.navigation,
+      )
+      timeline.to(
+        mobileTrigger,
+        { autoAlpha: 1, yPercent: 0, duration: 0.85, ease: 'expo.out' },
         INTRO.navigation,
       )
       timeline.to(ctaLines, { scaleX: 1, duration: 0.8, ease: 'power3.inOut' }, INTRO.cta)
