@@ -1,5 +1,6 @@
 
 import {
+  Fragment,
   useLayoutEffect,
   useRef,
   type CSSProperties,
@@ -41,20 +42,75 @@ const gradient2 =
   'bg-[linear-gradient(to_bottom,rgba(199,199,199,0)_58%,#c7c7c7_88.393%)]'
 
 // ==========================================
+// TEXT HIGHLIGHT REVEAL
+// ==========================================
+
+const INITIAL_TEXT_COLOR = '#B5B5B5'
+const INK_COLOR = '#3c3a36'
+const BLACK_COLOR = '#000000'
+const ACCENT_COLOR = '#3a5f73'
+
+type WordTone = 'ink' | 'black' | 'accent'
+
+function getWordColor(tone: string | undefined) {
+  if (tone === 'black') return BLACK_COLOR
+  if (tone === 'accent') return ACCENT_COLOR
+  return INK_COLOR
+}
+
+// ==========================================
+// WORD COMPONENT
+// ==========================================
+
+function PaintWords({
+  text,
+  tone = 'ink',
+}: {
+  text: string
+  tone?: WordTone
+}) {
+  const colorClass =
+    tone === 'black'
+      ? 'text-black'
+      : tone === 'accent'
+        ? 'text-accent'
+        : 'text-ink'
+
+  return (
+    <>
+      {text.split(' ').map((word, index) => (
+        <Fragment key={`${index}-${word}`}>
+          {index > 0 ? ' ' : null}
+          <span
+            data-about-word
+            data-word-tone={tone}
+            className={colorClass}
+          >
+            {word}
+          </span>
+        </Fragment>
+      ))}
+    </>
+  )
+}
+
+// ==========================================
 // CONTENT
 // ==========================================
 
 function DescriptionOne() {
   return (
     <>
-      <span className="text-black">
-        creating thoughtful web solutions at the
-      </span>{' '}
-      intersection of{' '}
-      <span className="text-accent">
-        strategy{' '}
-      </span>
-      and visual culture.
+      <PaintWords
+        text="creating thoughtful web solutions at the"
+        tone="black"
+      />{' '}
+      <PaintWords text="intersection of" />{' '}
+      <PaintWords
+        text="strategy"
+        tone="accent"
+      />{' '}
+      <PaintWords text="and visual culture." />
     </>
   )
 }
@@ -62,11 +118,16 @@ function DescriptionOne() {
 function DescriptionTwo() {
   return (
     <>
-      For us, it’s not just about building a website — it’s about shaping a{' '}
-      <span className="text-accent">
-        cohesive digital brand presence.
-      </span>{' '}
-      We pay close attention to details, structure, and user interaction logic.
+      <PaintWords
+        text="For us, it’s not just about building a website — it’s about shaping a"
+      />{' '}
+      <PaintWords
+        text="cohesive digital brand presence."
+        tone="accent"
+      />{' '}
+      <PaintWords
+        text="We pay close attention to details, structure, and user interaction logic."
+      />
     </>
   )
 }
@@ -74,11 +135,16 @@ function DescriptionTwo() {
 function DescriptionThree() {
   return (
     <>
-      In every project, we value depth,{' '}
-      <span className="text-accent">
-        clarity, and responsibility
-      </span>{' '}
-      for the final outcome. These principles form the foundation of our work.
+      <PaintWords
+        text="In every project, we value depth,"
+      />{' '}
+      <PaintWords
+        text="clarity, and responsibility"
+        tone="accent"
+      />{' '}
+      <PaintWords
+        text="for the final outcome. These principles form the foundation of our work."
+      />
     </>
   )
 }
@@ -117,6 +183,34 @@ function Photo({
 }
 
 // ==========================================
+// READ MORE — HERO-STYLE TEXT SWAP
+// ==========================================
+
+function ReadMoreText() {
+  const transition =
+    'transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none'
+
+  return (
+    <span
+      aria-hidden="true"
+      className="relative block overflow-hidden"
+    >
+      <span
+        className={`block ${transition} group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full`}
+      >
+        read more
+      </span>
+
+      <span
+        className={`absolute top-full left-0 block whitespace-nowrap text-ink ${transition} group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full`}
+      >
+        read more
+      </span>
+    </span>
+  )
+}
+
+// ==========================================
 // EDITORIAL SEQUENCE
 // ==========================================
 
@@ -128,6 +222,7 @@ function useAboutIntro(
 ) {
   useLayoutEffect(() => {
     const root = rootRef.current
+
     if (!root) return
 
     if (
@@ -156,17 +251,8 @@ function useAboutIntro(
             layout,
           )
 
-        const images =
-          gsap.utils.toArray<HTMLImageElement>(
-            '[data-about-image]',
-            layout,
-          )
-
         const firstPhoto = photos[0]
         const secondPhoto = photos[1]
-
-        const firstImage = images[0]
-        const secondImage = images[1]
 
         const titleMask =
           layout.querySelector<HTMLElement>(
@@ -192,8 +278,6 @@ function useAboutIntro(
         if (
           !firstPhoto ||
           !secondPhoto ||
-          !firstImage ||
-          !secondImage ||
           !titleMask ||
           !titleInner
         ) {
@@ -208,7 +292,7 @@ function useAboutIntro(
         // INITIAL STATES
         // ======================================
 
-        // Title Mask Reveal — unchanged.
+        // TITLE — ORIGINAL MASK REVEAL
 
         gsap.set(titleMask, {
           overflow: 'hidden',
@@ -218,35 +302,39 @@ function useAboutIntro(
           yPercent: 105,
         })
 
-        // Photos stay in their original positions.
-        // No y movement or clipPath.
+        // ======================================
+        // PHOTOS — CINEMATIC MASK REVEAL
+        // ======================================
 
-        gsap.set(firstPhoto, {
-          autoAlpha: 0,
+        // Only clipPath is animated.
+        // No opacity, scale or y movement.
+
+        gsap.set(
+          [firstPhoto, secondPhoto],
+          {
+            clipPath: 'inset(100% 0 0 0)',
+          },
+        )
+
+        // ======================================
+        // TEXT INITIAL STATES
+        // ======================================
+
+        const paragraphWords = descriptions.map(
+          (paragraph) =>
+            gsap.utils.toArray<HTMLSpanElement>(
+              '[data-about-word]',
+              paragraph,
+            ),
+        )
+
+        const allWords = paragraphWords.flat()
+
+        gsap.set(allWords, {
+          color: INITIAL_TEXT_COLOR,
         })
 
-        gsap.set(secondPhoto, {
-          autoAlpha: 0,
-        })
-
-        // Very subtle internal zoom.
-
-        gsap.set(firstImage, {
-          scale: 1.035,
-          transformOrigin: 'center center',
-        })
-
-        gsap.set(secondImage, {
-          scale: 1.035,
-          transformOrigin: 'center center',
-        })
-
-        // Text — unchanged.
-
-        gsap.set(descriptions, {
-          y: isMobile ? 10 : 14,
-          autoAlpha: 0,
-        })
+        // READ MORE — INITIAL APPEARANCE
 
         if (readMore) {
           gsap.set(readMore, {
@@ -256,7 +344,7 @@ function useAboutIntro(
         }
 
         // ======================================
-        // SINGLE EDITORIAL TIMELINE
+        // EDITORIAL TIMELINE
         // ======================================
 
         const timeline = gsap.timeline({
@@ -271,30 +359,18 @@ function useAboutIntro(
               clearProps: 'transform',
             })
 
-            // Photos no longer use transforms
-            // on their outer containers.
+            // Remove mask once fully revealed.
+            // Photo positions remain unchanged.
 
             gsap.set(
               [firstPhoto, secondPhoto],
               {
-                clearProps: 'opacity,visibility',
+                clearProps: 'clipPath',
               },
             )
 
-            // Remove the image zoom transforms
-            // after they return to scale 1.
-
-            gsap.set(
-              [firstImage, secondImage],
-              {
-                clearProps:
-                  'transform,transformOrigin',
-              },
-            )
-
-            gsap.set(descriptions, {
-              clearProps:
-                'transform,opacity,visibility',
+            gsap.set(allWords, {
+              clearProps: 'color',
             })
 
             if (readMore) {
@@ -321,23 +397,46 @@ function useAboutIntro(
         )
 
         // ======================================
-        // 02 — FIRST DESCRIPTION
+        // 02 — FAST SEQUENTIAL TEXT PAINT
         // ======================================
 
-        const firstDescription = descriptions[0]
+        const wordDuration = isMobile ? 0.2 : 0.24
+        const wordStagger = 0.018
+        const overlap = 0.12
 
-        if (firstDescription) {
+        let nextParagraphStart = 0.35
+
+        paragraphWords.forEach((words) => {
+          if (words.length === 0) return
+
+          const paragraphDuration =
+            (words.length - 1) * wordStagger +
+            wordDuration
+
           timeline.to(
-            firstDescription,
+            words,
             {
-              y: 0,
-              autoAlpha: 1,
-              duration: 0.85,
-              ease: 'power3.out',
+              color: (_, target) => {
+                const element =
+                  target as HTMLSpanElement
+
+                return getWordColor(
+                  element.dataset.wordTone,
+                )
+              },
+              duration: wordDuration,
+              stagger: {
+                each: wordStagger,
+                from: 'start',
+              },
+              ease: 'power1.out',
             },
-            0.4,
+            nextParagraphStart,
           )
-        }
+
+          nextParagraphStart +=
+            paragraphDuration - overlap
+        })
 
         // ======================================
         // 03 — FIRST PORTRAIT
@@ -346,90 +445,37 @@ function useAboutIntro(
         timeline.to(
           firstPhoto,
           {
-            autoAlpha: 1,
-            duration: 1.3,
-            ease: 'power2.out',
-          },
-          0.48,
-        )
-
-        timeline.to(
-          firstImage,
-          {
-            scale: 1,
-            duration: 1.8,
-            ease: 'power2.out',
+            clipPath: 'inset(0% 0 0 0)',
+            duration: isMobile ? 1.15 : 1.4,
+            ease: 'power3.inOut',
           },
           0.48,
         )
 
         // ======================================
-        // 04 — SECOND DESCRIPTION
-        // ======================================
-
-        const secondDescription = descriptions[1]
-
-        if (secondDescription) {
-          timeline.to(
-            secondDescription,
-            {
-              y: 0,
-              autoAlpha: 1,
-              duration: 0.85,
-              ease: 'power3.out',
-            },
-            0.63,
-          )
-        }
-
-        // ======================================
-        // 05 — SECOND PORTRAIT
+        // 04 — SECOND PORTRAIT
         // ======================================
 
         timeline.to(
           secondPhoto,
           {
-            autoAlpha: 1,
-            duration: 1.3,
-            ease: 'power2.out',
+            clipPath: 'inset(0% 0 0 0)',
+            duration: isMobile ? 1.15 : 1.4,
+            ease: 'power3.inOut',
           },
-          0.62,
-        )
-
-        timeline.to(
-          secondImage,
-          {
-            scale: 1,
-            duration: 1.8,
-            ease: 'power2.out',
-          },
-          0.62,
+          0.60,
         )
 
         // ======================================
-        // 06 — THIRD DESCRIPTION
+        // 05 — READ MORE
         // ======================================
 
-        const thirdDescription = descriptions[2]
-
-        if (thirdDescription) {
-          timeline.to(
-            thirdDescription,
-            {
-              y: 0,
-              autoAlpha: 1,
-              duration: 0.85,
-              ease: 'power3.out',
-            },
-            1.12,
-          )
-        }
-
-        // ======================================
-        // 07 — READ MORE
-        // ======================================
+        // Appears after the text finishes.
 
         if (readMore) {
+          const readMoreStart =
+            nextParagraphStart + overlap + 0.12
+
           timeline.to(
             readMore,
             {
@@ -438,7 +484,7 @@ function useAboutIntro(
               duration: 0.75,
               ease: 'power3.out',
             },
-            1.44,
+            readMoreStart,
           )
         }
 
@@ -535,7 +581,7 @@ export default function AboutUs() {
   useAboutIntro(rootRef)
 
   // ======================================
-  // CURRENT MAIN TEXT SIZES — UNCHANGED
+  // TEXT SIZES — UNCHANGED
   // ======================================
 
   const desktopDescription =
@@ -618,9 +664,10 @@ export default function AboutUs() {
             <button
               data-about-readmore
               type="button"
-              className="text-[20px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase"
+              aria-label="read more"
+              className="group/swap inline-block cursor-pointer text-[20px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
             >
-              read more
+              <ReadMoreText />
             </button>
           </div>
         </div>
@@ -695,9 +742,10 @@ export default function AboutUs() {
           <button
             data-about-readmore
             type="button"
-            className="absolute top-[calc(655*var(--t))] right-[calc(199*var(--t))] text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase"
+            aria-label="read more"
+            className="group/swap absolute top-[calc(655*var(--t))] right-[calc(199*var(--t))] cursor-pointer text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
           >
-            read more
+            <ReadMoreText />
           </button>
         </div>
 
@@ -775,9 +823,10 @@ export default function AboutUs() {
           <button
             data-about-readmore
             type="button"
-            className="mt-[calc(20*var(--v))] block text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase"
+            aria-label="read more"
+            className="group/swap mt-[calc(20*var(--v))] block cursor-pointer text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
           >
-            read more
+            <ReadMoreText />
           </button>
         </div>
 
@@ -798,3 +847,6 @@ export default function AboutUs() {
     </section>
   )
 }
+
+
+
