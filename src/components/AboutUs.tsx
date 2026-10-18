@@ -208,6 +208,8 @@ function useAboutIntro(
         // INITIAL STATES
         // ======================================
 
+        // Title Mask Reveal — unchanged.
+
         gsap.set(titleMask, {
           overflow: 'hidden',
         })
@@ -216,27 +218,30 @@ function useAboutIntro(
           yPercent: 105,
         })
 
+        // Photos stay in their original positions.
+        // No y movement or clipPath.
+
         gsap.set(firstPhoto, {
-          y: isMobile ? 14 : 24,
           autoAlpha: 0,
-          clipPath: 'inset(12% 0 0 0)',
         })
 
         gsap.set(secondPhoto, {
-          y: isMobile ? 12 : 20,
           autoAlpha: 0,
-          clipPath: 'inset(12% 0 0 0)',
         })
 
+        // Very subtle internal zoom.
+
         gsap.set(firstImage, {
-          scale: isMobile ? 1.035 : 1.075,
+          scale: 1.035,
           transformOrigin: 'center center',
         })
 
         gsap.set(secondImage, {
-          scale: isMobile ? 1.035 : 1.065,
+          scale: 1.035,
           transformOrigin: 'center center',
         })
+
+        // Text — unchanged.
 
         gsap.set(descriptions, {
           y: isMobile ? 10 : 14,
@@ -266,13 +271,18 @@ function useAboutIntro(
               clearProps: 'transform',
             })
 
+            // Photos no longer use transforms
+            // on their outer containers.
+
             gsap.set(
               [firstPhoto, secondPhoto],
               {
-                clearProps:
-                  'transform,opacity,visibility,clipPath',
+                clearProps: 'opacity,visibility',
               },
             )
+
+            // Remove the image zoom transforms
+            // after they return to scale 1.
 
             gsap.set(
               [firstImage, secondImage],
@@ -296,7 +306,9 @@ function useAboutIntro(
           },
         })
 
+        // ======================================
         // 01 — TITLE
+        // ======================================
 
         timeline.to(
           titleInner,
@@ -308,11 +320,15 @@ function useAboutIntro(
           0.08,
         )
 
+        // ======================================
         // 02 — FIRST DESCRIPTION
+        // ======================================
 
-        if (descriptions[0]) {
+        const firstDescription = descriptions[0]
+
+        if (firstDescription) {
           timeline.to(
-            descriptions[0],
+            firstDescription,
             {
               y: 0,
               autoAlpha: 1,
@@ -323,16 +339,16 @@ function useAboutIntro(
           )
         }
 
+        // ======================================
         // 03 — FIRST PORTRAIT
+        // ======================================
 
         timeline.to(
           firstPhoto,
           {
-            y: 0,
             autoAlpha: 1,
-            clipPath: 'inset(0% 0 0 0)',
-            duration: isMobile ? 1.05 : 1.45,
-            ease: 'power3.out',
+            duration: 1.3,
+            ease: 'power2.out',
           },
           0.48,
         )
@@ -341,17 +357,21 @@ function useAboutIntro(
           firstImage,
           {
             scale: 1,
-            duration: isMobile ? 1.4 : 1.95,
+            duration: 1.8,
             ease: 'power2.out',
           },
           0.48,
         )
 
+        // ======================================
         // 04 — SECOND DESCRIPTION
+        // ======================================
 
-        if (descriptions[1]) {
+        const secondDescription = descriptions[1]
+
+        if (secondDescription) {
           timeline.to(
-            descriptions[1],
+            secondDescription,
             {
               y: 0,
               autoAlpha: 1,
@@ -362,35 +382,39 @@ function useAboutIntro(
           )
         }
 
+        // ======================================
         // 05 — SECOND PORTRAIT
+        // ======================================
 
         timeline.to(
           secondPhoto,
           {
-            y: 0,
             autoAlpha: 1,
-            clipPath: 'inset(0% 0 0 0)',
-            duration: isMobile ? 1.05 : 1.42,
-            ease: 'power3.out',
+            duration: 1.3,
+            ease: 'power2.out',
           },
-          0.66,
+          0.62,
         )
 
         timeline.to(
           secondImage,
           {
             scale: 1,
-            duration: isMobile ? 1.4 : 1.9,
+            duration: 1.8,
             ease: 'power2.out',
           },
-          0.66,
+          0.62,
         )
 
+        // ======================================
         // 06 — THIRD DESCRIPTION
+        // ======================================
 
-        if (descriptions[2]) {
+        const thirdDescription = descriptions[2]
+
+        if (thirdDescription) {
           timeline.to(
-            descriptions[2],
+            thirdDescription,
             {
               y: 0,
               autoAlpha: 1,
@@ -401,7 +425,9 @@ function useAboutIntro(
           )
         }
 
+        // ======================================
         // 07 — READ MORE
+        // ======================================
 
         if (readMore) {
           timeline.to(
@@ -509,12 +535,7 @@ export default function AboutUs() {
   useAboutIntro(rootRef)
 
   // ======================================
-  // MAIN TEXT SIZES
-  //
-  // Mobile: 16px
-  // Tablet 768–855px: 16px
-  // Tablet 856–1279px: 18px
-  // Desktop 1280px+: 20px
+  // CURRENT MAIN TEXT SIZES — UNCHANGED
   // ======================================
 
   const desktopDescription =
@@ -533,7 +554,9 @@ export default function AboutUs() {
       className="relative min-h-dvh overflow-x-clip bg-canvas font-sans text-ink max-[767px]:pb-[calc(max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))+calc(90*var(--v)))] min-[768px]:max-[1279px]:min-h-[calc(804*var(--t))]"
     >
       <div inert={menuOpen}>
-        {/* ============ DESKTOP (>= 1280px) ============ */}
+        {/* ====================================
+            DESKTOP (>= 1280px)
+        ==================================== */}
 
         <div
           data-about-layout="desktop"
@@ -602,7 +625,9 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* ============ TABLET (768px - 1279px) ============ */}
+        {/* ====================================
+            TABLET (768px - 1279px)
+        ==================================== */}
 
         <div
           data-about-layout="tablet"
@@ -676,7 +701,9 @@ export default function AboutUs() {
           </button>
         </div>
 
-        {/* ============ MOBILE (< 768px) ============ */}
+        {/* ====================================
+            MOBILE (< 768px)
+        ==================================== */}
 
         <div
           data-about-layout="mobile"
@@ -754,7 +781,9 @@ export default function AboutUs() {
           </button>
         </div>
 
-        {/* HEADER / FOOTER — UNCHANGED */}
+        {/* ====================================
+            HEADER / FOOTER — UNCHANGED
+        ==================================== */}
 
         <AboutHeader
           menuOpen={menuOpen}
@@ -769,4 +798,3 @@ export default function AboutUs() {
     </section>
   )
 }
-
