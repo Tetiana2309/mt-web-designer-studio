@@ -7,6 +7,7 @@ import {
   type RefObject,
 } from 'react'
 import gsap from 'gsap'
+import { Link } from 'react-router'
 
 import AboutFooter from './about/AboutFooter'
 import AboutHeader from './about/AboutHeader'
@@ -661,14 +662,14 @@ export default function AboutUs() {
             style={{ right: margin }}
             className="absolute top-[calc(781*var(--u))] w-[calc(339*var(--u))]"
           >
-            <button
+            <Link
               data-about-readmore
-              type="button"
+              to="/about-two"
               aria-label="read more"
               className="group/swap inline-block cursor-pointer text-[20px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
             >
               <ReadMoreText />
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -739,14 +740,14 @@ export default function AboutUs() {
 
           {/* READ MORE */}
 
-          <button
+          <Link
             data-about-readmore
-            type="button"
+            to="/about-two"
             aria-label="read more"
             className="group/swap absolute top-[calc(655*var(--t))] right-[calc(199*var(--t))] cursor-pointer text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
           >
             <ReadMoreText />
-          </button>
+          </Link>
         </div>
 
         {/* ====================================
@@ -820,14 +821,14 @@ export default function AboutUs() {
 
           {/* READ MORE — 20px GAP */}
 
-          <button
+          <Link
             data-about-readmore
-            type="button"
+            to="/about-two"
             aria-label="read more"
-            className="group/swap mt-[calc(20*var(--v))] block cursor-pointer text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
+            className="group/swap mt-[calc(20*var(--v))] block w-fit cursor-pointer text-[18px] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent lowercase focus-visible:outline-offset-4"
           >
             <ReadMoreText />
-          </button>
+          </Link>
         </div>
 
         {/* ====================================
