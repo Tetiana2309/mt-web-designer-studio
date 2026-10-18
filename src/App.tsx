@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
 import AboutUs from './components/AboutUs'
+import AboutUsTwo from './components/AboutUsTwo'
 import Hero from './components/Hero'
 import NavigationBridge from './components/NavigationBridge'
 import Preloader from './components/Preloader'
@@ -32,6 +33,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/about-two" element={<AboutUsTwo />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
