@@ -1,5 +1,6 @@
 
-import { useRef, type CSSProperties } from 'react'
+import { useRef, type CSSProperties, type MouseEvent, type PointerEvent } from 'react'
+import { useNavigate } from 'react-router'
 
 import AboutFooter from './about/AboutFooter'
 import AboutHeader from './about/AboutHeader'
@@ -29,11 +30,65 @@ const portfolioImages = [1, 2, 3, 4, 5].map(
 )
 
 // ==========================================
+// CASE STUDY LINKS
+// ==========================================
+
+// Preview number → case study route.
+const caseRoutes: Record<number, string> = {
+  1: '/portfolio/eco-natura',
+}
+
+const CLICK_TOLERANCE = 6
+
+// The carousel owns pointer capture and its cards ignore pointer events, so a
+// click is resolved geometrically: the most opaque (front) card under the
+// pointer decides which project was clicked.
+function findCaseRoute(wrapper: HTMLElement, x: number, y: number) {
+  let route: string | undefined
+  let topOpacity = 0
+
+  wrapper.querySelectorAll('img').forEach((image) => {
+    const match = /Preview%20(\d+)\.webp/.exec(image.src)
+    const card = image.parentElement?.parentElement
+    if (!match || !card) return
+
+    const rect = image.getBoundingClientRect()
+    const inside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+    const opacity = Number(card.style.opacity) || 0
+
+    if (inside && opacity > topOpacity) {
+      topOpacity = opacity
+      route = caseRoutes[Number(match[1])]
+    }
+  })
+
+  return route
+}
+
+// ==========================================
 // PORTFOLIO PAGE
 // ==========================================
 
 export default function Portfolio() {
   const rootRef = useRef<HTMLElement>(null)
+  const navigate = useNavigate()
+  const pointerStartRef = useRef({ x: 0, y: 0 })
+
+  const handleCarouselPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    pointerStartRef.current = { x: event.clientX, y: event.clientY }
+  }
+
+  const handleCarouselClick = (event: MouseEvent<HTMLDivElement>) => {
+    const start = pointerStartRef.current
+    const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y)
+    if (moved > CLICK_TOLERANCE) return
+
+    const route = findCaseRoute(event.currentTarget, event.clientX, event.clientY)
+    if (!route) return
+
+    navigate(route)
+    window.scrollTo(0, 0)
+  }
 
   const {
     menuOpen,
@@ -116,7 +171,11 @@ export default function Portfolio() {
             DNA CAROUSEL
         ==================================== */}
 
-        <div className="absolute inset-x-0 top-[25%] bottom-[13%] min-[1280px]:top-[23%] min-[1280px]:bottom-[13%]">
+        <div
+          onPointerDownCapture={handleCarouselPointerDown}
+          onClick={handleCarouselClick}
+          className="absolute inset-x-0 top-[25%] bottom-[13%] min-[1280px]:top-[23%] min-[1280px]:bottom-[13%]"
+        >
           <DNACarousel
             images={portfolioImages}
             cardWidth={300}

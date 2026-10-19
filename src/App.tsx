@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
 import AboutUs from './components/AboutUs'
 import AboutUsTwo from './components/AboutUsTwo'
+import CaseEcoNatura from './components/CaseEcoNatura'
 import Hero from './components/Hero'
 import NavigationBridge from './components/NavigationBridge'
 import Portfolio from './components/Portfolio'
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/about-two" element={<AboutUsTwo />} />
         <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/portfolio/eco-natura" element={<CaseEcoNatura />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
