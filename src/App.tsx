@@ -5,6 +5,7 @@ import AboutUs from './components/AboutUs'
 import AboutUsTwo from './components/AboutUsTwo'
 import Hero from './components/Hero'
 import NavigationBridge from './components/NavigationBridge'
+import Portfolio from './components/Portfolio'
 import Preloader from './components/Preloader'
 
 const PRELOADER_KEY = 'mt-preloader-shown'
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/" element={<Hero />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/about-two" element={<AboutUsTwo />} />
+        <Route path="/portfolio" element={<Portfolio />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
