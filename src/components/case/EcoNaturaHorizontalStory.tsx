@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -149,7 +149,7 @@ const frames = [
   },
 ] as const
 
-export default function EcoNaturaHorizontalStory() {
+export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode }) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
@@ -244,6 +244,7 @@ export default function EcoNaturaHorizontalStory() {
             </section>
           ))}
         </div>
+        <div className="pointer-events-none absolute inset-0 z-30 [&_button]:pointer-events-auto [&_a]:pointer-events-auto">{chrome}</div>
       </div>
 
       {/* No scroll hijacking on small screens: retain all five Figma scenes
