@@ -89,7 +89,7 @@ const frames = [
     content: (
       <>
         <div className="absolute inset-0 bg-canvas" />
-        <Photo src="1.1.webp" x={-558} y={0} width={1548} height={1002} name="Eco Natura ecommerce landing" />
+        {/* The first photo extends seamlessly from scene 1 into scene 2. It must not be drawn twice. */}
         <Photo src="1.2.webp" x={644} y={204} width={1009} height={622} name="Eco Natura shop and products" className="shadow-[0_12px_40px_rgba(0,0,0,0.04)]" />
       </>
     ),
@@ -181,7 +181,7 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
         scrollTrigger: {
           trigger: root,
           start: 'top top',
-          end: () => '+=' + Math.round(window.innerWidth * total * 1.15),
+          end: () => '+=' + Math.round(window.innerWidth * total * 0.82),
           pin: true,
           scrub: 1,
           anticipatePin: 1,
@@ -202,9 +202,9 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
         const imgs = gsap.utils.toArray<HTMLElement>('[data-eco-image]', panel)
         if (!imgs.length) return
         timeline.fromTo(imgs, {
-          x: (i: number) => (i % 2 ? 68 : -68),
+          x: (i: number) => (i % 2 ? 95 : -95),
         }, {
-          x: (i: number) => (i % 2 ? -68 : 68),
+          x: (i: number) => (i % 2 ? -95 : 95),
           ease: 'none',
           duration: 1.8,
           immediateRender: false,
@@ -228,7 +228,8 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
               data-eco-panel
               key={frame.key}
               aria-label={frame.label}
-              className="relative h-dvh w-screen shrink-0 overflow-hidden bg-canvas"
+              style={{ zIndex: frames.length - frames.indexOf(frame) }}
+              className="relative h-dvh w-screen shrink-0 overflow-visible bg-canvas"
             >
               <div
                 className="absolute top-1/2 left-1/2 shrink-0"
