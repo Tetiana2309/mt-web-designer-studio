@@ -36,8 +36,8 @@ const compactMargin = {
 // ==========================================
 
 const previewImages = [1, 2, 3, 4, 5].map(
-  (n) =>
-    `${import.meta.env.BASE_URL}images/Preview%20${n}.webp`,
+  (number) =>
+    `${import.meta.env.BASE_URL}images/Preview%20${number}.webp`,
 )
 
 const ABOUT_SPIRAL_OPACITY = 0.22
@@ -89,37 +89,40 @@ const values = [
 ]
 
 // ==========================================
-// TEXT HIGHLIGHT REVEAL
+// ANIMATION SETTINGS
 // ==========================================
+
+const PRELOADER_SELECTOR =
+  '[role="status"][aria-label="Loading M&T Web Designer Studio"]'
+
+const MOTION = {
+  introDuration: 1.15,
+  introStagger: 0.18,
+
+  lineDuration: 1.05,
+
+  sectionTitleDuration: 0.8,
+
+  wordDuration: 0.24,
+  mobileWordDuration: 0.2,
+  wordStagger: 0.018,
+
+  indicatorDuration: 0.65,
+  rowPause: 0.16,
+} as const
+
+const INITIAL_TITLE_OPACITY = 0.25
+const FINAL_TITLE_OPACITY = 1
+
+const INITIAL_INDICATOR_OPACITY = 0.35
+const FINAL_INDICATOR_OPACITY = 1
 
 const INITIAL_TEXT_COLOR = '#B5B5B5'
 const FINAL_TEXT_COLOR = '#3c3a36'
 
-function PaintWords({
-  text,
-}: {
-  text: string
-}) {
-  return (
-    <>
-      {text.split(' ').map((word, index) => (
-        <Fragment key={`${index}-${word}`}>
-          {index > 0 ? ' ' : null}
-
-          <span
-            data-about-two-word
-            className="text-ink"
-          >
-            {word}
-          </span>
-        </Fragment>
-      ))}
-    </>
-  )
-}
-
 // ==========================================
-// INTRO LABEL MASK
+// INTRO REVEAL
+// ORIGINAL ANIMATION PRESERVED
 // ==========================================
 
 function IntroReveal({
@@ -144,61 +147,90 @@ function IntroReveal({
 }
 
 // ==========================================
-// TITLE MASK REVEAL
+// SECTION TITLE
+// VISIBLE AT 25% OPACITY
+// NO MOVEMENT, MASK OR BLUR
 // ==========================================
 
-function TitleReveal({
+function SectionTitle({
   lines,
 }: {
   lines: readonly string[]
 }) {
   return (
-    <>
+    <span
+      data-about-two-section-title
+      className="block"
+      style={{
+        opacity: INITIAL_TITLE_OPACITY,
+      }}
+    >
       {lines.map((line, index) => (
         <span
           key={`${index}-${line}`}
-          className="block overflow-hidden"
+          className="block"
         >
-          <span
-            data-about-two-title-line
-            className="block"
-          >
-            {line}
-          </span>
+          {line}
         </span>
+      ))}
+    </span>
+  )
+}
+
+// ==========================================
+// WORD-BY-WORD TEXT PAINT
+// SAME EFFECT AS ECO NATURA
+// ==========================================
+
+function PaintWords({
+  text,
+}: {
+  text: string
+}) {
+  return (
+    <>
+      {text.split(' ').map((word, index) => (
+        <Fragment key={`${index}-${word}`}>
+          {index > 0 ? ' ' : null}
+
+          <span
+            data-about-two-word
+            style={{
+              color: INITIAL_TEXT_COLOR,
+            }}
+          >
+            {word}
+          </span>
+        </Fragment>
       ))}
     </>
   )
 }
 
 // ==========================================
-// ANIMATION SETTINGS
+// INDICATOR
+// VISIBLE BEFORE ANIMATION
 // ==========================================
 
-const PRELOADER_SELECTOR =
-  '[role="status"][aria-label="Loading M&T Web Designer Studio"]'
-
-const MOTION = {
-  // NEW INTRO REVEAL
-  introDuration: 1.15,
-  introStagger: 0.18,
-
-  // EXISTING ANIMATIONS
-  lineDuration: 1.05,
-
-  titleDuration: 1.05,
-  titleLineStagger: 0.12,
-  rowStagger: 0.19,
-
-  wordDuration: 0.24,
-  mobileWordDuration: 0.2,
-  wordStagger: 0.018,
-
-  dotDuration: 0.65,
-} as const
+function Indicator({
+  className,
+}: {
+  className: string
+}) {
+  return (
+    <span
+      data-about-two-indicator
+      aria-hidden="true"
+      style={{
+        opacity: INITIAL_INDICATOR_OPACITY,
+      }}
+      className={className}
+    />
+  )
+}
 
 // ==========================================
-// ABOUT TWO INTRO ANIMATION
+// ABOUT US TWO ANIMATION
 // ==========================================
 
 function useAboutTwoIntro(
@@ -209,18 +241,56 @@ function useAboutTwoIntro(
 
     if (!root) return
 
-    const reduceMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    )
+    // ======================================
+    // REDUCED MOTION
+    // ======================================
 
-    if (reduceMotion.matches) {
+    if (
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
+    ) {
+      const titles =
+        gsap.utils.toArray<HTMLElement>(
+          '[data-about-two-section-title]',
+          root,
+        )
+
+      const words =
+        gsap.utils.toArray<HTMLElement>(
+          '[data-about-two-word]',
+          root,
+        )
+
+      const indicators =
+        gsap.utils.toArray<HTMLElement>(
+          '[data-about-two-indicator]',
+          root,
+        )
+
+      titles.forEach((title) => {
+        title.style.opacity = String(
+          FINAL_TITLE_OPACITY,
+        )
+      })
+
+      words.forEach((word) => {
+        word.style.color = FINAL_TEXT_COLOR
+      })
+
+      indicators.forEach((indicator) => {
+        indicator.style.opacity = String(
+          FINAL_INDICATOR_OPACITY,
+        )
+      })
+
       return
     }
 
     const mm = gsap.matchMedia()
 
     // ======================================
-    // ANIMATE ACTIVE LAYOUT
+    // ANIMATE ACTIVE RESPONSIVE LAYOUT
     // ======================================
 
     const animateLayout = (selector: string) => {
@@ -254,17 +324,28 @@ function useAboutTwoIntro(
             layout,
           )
 
-        const descriptions =
+        const sectionTitles =
           gsap.utils.toArray<HTMLElement>(
-            '[data-about-two-description]',
+            '[data-about-two-section-title]',
+            layout,
+          )
+
+        const words =
+          gsap.utils.toArray<HTMLElement>(
+            '[data-about-two-word]',
+            layout,
+          )
+
+        const indicators =
+          gsap.utils.toArray<HTMLElement>(
+            '[data-about-two-indicator]',
             layout,
           )
 
         if (
           introLines.length === 0 ||
           !divider ||
-          rows.length === 0 ||
-          descriptions.length === 0
+          rows.length === 0
         ) {
           return
         }
@@ -273,92 +354,44 @@ function useAboutTwoIntro(
           '(max-width: 767px)',
         ).matches
 
-        const titleLinesByRow = rows.map(
-          (row) =>
-            gsap.utils.toArray<HTMLElement>(
-              '[data-about-two-title-line]',
-              row,
-            ),
-        )
-
-        const indicators = rows.map(
-          (row) =>
-            row.querySelector<HTMLElement>(
-              '[data-about-two-indicator]',
-            ),
-        )
-
-        const paragraphWords = descriptions.map(
-          (paragraph) =>
-            gsap.utils.toArray<HTMLSpanElement>(
-              '[data-about-two-word]',
-              paragraph,
-            ),
-        )
-
-        const allTitleLines =
-          titleLinesByRow.flat()
-
-        const allWords =
-          paragraphWords.flat()
-
-        const allIndicators =
-          indicators.filter(
-            (indicator): indicator is HTMLElement =>
-              indicator !== null,
-          )
-
         // ====================================
         // INITIAL STATES
         // ====================================
 
-        // ====================================
-        // INTRO LABELS — NEW CLIP REVEAL
-        // ====================================
-
-        // Keep the text as a single element.
-        // No character splitting.
-        // No changes to letter spacing.
+        // Original intro animation.
+        // Labels reveal from left to right.
 
         gsap.set(introLines, {
           clipPath: 'inset(0 100% 0 0)',
           y: 8,
         })
 
-        // ====================================
-        // DIVIDER — UNCHANGED
-        // ====================================
+        // Original divider animation.
 
         gsap.set(divider, {
           scaleX: 0,
           transformOrigin: 'left center',
         })
 
-        // ====================================
-        // TITLES — UNCHANGED
-        // ====================================
+        // Section titles always remain visible.
+        // Only opacity changes.
 
-        gsap.set(allTitleLines, {
-          yPercent: 115,
-          force3D: true,
+        gsap.set(sectionTitles, {
+          opacity: INITIAL_TITLE_OPACITY,
         })
 
-        // ====================================
-        // DESCRIPTION WORDS — UNCHANGED
-        // ====================================
+        // All descriptions remain visible
+        // in light grey.
 
-        gsap.set(allWords, {
+        gsap.set(words, {
           color: INITIAL_TEXT_COLOR,
         })
 
-        // ====================================
-        // INDICATORS — UNCHANGED
-        // ====================================
+        // Dots remain visible before
+        // their turn in the sequence.
 
-        gsap.set(allIndicators, {
-          scale: 0.35,
-          autoAlpha: 0,
-          transformOrigin: '50% 50%',
+        gsap.set(indicators, {
+          opacity: INITIAL_INDICATOR_OPACITY,
         })
 
         // ====================================
@@ -373,41 +406,29 @@ function useAboutTwoIntro(
           },
 
           onComplete: () => {
-            // INTRO — CLEAN UP NEW EFFECT
+            // Clean up only the introductory
+            // animation properties.
 
             gsap.set(introLines, {
               clearProps: 'transform,clipPath',
             })
-
-            // ALL OTHER CLEANUP UNCHANGED
 
             gsap.set(divider, {
               clearProps:
                 'transform,transformOrigin',
             })
 
-            gsap.set(allTitleLines, {
-              clearProps: 'transform',
-            })
-
-            gsap.set(allWords, {
-              clearProps: 'color',
-            })
-
-            gsap.set(allIndicators, {
-              clearProps:
-                'transform,transformOrigin,opacity,visibility',
-            })
+            // Do not reset section opacity,
+            // word colors or indicator opacity.
+            // Their final states must remain
+            // visible without flashing.
           },
         })
 
         // ====================================
-        // 01 — INTRO CLIP-PATH REVEAL
+        // 01 — INTRO LABELS
+        // ORIGINAL EFFECT
         // ====================================
-
-        // Reveal each complete italic label
-        // from left to right.
-        // Light vertical motion adds depth.
 
         timeline.to(
           introLines,
@@ -422,8 +443,8 @@ function useAboutTwoIntro(
         )
 
         // ====================================
-        // 02 — DIVIDER DRAW
-        // UNCHANGED
+        // 02 — DIVIDER
+        // ORIGINAL EFFECT
         // ====================================
 
         timeline.to(
@@ -437,59 +458,75 @@ function useAboutTwoIntro(
         )
 
         // ====================================
-        // 03 — EDITORIAL WAVE
-        // UNCHANGED
+        // 03 — SEQUENTIAL EDITORIAL REVEAL
+        //
+        // Results Define Our Work
+        //           ↓
+        // Every Visit Has Value
+        //           ↓
+        // You Pay For Results
+        //           ↓
+        // Full Accountability
+        //
+        // NO OVERLAP BETWEEN ROWS
         // ====================================
 
-        const baseRowStart = 0.52
+        const rowsTimeline = gsap.timeline()
 
-        rows.forEach((_row, index) => {
-          const titleLines =
-            titleLinesByRow[index]
+        rows.forEach((row) => {
+          const title =
+            row.querySelector<HTMLElement>(
+              '[data-about-two-section-title]',
+            )
 
-          const words =
-            paragraphWords[index]
+          const descriptionWords =
+            gsap.utils.toArray<HTMLElement>(
+              '[data-about-two-word]',
+              row,
+            )
 
           const indicator =
-            indicators[index]
-
-          const rowStart =
-            baseRowStart +
-            index * MOTION.rowStagger
-
-          // ----------------------------------
-          // TITLE MASK REVEAL
-          // ----------------------------------
-
-          if (
-            titleLines !== undefined &&
-            titleLines.length > 0
-          ) {
-            timeline.to(
-              titleLines,
-              {
-                yPercent: 0,
-                duration: MOTION.titleDuration,
-                stagger: {
-                  each: MOTION.titleLineStagger,
-                  from: 'start',
-                },
-                ease: 'expo.out',
-              },
-              rowStart,
+            row.querySelector<HTMLElement>(
+              '[data-about-two-indicator]',
             )
-          }
+
+          if (!title) return
+
+          // ==================================
+          // INDIVIDUAL ROW TIMELINE
+          // ==================================
+
+          const rowTimeline = gsap.timeline()
 
           // ----------------------------------
-          // DESCRIPTION WORD PAINT
+          // TITLE
+          //
+          // Opacity 0.25 -> 1
+          // No movement or blur.
           // ----------------------------------
 
-          if (
-            words !== undefined &&
-            words.length > 0
-          ) {
-            timeline.to(
-              words,
+          rowTimeline.to(
+            title,
+            {
+              opacity: FINAL_TITLE_OPACITY,
+              duration:
+                MOTION.sectionTitleDuration,
+              ease: 'power2.inOut',
+            },
+            0,
+          )
+
+          // ----------------------------------
+          // DESCRIPTION
+          //
+          // Light grey -> dark.
+          // Word by word.
+          // Starts with its own title.
+          // ----------------------------------
+
+          if (descriptionWords.length > 0) {
+            rowTimeline.to(
+              descriptionWords,
               {
                 color: FINAL_TEXT_COLOR,
 
@@ -504,31 +541,57 @@ function useAboutTwoIntro(
 
                 ease: 'power1.out',
               },
-              rowStart + 0.14,
+              0,
             )
           }
 
           // ----------------------------------
-          // INDICATOR REVEAL
+          // INDICATOR
+          //
+          // Becomes fully visible
+          // with the same row.
           // ----------------------------------
 
           if (indicator) {
-            timeline.to(
+            rowTimeline.to(
               indicator,
               {
-                scale: 1,
-                autoAlpha: 1,
-                duration: MOTION.dotDuration,
-                ease: 'back.out(1.5)',
+                opacity:
+                  FINAL_INDICATOR_OPACITY,
+                duration:
+                  MOTION.indicatorDuration,
+                ease: 'power2.out',
               },
-              rowStart + 0.24,
+              0,
             )
           }
+
+          // ----------------------------------
+          // STRICT SEQUENCE
+          //
+          // The next row begins only
+          // after the previous one ends.
+          // ----------------------------------
+
+          rowsTimeline.add(rowTimeline, '>')
+
+          rowsTimeline.to(
+            {},
+            {
+              duration: MOTION.rowPause,
+            },
+            '>',
+          )
         })
 
         // ====================================
+        // START ROWS AFTER INTRO
+        // ====================================
+
+        timeline.add(rowsTimeline, '+=0.1')
+
+        // ====================================
         // PRELOADER SYNCHRONIZATION
-        // UNCHANGED
         // ====================================
 
         const startAnimation = () => {
@@ -603,7 +666,7 @@ function useAboutTwoIntro(
 }
 
 // ==========================================
-// ABOUT US TWO
+// ABOUT US TWO PAGE
 // ==========================================
 
 export default function AboutUsTwo() {
@@ -648,7 +711,7 @@ export default function AboutUsTwo() {
           data-about-two-layout="desktop"
           className="hidden min-[1280px]:contents"
         >
-          {/* SECTION INTRO */}
+          {/* INTRO LABELS */}
 
           <div
             style={{
@@ -657,14 +720,16 @@ export default function AboutUsTwo() {
             }}
             className="absolute top-[calc(198*var(--u))] h-[calc(42*var(--u))]"
           >
-            {introLabels.map(({ text, position }) => (
-              <p
-                key={text}
-                className={`absolute top-0 ${position} text-[max(14px,calc(20*var(--u)))] leading-[1.1] font-light tracking-[-0.03em] whitespace-nowrap text-ink capitalize italic opacity-75`}
-              >
-                <IntroReveal text={text} />
-              </p>
-            ))}
+            {introLabels.map(
+              ({ text, position }) => (
+                <p
+                  key={text}
+                  className={`absolute top-0 ${position} text-[max(14px,calc(20*var(--u)))] leading-[1.1] font-light tracking-[-0.03em] whitespace-nowrap text-ink capitalize italic opacity-75`}
+                >
+                  <IntroReveal text={text} />
+                </p>
+              ),
+            )}
           </div>
 
           {/* DIVIDER */}
@@ -685,7 +750,11 @@ export default function AboutUsTwo() {
             className="absolute top-[calc(50%+79*var(--u))] flex -translate-y-1/2 flex-col gap-[calc(64*var(--u))]"
           >
             {values.map(
-              ({ title, description, indicator }) => (
+              ({
+                title,
+                description,
+                indicator,
+              }) => (
                 <li
                   key={title[0]}
                   data-about-two-row
@@ -694,7 +763,9 @@ export default function AboutUsTwo() {
                   {/* TITLE */}
 
                   <h2 className="absolute top-0 left-0 text-[calc(34*var(--u))] leading-[0.95] font-light tracking-[-0.03em] whitespace-nowrap text-accent capitalize opacity-70">
-                    <TitleReveal lines={title} />
+                    <SectionTitle
+                      lines={title}
+                    />
                   </h2>
 
                   {/* DESCRIPTION */}
@@ -703,14 +774,14 @@ export default function AboutUsTwo() {
                     data-about-two-description
                     className="absolute top-0 left-[48.696%] w-[calc(330*var(--u))] text-[max(14px,calc(18*var(--u)))] leading-[1.2] font-normal tracking-[-0.02em] text-ink"
                   >
-                    <PaintWords text={description} />
+                    <PaintWords
+                      text={description}
+                    />
                   </p>
 
                   {/* INDICATOR */}
 
-                  <span
-                    data-about-two-indicator
-                    aria-hidden="true"
+                  <Indicator
                     className={`absolute top-0 right-0 size-[calc(12*var(--u))] rounded-full ${indicator}`}
                   />
                 </li>
@@ -727,7 +798,7 @@ export default function AboutUsTwo() {
           data-about-two-layout="tablet"
           className="hidden min-[768px]:max-[1280px]:block"
         >
-          {/* SECTION INTRO */}
+          {/* INTRO LABELS */}
 
           <div
             style={{
@@ -759,7 +830,11 @@ export default function AboutUsTwo() {
             className="mt-[clamp(40px,5vw,64px)] flex flex-col gap-[clamp(40px,5vw,64px)]"
           >
             {values.map(
-              ({ title, description, indicator }) => (
+              ({
+                title,
+                description,
+                indicator,
+              }) => (
                 <li
                   key={title[0]}
                   data-about-two-row
@@ -768,7 +843,9 @@ export default function AboutUsTwo() {
                   {/* TITLE */}
 
                   <h2 className="col-start-1 text-[clamp(26px,3.2vw,34px)] leading-[0.95] font-light tracking-[-0.03em] whitespace-nowrap text-accent capitalize opacity-70">
-                    <TitleReveal lines={title} />
+                    <SectionTitle
+                      lines={title}
+                    />
                   </h2>
 
                   {/* DESCRIPTION */}
@@ -777,14 +854,14 @@ export default function AboutUsTwo() {
                     data-about-two-description
                     className="col-start-2 w-[clamp(280px,38vw,330px)] max-w-full text-[18px] leading-[1.2] font-normal tracking-[-0.02em] text-ink"
                   >
-                    <PaintWords text={description} />
+                    <PaintWords
+                      text={description}
+                    />
                   </p>
 
                   {/* INDICATOR */}
 
-                  <span
-                    data-about-two-indicator
-                    aria-hidden="true"
+                  <Indicator
                     className={`absolute top-0 right-0 size-3 rounded-full ${indicator}`}
                   />
                 </li>
@@ -801,24 +878,26 @@ export default function AboutUsTwo() {
           data-about-two-layout="mobile"
           className="min-[768px]:hidden"
         >
-          {/* SECTION INTRO */}
+          {/* INTRO LABELS */}
 
           <div
             style={compactMargin}
             className="pt-[calc(134*var(--v))]"
           >
-            {introLabels.map(({ text }, index) => (
-              <p
-                key={text}
-                className={`text-center text-[16px] leading-[1.1] font-light tracking-[-0.03em] text-ink capitalize italic ${
-                  index > 0
-                    ? 'mt-[calc(4.4*var(--v))]'
-                    : ''
-                }`}
-              >
-                <IntroReveal text={text} />
-              </p>
-            ))}
+            {introLabels.map(
+              ({ text }, index) => (
+                <p
+                  key={text}
+                  className={`text-center text-[16px] leading-[1.1] font-light tracking-[-0.03em] text-ink capitalize italic ${
+                    index > 0
+                      ? 'mt-[calc(4.4*var(--v))]'
+                      : ''
+                  }`}
+                >
+                  <IntroReveal text={text} />
+                </p>
+              ),
+            )}
           </div>
 
           {/* DIVIDER */}
@@ -836,7 +915,11 @@ export default function AboutUsTwo() {
             className="mt-[calc(18*var(--v)+46px)] flex flex-col gap-[calc(19.3*var(--v))]"
           >
             {values.map(
-              ({ title, description, indicator }) => (
+              ({
+                title,
+                description,
+                indicator,
+              }) => (
                 <li
                   key={title[0]}
                   data-about-two-row
@@ -845,7 +928,7 @@ export default function AboutUsTwo() {
                   {/* TITLE */}
 
                   <h2 className="text-[calc(26*var(--v))] leading-[0.95] font-light tracking-[-0.03em] whitespace-nowrap text-accent capitalize opacity-70">
-                    <TitleReveal
+                    <SectionTitle
                       lines={[title.join(' ')]}
                     />
                   </h2>
@@ -856,14 +939,14 @@ export default function AboutUsTwo() {
                     data-about-two-description
                     className="mt-[calc(10.3*var(--v))] w-[calc(286*var(--v))] max-w-full text-[16px] leading-[1.2] font-normal tracking-[-0.02em] text-ink"
                   >
-                    <PaintWords text={description} />
+                    <PaintWords
+                      text={description}
+                    />
                   </p>
 
                   {/* INDICATOR */}
 
-                  <span
-                    data-about-two-indicator
-                    aria-hidden="true"
+                  <Indicator
                     className={`absolute top-[calc(7*var(--v))] right-0 size-3 rounded-full ${indicator}`}
                   />
                 </li>
@@ -885,7 +968,9 @@ export default function AboutUsTwo() {
         <AboutFooter />
       </div>
 
-      {/* MOBILE MENU — UNCHANGED */}
+      {/* ====================================
+          MOBILE MENU — UNCHANGED
+      ==================================== */}
 
       {menuOpen && (
         <MobileMenu onClose={closeMenu} />
