@@ -24,6 +24,7 @@ export default function CaseEcoNatura() {
 
   return (
     <section ref={rootRef} className="relative min-h-dvh overflow-x-clip bg-canvas font-sans text-ink">
+      <div className="absolute inset-x-0 top-0 z-40 h-28 min-[900px]:hidden"><AboutHeader menuOpen={menuOpen} menuButtonRef={menuButtonRef} onOpenMenu={openMenu} /></div>
       <div inert={menuOpen}>
         <EcoNaturaHorizontalStory chrome={chrome} />
 
@@ -42,6 +43,7 @@ export default function CaseEcoNatura() {
             A refined digital experience for Eco Natura.
           </p>
         </div>
+        <div className="relative h-24 min-[900px]:hidden"><AboutFooter /></div>
       </div>
       {menuOpen && <MobileMenu onClose={closeMenu} />}
     </section>
