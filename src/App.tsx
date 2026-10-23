@@ -11,6 +11,7 @@ import CaseBeautySculpture from './components/case/CaseBeautySculpture'
 import Hero from './components/Hero'
 import NavigationBridge from './components/NavigationBridge'
 import Portfolio from './components/Portfolio'
+import ContactsPage from './ContactsPage'
 import Preloader from './components/Preloader'
 
 // ==========================================
@@ -123,6 +124,8 @@ export default function App() {
           path="/portfolio/beauty-sculpture"
           element={<CaseBeautySculpture />}
         />
+
+        <Route path="/contacts" element={<ContactsPage />} />
 
         {/* ====================================
             FALLBACK
