@@ -302,11 +302,18 @@ export default function Preloader() {
       setFinished(true)
     }
 
+    // The initial HTML cover prevents an unstyled flash on a cold load.
+    // Remove it only after the React loader has mounted.
+    const releaseBootScreen = () => {
+      document.getElementById('mt-boot-screen')?.remove()
+    }
+
     // ========================================
     // REDUCED MOTION
     // ========================================
 
     if (reducedMotion) {
+      releaseBootScreen()
       const delayed = gsap.delayedCall(
         0.05,
         finish,
@@ -432,6 +439,7 @@ export default function Preloader() {
       FADE_START + FADE_DURATION,
     )
 
+    releaseBootScreen()
     timeline.play()
 
     // ========================================
