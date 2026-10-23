@@ -22,7 +22,8 @@ export default function NavigationBridge() {
       if (!label) return
 
       const inNavigation = button.closest('nav[aria-label="Main navigation"]')
-      const target = label === LOGO_LABEL ? '/' : inNavigation ? navRoutes[label] : undefined
+      const isCta = Boolean(button.closest('[data-cta-root]'))
+      const target = label === LOGO_LABEL ? '/' : isCta ? '/contacts' : inNavigation && label ? navRoutes[label] : undefined
 
       if (target === undefined || target === pathname) return
 
