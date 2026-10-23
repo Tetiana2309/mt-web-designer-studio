@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
 
 import AboutUs from './components/AboutUs'
@@ -18,7 +17,6 @@ import Preloader from './components/Preloader'
 // PRELOADER
 // ==========================================
 
-const PRELOADER_KEY = 'mt-preloader-shown'
 
 // ==========================================
 // APP ROUTER
@@ -28,24 +26,11 @@ const PRELOADER_KEY = 'mt-preloader-shown'
 // on GitHub Pages without server rewrites.
 
 export default function App() {
-  const [showPreloader] = useState(() => {
-    try {
-      if (sessionStorage.getItem(PRELOADER_KEY) === 'true') {
-        return false
-      }
-
-      sessionStorage.setItem(PRELOADER_KEY, 'true')
-      return true
-    } catch {
-      return true
-    }
-  })
-
   return (
     <HashRouter>
       <NavigationBridge />
 
-      {showPreloader && <Preloader />}
+      <Preloader />
 
       <Routes>
         {/* ====================================
