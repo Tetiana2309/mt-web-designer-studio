@@ -8,4 +8,5 @@ export const navRoutes: Record<string, string> = {
   home: '/',
   'about us': '/about',
   portfolio: '/portfolio',
+  contacts: '/contacts',
 }
