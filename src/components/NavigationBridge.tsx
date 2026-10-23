@@ -4,9 +4,8 @@ import { navRoutes } from '../navigation'
 
 const LOGO_LABEL = 'M&T — Home'
 
-// Connects the header / menu navigation buttons to the router.
-// Hero and its mobile menu render plain buttons and are intentionally left
-// untouched, so clicks are resolved here by the button's aria-label.
+// Routes existing header, CTA and mobile-menu buttons without changing
+// their markup or animations.
 export default function NavigationBridge() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -19,16 +18,20 @@ export default function NavigationBridge() {
       if (!button) return
 
       const label = button.getAttribute('aria-label')
-      if (!label) return
-
-      const inNavigation = button.closest('nav[aria-label="Main navigation"]')
       const isCta = Boolean(button.closest('[data-cta-root]'))
-      const target = label === LOGO_LABEL ? '/' : isCta ? '/contacts' : inNavigation && label ? navRoutes[label] : undefined
+      const inNavigation = Boolean(button.closest('nav[aria-label="Main navigation"]'))
 
-      if (target === undefined || target === pathname) return
+      // The LET'S TALK button has no aria-label: recognize it first.
+      const target =
+        isCta ? '/contacts'
+        : label === LOGO_LABEL ? '/'
+        : inNavigation && label ? navRoutes[label.toLowerCase()]
+        : undefined
+
+      if (!target || target === pathname) return
 
       navigate(target)
-      window.scrollTo(0, 0)
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     }
 
     document.addEventListener('click', onClick)
