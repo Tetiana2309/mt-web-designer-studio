@@ -1,5 +1,9 @@
-
-import { useRef, type CSSProperties, type MouseEvent, type PointerEvent } from 'react'
+import {
+  useRef,
+  type CSSProperties,
+  type MouseEvent,
+  type PointerEvent,
+} from 'react'
 import { useNavigate } from 'react-router'
 
 import AboutFooter from './about/AboutFooter'
@@ -33,30 +37,59 @@ const portfolioImages = [1, 2, 3, 4, 5].map(
 // CASE STUDY LINKS
 // ==========================================
 
-// Preview number → case study route.
+// Preview 1 → Eco Natura
+// Preview 2 → Capone Agency
+// Preview 3 → Villa Bali
+// Preview 4 → Zone Community
+// Preview 5 → Beauty Sculpture
+// Preview 5 → Not connected yet
+
 const caseRoutes: Record<number, string> = {
   1: '/portfolio/eco-natura',
+  2: '/portfolio/capone',
+  3: '/portfolio/villa-bali',
+  4: '/portfolio/zone',
+  5: '/portfolio/beauty-sculpture',
 }
 
 const CLICK_TOLERANCE = 6
 
-// The carousel owns pointer capture and its cards ignore pointer events, so a
-// click is resolved geometrically: the most opaque (front) card under the
-// pointer decides which project was clicked.
-function findCaseRoute(wrapper: HTMLElement, x: number, y: number) {
+// ==========================================
+// FIND CLICKED CASE
+// ==========================================
+
+function findCaseRoute(
+  wrapper: HTMLElement,
+  x: number,
+  y: number,
+): string | undefined {
   let route: string | undefined
-  let topOpacity = 0
+  let topOpacity = -1
 
   wrapper.querySelectorAll('img').forEach((image) => {
-    const match = /Preview%20(\d+)\.webp/.exec(image.src)
+    const imageUrl = decodeURIComponent(image.src)
+
+    const match = /Preview\s+(\d+)\.webp/i.exec(imageUrl)
+
+    if (!match) return
+
     const card = image.parentElement?.parentElement
-    if (!match || !card) return
+
+    if (!card) return
 
     const rect = image.getBoundingClientRect()
-    const inside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+
+    const inside =
+      x >= rect.left &&
+      x <= rect.right &&
+      y >= rect.top &&
+      y <= rect.bottom
+
+    if (!inside) return
+
     const opacity = Number(card.style.opacity) || 0
 
-    if (inside && opacity > topOpacity) {
+    if (opacity > topOpacity) {
       topOpacity = opacity
       route = caseRoutes[Number(match[1])]
     }
@@ -71,24 +104,63 @@ function findCaseRoute(wrapper: HTMLElement, x: number, y: number) {
 
 export default function Portfolio() {
   const rootRef = useRef<HTMLElement>(null)
-  const navigate = useNavigate()
-  const pointerStartRef = useRef({ x: 0, y: 0 })
 
-  const handleCarouselPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    pointerStartRef.current = { x: event.clientX, y: event.clientY }
+  const navigate = useNavigate()
+
+  const pointerStartRef = useRef({
+    x: 0,
+    y: 0,
+  })
+
+  // ========================================
+  // CAROUSEL POINTER DOWN
+  // ========================================
+
+  const handleCarouselPointerDown = (
+    event: PointerEvent<HTMLDivElement>,
+  ) => {
+    pointerStartRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+    }
   }
 
-  const handleCarouselClick = (event: MouseEvent<HTMLDivElement>) => {
+  // ========================================
+  // CAROUSEL CLICK NAVIGATION
+  // ========================================
+
+  const handleCarouselClick = (
+    event: MouseEvent<HTMLDivElement>,
+  ) => {
     const start = pointerStartRef.current
-    const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y)
+
+    const moved = Math.hypot(
+      event.clientX - start.x,
+      event.clientY - start.y,
+    )
+
     if (moved > CLICK_TOLERANCE) return
 
-    const route = findCaseRoute(event.currentTarget, event.clientX, event.clientY)
+    const route = findCaseRoute(
+      event.currentTarget,
+      event.clientX,
+      event.clientY,
+    )
+
     if (!route) return
 
     navigate(route)
-    window.scrollTo(0, 0)
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    })
   }
+
+  // ========================================
+  // MOBILE MENU
+  // ========================================
 
   const {
     menuOpen,
@@ -96,6 +168,10 @@ export default function Portfolio() {
     openMenu,
     closeMenu,
   } = useMobileMenu()
+
+  // ========================================
+  // CHROME INTRO
+  // ========================================
 
   useChromeIntro(rootRef)
 
@@ -116,7 +192,7 @@ export default function Portfolio() {
             style={{
               color: '#3A5F73',
               fontFamily: 'Inter, sans-serif',
-              fontSize: '66px',
+              fontSize: '100px',
               fontStyle: 'normal',
               fontWeight: 500,
               lineHeight: '110%',
@@ -232,5 +308,4 @@ export default function Portfolio() {
     </section>
   )
 }
-
 
