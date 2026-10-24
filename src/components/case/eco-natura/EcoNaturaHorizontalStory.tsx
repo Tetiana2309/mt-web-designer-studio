@@ -215,24 +215,49 @@ function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
     if (!selected || !shade.current || !picture.current || !cross.current) return
     closing.current = false
     const overflow = document.documentElement.style.overflow
+    const sourceOpacity = selected.style.opacity
     document.documentElement.style.overflow = 'hidden'
+
     const from = selected.getBoundingClientRect()
-    const w = Math.min(window.innerWidth - 36, 520)
-    const h = Math.min(window.innerHeight - 120, 1000)
+    const maxWidth = window.innerWidth - 36
+    const maxHeight = window.innerHeight - 130
+    const ratio = (selected.naturalWidth || from.width) / (selected.naturalHeight || from.height)
+    const targetWidth = Math.min(maxWidth, maxHeight * ratio)
+    const targetHeight = targetWidth / ratio
+    const targetLeft = (window.innerWidth - targetWidth) / 2
+    const targetTop = (window.innerHeight - targetHeight) / 2
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Animate GPU transforms, not layout width/height/left/top (which jump on iOS Safari).
+    gsap.set(picture.current, {
+      position: 'fixed', left: targetLeft, top: targetTop,
+      width: targetWidth, height: targetHeight,
+      x: from.left - targetLeft, y: from.top - targetTop,
+      scaleX: from.width / targetWidth,
+      scaleY: from.height / targetHeight,
+      transformOrigin: 'top left',
+      force3D: true,
+    })
     gsap.set(shade.current, { opacity: 0 })
     gsap.set(cross.current, { opacity: 0 })
-    gsap.set(picture.current, { position: 'fixed', left: from.left, top: from.top, width: from.width, height: from.height })
+    selected.style.opacity = '0'
     anim.current = gsap.timeline()
-      .to(shade.current, { opacity: 1, duration: reduce ? 0 : 0.45 }, 0)
-      .to(picture.current, { left: (window.innerWidth - w) / 2, top: (window.innerHeight - h) / 2, width: w, height: h, duration: reduce ? 0 : 0.65, ease: 'power3.inOut' }, 0)
-      .to(cross.current, { opacity: 1, duration: reduce ? 0 : 0.25 }, reduce ? 0 : 0.35)
-    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') cross.current?.click() }
+      .to(shade.current, { opacity: 1, duration: reduce ? 0 : 0.65, ease: 'power2.out' }, 0)
+      .to(picture.current, {
+        x: 0, y: 0, scaleX: 1, scaleY: 1,
+        duration: reduce ? 0 : 0.8, ease: 'power3.inOut',
+      }, 0)
+      .to(cross.current, { opacity: 1, duration: reduce ? 0 : 0.3 }, reduce ? 0 : 0.42)
+
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') cross.current?.click()
+    }
     document.addEventListener('keydown', escape)
     return () => {
       anim.current?.kill()
       document.removeEventListener('keydown', escape)
       document.documentElement.style.overflow = overflow
+      selected.style.opacity = sourceOpacity
     }
   }, [selected])
 
@@ -240,19 +265,29 @@ function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
     if (!selected || closing.current) return
     closing.current = true
     anim.current?.kill()
-    if (!shade.current || !picture.current || !cross.current) return setSelected(null)
-    const to = selected.getBoundingClientRect()
+    if (!shade.current || !picture.current || !cross.current) {
+      setSelected(null)
+      return
+    }
+    const dest = selected.getBoundingClientRect()
+    const rect = picture.current.getBoundingClientRect()
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     anim.current = gsap.timeline({ onComplete: () => setSelected(null) })
-      .to(cross.current, { opacity: 0, duration: reduce ? 0 : 0.15 }, 0)
-      .to(picture.current, { left: to.left, top: to.top, width: to.width, height: to.height, duration: reduce ? 0 : 0.6, ease: 'power3.inOut' }, 0)
-      .to(shade.current, { opacity: 0, duration: reduce ? 0 : 0.5 }, 0)
+      .to(cross.current, { opacity: 0, duration: reduce ? 0 : 0.2 }, 0)
+      .to(picture.current, {
+        x: `+=${dest.left - rect.left}`,
+        y: `+=${dest.top - rect.top}`,
+        scaleX: dest.width / picture.current.offsetWidth,
+        scaleY: dest.height / picture.current.offsetHeight,
+        duration: reduce ? 0 : 0.75, ease: 'power3.inOut',
+      }, 0)
+      .to(shade.current, { opacity: 0, duration: reduce ? 0 : 0.7, ease: 'power2.inOut' }, 0)
   }
 
   return selected ? createPortal(
-    <div className="fixed inset-0 z-[9999]" role="dialog" aria-modal="true" aria-label="Enlarged Eco Natura image">
-      <div ref={shade} className="absolute inset-0 bg-[#C7C7C7]/95" onClick={close} />
-      <img ref={picture} src={selected.currentSrc || selected.src} alt={selected.alt} draggable={false} className="pointer-events-none fixed max-w-none object-contain" />
+    <div className="fixed inset-0 z-[9999] isolate" role="dialog" aria-modal="true" aria-label="Enlarged Eco Natura image">
+      <div ref={shade} className="absolute inset-0 bg-[#C7C7C7]" onClick={close} />
+      <img ref={picture} src={selected.currentSrc || selected.src} alt={selected.alt} draggable={false} className="pointer-events-none fixed max-w-none object-contain will-change-transform" />
       <button ref={cross} type="button" aria-label="Close image" onClick={close} className="absolute right-[max(16px,env(safe-area-inset-right))] top-[max(20px,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center text-[#3A5F73]">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
       </button>
