@@ -33,6 +33,9 @@ const types = [
 
 const budgets = ['$800–1k', '$1-3k', '$3-5k', '$5k+']
 
+// Web3Forms access keys are intended for use in client-side forms.
+const WEB3FORMS_ACCESS_KEY = '3919c149-68a1-499d-a576-05ff28c9913e'
+
 // ==========================================
 // SHARED INPUT STYLES
 // ==========================================
@@ -231,7 +234,7 @@ function ProjectTypeHint({ text }: { text: string }) {
 // SEND BUTTON — SAME HOVER / FOCUS SWAP AS CTA
 // ==========================================
 
-function SendButton() {
+function SendButton({ disabled = false }: { disabled?: boolean }) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const textRef = useRef<HTMLSpanElement>(null)
   const arrowRef = useRef<HTMLSpanElement>(null)
@@ -300,6 +303,8 @@ function SendButton() {
       <button
         ref={buttonRef}
         type="submit"
+        disabled={disabled}
+        aria-disabled={disabled}
         className="relative flex h-[25px] w-[208px] cursor-pointer items-center justify-between text-[22px] font-bold leading-[1.1] tracking-[-0.03em] text-accent uppercase focus-visible:outline-2 focus-visible:outline-accent"
       >
         <span ref={textRef} className="block shrink-0">Send</span>
@@ -334,6 +339,7 @@ export default function ContactsPage() {
   const [budget, setBudget] = useState('')
 
   const [message, setMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useChromeIntro(rootRef)
 
@@ -413,14 +419,43 @@ export default function ContactsPage() {
   // FORM SUBMISSION
   // ========================================
 
-  function handleSubmit(
+  async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault()
+    if (isSubmitting) return
 
-    setMessage(
-      'The form is not connected to a delivery service yet. Your request has not been sent.',
-    )
+    const form = event.currentTarget
+    const formData = new FormData(form)
+    formData.set('access_key', WEB3FORMS_ACCESS_KEY)
+    formData.set('subject', 'New project enquiry — M&T Web Designer Studio')
+    formData.set('from_name', 'M&T Web Designer Studio website')
+    formData.set('projectType', projectType || 'Not selected')
+    formData.set('budget', budget || 'Not selected')
+
+    setIsSubmitting(true)
+    setMessage('Sending your enquiry...')
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      })
+      const data: { success?: boolean; message?: string } = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to send your enquiry.')
+      }
+
+      form.reset()
+      setProjectType('')
+      setBudget('')
+      setMessage('Thank you! Your enquiry has been sent successfully.')
+    } catch {
+      setMessage('Your enquiry could not be sent. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const detail = types.find(
@@ -549,7 +584,7 @@ export default function ContactsPage() {
           {/* SEND */}
           <div data-contact-send className="min-[1280px]:grid min-[1280px]:grid-cols-[minmax(0,619px)_minmax(0,755px)]">
             <div className="min-[1280px]:col-start-2">
-              <SendButton />
+              <SendButton disabled={isSubmitting} />
               {message && (
                 <p role="status" className="mt-4 text-[14px]">{message}</p>
               )}
