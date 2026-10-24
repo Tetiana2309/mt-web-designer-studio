@@ -1,7 +1,7 @@
 import EcoNaturaOutro from './EcoNaturaOutro'
 import CtaButton from '../../../components/CtaButton'
 import NextCasesButton from './EcoNaturaNextCasesButton'
-import { Fragment, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useLayoutEffect, useRef, useState, type RefObject, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import Lenis from 'lenis'
@@ -191,7 +191,7 @@ function MobileWords({ text }: { text: string }) {
 }
 
 
-function EcoZoom({ rootRef }: { rootRef: React.RefObject<HTMLDivElement | null> }) {
+function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
   const [selected, setSelected] = useState<HTMLImageElement | null>(null)
   const shade = useRef<HTMLDivElement>(null)
   const picture = useRef<HTMLImageElement>(null)
