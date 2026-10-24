@@ -471,6 +471,20 @@ export default function ContactsPage() {
           ORIGINAL M&T BACKGROUND SVG
       ==================================== */}
 
+      {/* Keep browser autofill from changing the original canvas-colored inputs. */}
+      <style>{`
+        [data-contact-form] input:-webkit-autofill,
+        [data-contact-form] input:-webkit-autofill:hover,
+        [data-contact-form] input:-webkit-autofill:focus,
+        [data-contact-form] input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 1000px #c7c7c7 inset !important;
+          box-shadow: 0 0 0 1000px #c7c7c7 inset !important;
+          -webkit-text-fill-color: #3c3a36 !important;
+          caret-color: #3c3a36;
+          transition: background-color 9999s ease-out 0s;
+        }
+      `}</style>
+
       <ContactsBackgroundLogo />
 
       {/* ====================================
