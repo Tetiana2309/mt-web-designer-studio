@@ -1,4 +1,5 @@
 import ZoneOutro from './ZoneOutro'
+import CtaButton from '../../../components/CtaButton'
 import NextCasesButton from './ZoneNextCasesButton'
 import ZoneLastCasesButton from './ZoneLastCasesButton'
 import { Fragment, useLayoutEffect, useRef, type ReactNode } from 'react'
@@ -586,11 +587,11 @@ export default function ZoneHorizontalStory({ chrome }: { chrome: ReactNode }) {
       <div ref={mobileRef} className="min-[900px]:hidden bg-canvas">
         <div
           className="relative mx-auto w-full overflow-hidden bg-canvas"
-          style={{ maxWidth: 440, height: 'calc(min(100vw, 440px) * 5.666666667)' }}
+          style={{ maxWidth: 440, height: 'calc(min(100vw, 440px) * 6.128205128)' }}
         >
           <div
             className="absolute left-0 top-0 origin-top-left bg-canvas"
-            style={{ width: 390, height: 2210, transform: 'scale(calc(min(100vw, 440px) / 390px))' }}
+            style={{ width: 390, height: 2390, transform: 'scale(calc(min(100vw, 440px) / 390px))' }}
           >
             {/* Existing case-navigation components, scaled to the 390px Figma mobile layout. */}
             <div className="absolute left-[20px] top-[124px] z-10 h-[40px] w-[146px]">
@@ -632,15 +633,19 @@ export default function ZoneHorizontalStory({ chrome }: { chrome: ReactNode }) {
             </div>
             <p data-mobile-copy className="absolute left-[65px] top-[1701px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={approach} /></p>
 
-            <div className="absolute left-[20px] top-[1857px] whitespace-nowrap font-sans text-[40px] font-medium leading-[0.82] tracking-[-1.2px] text-accent opacity-10">
+            <div className="absolute left-[20px] top-[1810px] w-[350px] font-sans text-[42px] font-medium leading-[0.82] tracking-[-1.2px] text-accent opacity-10">
               <p>The Zone Calls.</p><p>Explore Beyond.</p>
             </div>
-            <p className="absolute left-[20px] top-[1950px] w-[203px] font-sans text-[24px] font-medium italic leading-[0.95] tracking-[-0.72px] text-accent">Build A Brand That Drives Growth</p>
+            <p className="absolute left-[20px] top-[1960px] w-[320px] font-sans text-[32px] font-medium italic leading-[0.95] tracking-[-0.72px] text-accent">Build A Brand That Drives Growth</p>
+            {/* Reuse the original home CTA, positioned after the case closing headline. */}
+            <div className="absolute left-[91px] top-[2110px] z-10">
+              <CtaButton />
+            </div>
             {/* Existing case-navigation components, scaled to the 390px Figma mobile layout. */}
-            <div className="absolute left-[20px] top-[2039px] z-10 h-[40px] w-[146px]">
+            <div className="absolute left-[20px] top-[2250px] z-10 h-[40px] w-[146px]">
               <div className="origin-top-left scale-[0.8]"><ZoneLastCasesButton /></div>
             </div>
-            <div className="absolute right-[20px] top-[2039px] z-10 h-[40px] w-[146px]">
+            <div className="absolute right-[20px] top-[2250px] z-10 h-[40px] w-[146px]">
               <div className="origin-top-left scale-[0.8]"><NextCasesButton /></div>
             </div>
           </div>
