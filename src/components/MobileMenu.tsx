@@ -10,6 +10,12 @@ import gsap from 'gsap'
 
 import { navItems, socialItems } from '../navigation'
 
+const socialLinks: Record<string, string> = {
+  telegram: 'https://t.me/mtwebdesignerstudio',
+  whatsapp: 'https://wa.me/4915569403496',
+  email: 'mailto:tmwebdesigneragency@gmail.com',
+}
+
 interface MobileMenuProps {
   onClose: () => void
 }
@@ -557,8 +563,10 @@ export default function MobileMenu({
             key={item}
             className="overflow-hidden"
           >
-            <button
-              type="button"
+            <a
+              href={socialLinks[item]}
+              target={item === 'email' ? undefined : '_blank'}
+              rel={item === 'email' ? undefined : 'noopener noreferrer'}
               aria-label={item}
               onClick={closeMenu}
               className="group/swap nav-link relative inline-block cursor-pointer text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] lowercase opacity-85"
@@ -582,7 +590,7 @@ export default function MobileMenu({
                   {item}
                 </span>
               </span>
-            </button>
+            </a>
           </li>
         ))}
       </ul>
