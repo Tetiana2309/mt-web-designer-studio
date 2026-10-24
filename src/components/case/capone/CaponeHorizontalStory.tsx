@@ -500,8 +500,22 @@ export default function CaponeHorizontalStory({ chrome }: { chrome: ReactNode })
     const root = mobileRef.current
     if (!root) return
 
-    const mm = gsap.matchMedia()
-    mm.add('(max-width: 899px) and (prefers-reduced-motion: no-preference)', () => {
+    // Hash navigation can briefly retain the previous case's scroll position.
+    // Delay trigger creation until the new page has returned to the top.
+    let cancelled = false
+    let frame2 = 0
+    const frame1 = requestAnimationFrame(() => {
+      frame2 = requestAnimationFrame(() => {
+        if (cancelled) return
+        window.scrollTo(0, 0)
+        installMobileTriggers()
+      })
+    })
+
+    let mm: gsap.MatchMedia | null = null
+    const installMobileTriggers = () => {
+      mm = gsap.matchMedia()
+      mm.add('(max-width: 899px) and (prefers-reduced-motion: no-preference)', () => {
       const ctx = gsap.context(() => {
         const groups = gsap.utils.toArray<HTMLElement>('[data-mobile-title-block]', root)
         const copies = gsap.utils.toArray<HTMLElement>('[data-mobile-copy]', root)
@@ -547,7 +561,13 @@ export default function CaponeHorizontalStory({ chrome }: { chrome: ReactNode })
       }, root)
       return () => ctx.revert()
     })
-    return () => mm.revert()
+    }
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frame1)
+      cancelAnimationFrame(frame2)
+      mm?.revert()
+    }
   }, [])
 
   return (
