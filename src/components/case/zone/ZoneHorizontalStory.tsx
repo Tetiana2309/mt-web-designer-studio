@@ -1,7 +1,8 @@
+import { Link } from 'react-router'
 import ZoneOutro from './ZoneOutro'
 import NextCasesButton from './ZoneNextCasesButton'
 import ZoneLastCasesButton from './ZoneLastCasesButton'
-import { Fragment, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { Fragment, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import gsap from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -197,6 +198,7 @@ function DesktopWorld() {
 
 
 export default function ZoneHorizontalStory({ chrome }: { chrome: ReactNode }) {
+  const [mobileCaseMenuOpen, setMobileCaseMenuOpen] = useState(false)
   const storyRef = useRef<HTMLDivElement>(null)
   const worldRef = useRef<HTMLDivElement>(null)
   const cameraRef = useRef<HTMLDivElement>(null)
@@ -511,35 +513,72 @@ export default function ZoneHorizontalStory({ chrome }: { chrome: ReactNode }) {
         </div>
       </div>
 
-      <div className="bg-canvas min-[900px]:hidden">
-        <section className="px-6 pb-16 pt-32">
-          <h1 className="max-w-[12ch] text-[clamp(42px,11vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">A More Luxurious Wey To Stay.</h1>
-          <p className="mt-8 max-w-md" style={bodyStyle}>{intro}</p>
-          <video
-            className="mt-10 block aspect-video w-full object-cover"
-            src={ZONE_VIDEO}
-            aria-label="Zone Community cinematic introduction"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-        </section>
-        <section className="px-6 pb-16">
-          <img className="w-full" src={`${ASSETS}5.2.webp`} alt="Zone Community shop interface" loading="lazy" />
-        </section>
-        <section className="px-6 py-20">
-          <h2 className="max-w-[14ch] text-[clamp(42px,10vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">Luxury Villas Need A Website Guests Trust.</h2>
-          <p className="mt-8 max-w-md" style={bodyStyle}>{challenge}</p>
-          <img className="mt-12 w-full" src={`${ASSETS}5.5.webp`} alt="Zone Community project details" loading="lazy" />
-        </section>
-        <section className="px-6 pb-20">
-          <img className="w-full" src={`${ASSETS}5.7.webp`} alt="Zone Community product design" loading="lazy" />
-          <h2 className="mt-16 text-[clamp(42px,10vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">Designed With Escape.</h2>
-          <p className="mt-8 max-w-md" style={bodyStyle}>{approach}</p>
-          <img className="mt-12 w-full" src={`${ASSETS}5.1.webp`} alt="Zone Community final website" loading="lazy" />
-        </section>
+      {/* MOBILE CASE — Figma 390 px reference, proportional up to 440 px (iPhone 17 Pro Max). */}
+      <div className="min-[900px]:hidden bg-canvas">
+        <div
+          className="relative mx-auto w-full overflow-hidden bg-canvas"
+          style={{ maxWidth: 440, height: 'calc(min(100vw, 440px) * 5.666666667)' }}
+        >
+          <div
+            className="absolute left-0 top-0 origin-top-left bg-canvas"
+            style={{ width: 390, height: 2210, transform: 'scale(calc(min(100vw, 440px) / 390px))' }}
+          >
+            {/* Figma chrome, positioned exactly for the mobile canvas. */}
+            <a href={`${import.meta.env.BASE_URL}`} className="absolute left-[20px] top-[40px] z-30 font-sans text-[22px] font-bold leading-[1.1] tracking-[-0.66px] text-accent" aria-label="M&T — Home">M&amp;T</a>
+            <button type="button" aria-expanded={mobileCaseMenuOpen} aria-controls="mobile-case-menu-4" onClick={() => setMobileCaseMenuOpen(!mobileCaseMenuOpen)} className="absolute right-[20px] top-[40px] z-40 cursor-pointer font-sans text-[22px] font-bold leading-[1.1] tracking-[-0.66px] text-accent">MENU</button>
+            {mobileCaseMenuOpen && (
+              <nav id="mobile-case-menu-4" aria-label="Mobile case navigation" className="absolute inset-0 z-30 flex flex-col gap-6 bg-canvas px-[20px] pt-[140px] font-sans text-[32px] font-medium text-accent">
+                <Link to="/" onClick={() => setMobileCaseMenuOpen(false)}>home</Link>
+                <Link to="/about" onClick={() => setMobileCaseMenuOpen(false)}>about us</Link>
+                <Link to="/portfolio" onClick={() => setMobileCaseMenuOpen(false)}>portfolio</Link>
+                <Link to="/contacts" onClick={() => setMobileCaseMenuOpen(false)}>contacts</Link>
+              </nav>
+            )}
+            <div className="absolute left-[20px] top-[124px] z-10 flex items-center gap-[28px] text-[18px] font-normal leading-[1.1] tracking-[-0.54px] text-accent opacity-70">
+              <Link to="/portfolio" className="flex items-center gap-[28px] border-b-[2px] border-accent pb-[5px]">next cases <span aria-hidden="true" className="text-[28px] leading-[18px]">→</span></Link>
+            </div>
+            <div className="absolute left-[20px] top-[174px] z-10 text-[18px] text-accent opacity-70"><Link to="/portfolio">last cases ←</Link></div>
+
+            {/* Intro video: Figma 350x220, no poster. */}
+            <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden bg-[#838383]">
+              <video src={ZONE_VIDEO} aria-label="Zone cinematic introduction" autoPlay muted loop playsInline preload="metadata" className="block h-full w-full object-cover" />
+            </div>
+            {/* First overlapping phone mockup: Figma 100x194. */}
+            <img src={`${ASSETS}4-1.webp`} alt="Zone mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain" />
+
+            {/* Original placeholder headings / descriptions from the design; editable later. */}
+            <div className="absolute top-[582px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
+              <span className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
+              <span className="absolute left-[167px] top-[27px] whitespace-nowrap">In The</span>
+              <span className="absolute left-[132px] top-[53px] whitespace-nowrap">Crowd.</span>
+            </div>
+            <p className="absolute left-[65px] top-[695px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink">{intro}</p>
+            <img src={`${ASSETS}4-2.webp`} alt="Zone mobile screen 2" loading="lazy" className="absolute left-[20px] top-[831px] h-[194px] w-[100px] object-contain" />
+            <img src={`${ASSETS}4-3.webp`} alt="Zone mobile screen 3" loading="lazy" className="absolute left-[270px] top-[831px] h-[194px] w-[100px] object-contain" />
+            <div className="absolute top-[1085px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
+              <span className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
+              <span className="absolute left-[167px] top-[27px] whitespace-nowrap">In The</span>
+              <span className="absolute left-[132px] top-[53px] whitespace-nowrap">Crowd.</span>
+            </div>
+            <p className="absolute left-[65px] top-[1198px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink">{challenge}</p>
+            <img src={`${ASSETS}4-4.webp`} alt="Zone mobile screen 4" loading="lazy" className="absolute left-[20px] top-[1334px] h-[194px] w-[100px] object-contain" />
+            <img src={`${ASSETS}4-5.webp`} alt="Zone mobile screen 5" loading="lazy" className="absolute left-[145px] top-[1334px] h-[194px] w-[100px] object-contain" />
+            <img src={`${ASSETS}4-6.webp`} alt="Zone mobile screen 6" loading="lazy" className="absolute left-[270px] top-[1334px] h-[194px] w-[100px] object-contain" />
+            <div className="absolute top-[1588px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
+              <span className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
+              <span className="absolute left-[167px] top-[27px] whitespace-nowrap">In The</span>
+              <span className="absolute left-[132px] top-[53px] whitespace-nowrap">Crowd.</span>
+            </div>
+            <p className="absolute left-[65px] top-[1701px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink">{approach}</p>
+
+            <div className="absolute left-[20px] top-[1857px] whitespace-nowrap font-sans text-[40px] font-medium leading-[0.82] tracking-[-1.2px] text-accent opacity-10">
+              <p>Nature first.</p><p>Conscious choice.</p>
+            </div>
+            <p className="absolute left-[20px] top-[1950px] w-[203px] font-sans text-[24px] font-medium italic leading-[0.95] tracking-[-0.72px] text-accent">Build A Brand That Drives Growth</p>
+            <div className="absolute left-[20px] top-[2039px] text-[18px] text-accent opacity-70"><Link to="/portfolio" className="border-b-[2px] border-accent pb-[5px]">next cases →</Link></div>
+            <p className="absolute left-1/2 top-[2167px] -translate-x-1/2 whitespace-nowrap font-sans text-[18px] font-medium lowercase leading-[1.1] tracking-[-0.54px] text-ink opacity-85">We listen. We think. We deliver.</p>
+          </div>
+        </div>
         <ZoneOutro />
       </div>
     </>
