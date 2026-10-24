@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const ASSETS = `${import.meta.env.BASE_URL}images/`
+const CAPONE_VIDEO = `${import.meta.env.BASE_URL}videos/Video%20Capone.mp4`
 const DESIGN_HEIGHT = 1002
 const STORY_WIDTH = 9597
 
@@ -145,8 +146,19 @@ function LastCase({ x, y }: { x: number; y: number }) {
 function DesktopWorld() {
   return (
     <div className="relative h-250.5 bg-canvas" style={{ width: STORY_WIDTH }}>
-      <ImageScene first="3.1.webp" name="Luxury Villas Bali homepage" x={1407} y={85} width={1278} height={832} />
-      <ImageScene first="3.2.webp" name="Luxury Villas Bali shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
+      <div data-bali-media className="absolute overflow-hidden" style={{ left: 1346, top: 107, width: 1400, height: 788, zIndex: 1 }}>
+        <video
+          src={CAPONE_VIDEO}
+          aria-label="Capone Agency cinematic introduction"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 block h-full w-full max-w-none object-cover"
+        />
+      </div>
+      <ImageScene first="3.1.webp" second="3.2.webp" name="Luxury Villas Bali shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
       <NextCases x={1058} y={138} />
       <LastCase x={40} y={138} />
 
@@ -493,7 +505,16 @@ export default function CaponeHorizontalStory({ chrome }: { chrome: ReactNode })
         <section className="px-6 pb-16 pt-32">
           <h1 className="max-w-[12ch] text-[clamp(42px,11vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">A More Luxurious Wey To Stay.</h1>
           <p className="mt-8 max-w-md" style={bodyStyle}>{intro}</p>
-          <img className="mt-10 w-full" src={`${ASSETS}3.1.webp`} alt="Luxury Villas Bali homepage" />
+          <video
+            className="mt-10 block aspect-video w-full object-cover"
+            src={CAPONE_VIDEO}
+            aria-label="Capone Agency cinematic introduction"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
         </section>
         <section className="px-6 pb-16">
           <img className="w-full" src={`${ASSETS}3.2.webp`} alt="Luxury Villas Bali shop interface" loading="lazy" />

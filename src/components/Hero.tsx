@@ -25,6 +25,12 @@ const INTRO = {
   footer: 0.35,
 }
 
+const socialLinks: Record<string, string> = {
+  telegram: 'https://t.me/mtwebdesignerstudio',
+  whatsapp: 'https://wa.me/4915569403496',
+  email: 'mailto:tmwebdesigneragency@gmail.com',
+}
+
 const footerPhrases = [
   'We listen.',
   'We think.',
@@ -705,10 +711,24 @@ export default function Hero() {
                 data-hero-social-mask
                 className="overflow-hidden"
               >
-                <TextSwapButton
-                  label={item}
-                  className="nav-link font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.6px] lowercase"
-                />
+                <a
+                  href={socialLinks[item]}
+                  target={item === 'email' ? undefined : '_blank'}
+                  rel={item === 'email' ? undefined : 'noopener noreferrer'}
+                  aria-label={item}
+                  className="group/swap nav-link relative inline-block cursor-pointer align-top font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.6px] lowercase"
+                >
+                  <span data-hero-link-reveal className="block">
+                    <span className="relative block overflow-hidden">
+                      <span aria-hidden="true" className="block transform-gpu text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full">
+                        {item}
+                      </span>
+                      <span aria-hidden="true" className="absolute inset-0 block translate-y-full transform-gpu text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0">
+                        {item}
+                      </span>
+                    </span>
+                  </span>
+                </a>
               </li>
             ))}
           </ul>

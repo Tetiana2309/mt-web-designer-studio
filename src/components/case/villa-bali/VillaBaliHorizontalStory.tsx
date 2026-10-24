@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const ASSETS = `${import.meta.env.BASE_URL}images/`
+const VIDEO = `${import.meta.env.BASE_URL}videos/Video VillaBali.mp4`
 const DESIGN_HEIGHT = 1002
 const STORY_WIDTH = 9597
 
@@ -32,7 +33,6 @@ const bodyStyle = {
 type ImageProps = {
   first: string
   second?: string
-  third?: string
   name: string
   x: number
   y: number
@@ -43,7 +43,7 @@ type ImageProps = {
   elevated?: boolean
 }
 
-function ImageScene({ first, second, third, name, x, y, width, height, layer = 1, direction = "up" }: ImageProps) {
+function ImageScene({ first, second, name, x, y, width, height, layer = 1, direction = "up" }: ImageProps) {
   return (
     <div
       data-bali-media
@@ -68,17 +68,28 @@ function ImageScene({ first, second, third, name, x, y, width, height, layer = 1
           style={{ willChange: "transform" }}
         />
       )}
-      {third && (
-        <img
-          data-bali-third
-          src={`${ASSETS}${third}`}
-          alt=""
-          aria-hidden="true"
-          draggable={false}
-          className="absolute inset-0 block h-full w-full max-w-none object-contain"
-          style={{ willChange: 'transform' }}
-        />
-      )}
+
+    </div>
+  )
+}
+
+function VideoScene({ x, y, width, height }: { x: number; y: number; width: number; height: number }) {
+  return (
+    <div
+      data-bali-media
+      className="absolute overflow-hidden"
+      style={{ left: x, top: y, width, height, zIndex: 1 }}
+    >
+      <video
+        src={VIDEO}
+        aria-label="Luxury Villas Bali cinematic introduction"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 block h-full w-full max-w-none object-cover"
+      />
     </div>
   )
 }
@@ -145,8 +156,8 @@ function LastCase({ x, y }: { x: number; y: number }) {
 function DesktopWorld() {
   return (
     <div className="relative h-250.5 bg-canvas" style={{ width: STORY_WIDTH }}>
-      <ImageScene first="2.1.webp" name="Luxury Villas Bali homepage" x={1407} y={85} width={1278} height={832} />
-      <ImageScene first="2.2.webp" second="2.3.webp" third="2.4.webp" name="Luxury Villas Bali shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
+      <VideoScene x={1346} y={107} width={1400} height={788} />
+      <ImageScene first="2.1.webp" second="2.2.webp" name="Luxury Villas Bali shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
       <NextCases x={1058} y={138} />
       <LastCase x={40} y={138} />
 
@@ -161,7 +172,7 @@ function DesktopWorld() {
       <Description x={4402} y={633} width={340}>{challenge}</Description>
 
       {/* The two replacements share the exact same scrubbed timeline. */}
-      <ImageScene first="2.5.webp" second="2.8.webp" name="Luxury Villas Bali products and mission" x={5168} y={199} width={1010} height={568} direction="right" />
+      <ImageScene first="2.3.webp" second="2.5.webp" name="Luxury Villas Bali products and mission" x={5168} y={199} width={1010} height={568} direction="right" />
       <ImageScene first="2.6.webp" second="2.7.webp" name="Luxury Villas Bali product details" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
 
       <Headline text="Ready" x={7595} y={315} />
@@ -241,7 +252,6 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
         const descriptions = gsap.utils.toArray<HTMLElement>(
           '[data-bali-copy]', world,
         )
-        const thirdFrames = gsap.utils.toArray<HTMLElement>('[data-bali-third]', world)
         const incoming = gsap.utils.toArray<HTMLElement>(
           '[data-bali-incoming]', world,
         )
@@ -254,7 +264,6 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
         gsap.set(titleLines, { opacity: 0, y: 16 })
         gsap.set(descriptionWords.flat(), { color: '#B5B5B5' })
 
-        gsap.set(thirdFrames, { yPercent: 100 })
         incoming.forEach((element) => {
           const direction = element.dataset.baliDirection
           gsap.set(element, {
@@ -346,11 +355,6 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
         const firstSwap = incoming.find((item) => item.dataset.baliDirection === 'up')
         if (firstSwap) {
           scene.to(firstSwap, { yPercent: 0, duration: 1.6, ease: 'power2.inOut' }, 4.1)
-        }
-
-        // The same frame changes 2.2 -> 2.3 -> 2.4 in sequence.
-        if (thirdFrames.length) {
-          scene.to(thirdFrames, { yPercent: 0, duration: 1.25, ease: 'power2.inOut' }, 5.8)
         }
 
         // Start the heading reveal as the composition enters the viewport,
@@ -493,15 +497,15 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
         <section className="px-6 pb-16 pt-32">
           <h1 className="max-w-[12ch] text-[clamp(42px,11vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">A More Luxurious Wey To Stay.</h1>
           <p className="mt-8 max-w-md" style={bodyStyle}>{intro}</p>
-          <img className="mt-10 w-full" src={`${ASSETS}2.1.webp`} alt="Luxury Villas Bali homepage" />
+          <video className="mt-10 block aspect-video w-full object-cover" src={VIDEO} autoPlay muted loop playsInline preload="metadata" aria-label="Luxury Villas Bali cinematic introduction" />
         </section>
         <section className="px-6 pb-16">
-          <img className="w-full" src={`${ASSETS}2.4.webp`} alt="Luxury Villas Bali shop interface" loading="lazy" />
+          <img className="w-full" src={`${ASSETS}2.2.webp`} alt="Luxury Villas Bali shop interface" loading="lazy" />
         </section>
         <section className="px-6 py-20">
           <h2 className="max-w-[14ch] text-[clamp(42px,10vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">Luxury Villas Need A Website Guests Trust.</h2>
           <p className="mt-8 max-w-md" style={bodyStyle}>{challenge}</p>
-          <img className="mt-12 w-full" src={`${ASSETS}2.8.webp`} alt="Luxury Villas Bali project details" loading="lazy" />
+          <img className="mt-12 w-full" src={`${ASSETS}2.5.webp`} alt="Luxury Villas Bali project details" loading="lazy" />
         </section>
         <section className="px-6 pb-20">
           <img className="w-full" src={`${ASSETS}2.7.webp`} alt="Luxury Villas Bali product design" loading="lazy" />

@@ -612,19 +612,19 @@ export default function AboutUs() {
           <Photo
             src={foto1}
             gradient={gradient1}
-            className="absolute top-[calc(271*var(--u))] left-[clamp(24px,2.0833vw,40px)] h-[calc(532*var(--u))] w-[calc(473*var(--u))]"
+            className="absolute top-[calc(301*var(--u))] left-[clamp(24px,2.0833vw,40px)] h-[calc(532*var(--u))] w-[calc(473*var(--u))]"
           />
 
           <Photo
             src={foto2}
             gradient={gradient2}
-            className="absolute top-[calc(271*var(--u))] left-[calc(clamp(24px,2.0833vw,40px)+481*var(--u))] h-[calc(532*var(--u))] w-[calc(473*var(--u))]"
+            className="absolute top-[calc(301*var(--u))] left-[calc(clamp(24px,2.0833vw,40px)+481*var(--u))] h-[calc(532*var(--u))] w-[calc(473*var(--u))]"
           />
 
           <h1
             data-about-title-mask
             style={{ right: margin }}
-            className="absolute top-[calc(158*var(--u))] text-[calc(66*var(--u))] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent"
+            className="absolute top-[calc(158*var(--u))] text-[calc(100*var(--u))] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-accent"
           >
             <span
               data-about-title-inner
@@ -637,7 +637,7 @@ export default function AboutUs() {
           <p
             data-about-description
             style={{ right: margin }}
-            className={`${desktopDescription} top-[calc(271*var(--u))]`}
+            className={`${desktopDescription} top-[calc(301*var(--u))]`}
           >
             <DescriptionOne />
           </p>
@@ -645,7 +645,7 @@ export default function AboutUs() {
           <p
             data-about-description
             style={{ right: margin }}
-            className={`${desktopDescription} top-[calc(357*var(--u))]`}
+            className={`${desktopDescription} top-[calc(387*var(--u))]`}
           >
             <DescriptionTwo />
           </p>

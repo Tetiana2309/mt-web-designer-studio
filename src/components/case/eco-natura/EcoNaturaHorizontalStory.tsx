@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const ASSETS = `${import.meta.env.BASE_URL}images/`
+const ECO_VIDEO = `${import.meta.env.BASE_URL}videos/Video%20EcoNature.mp4`
 const DESIGN_HEIGHT = 1002
 const STORY_WIDTH = 9597
 
@@ -70,6 +71,27 @@ function ImageScene({ first, second, name, x, y, width, height, layer = 1, direc
   )
 }
 
+function VideoScene({ x, y, width, height }: { x: number; y: number; width: number; height: number }) {
+  return (
+    <div
+      data-eco-media
+      className="absolute overflow-hidden"
+      style={{ left: x, top: y, width, height, zIndex: 1, boxShadow: '0 12px 35px rgba(23, 43, 54, 0.045), 0 30px 80px rgba(23, 43, 54, 0.035)' }}
+    >
+      <video
+        src={ECO_VIDEO}
+        aria-label="Eco Natura homepage video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 block h-full w-full object-cover"
+      />
+    </div>
+  )
+}
+
 function Headline({
   text,
   x,
@@ -124,8 +146,8 @@ function NextCases({ x, y }: { x: number; y: number }) {
 function DesktopWorld() {
   return (
     <div className="relative h-250.5 bg-canvas" style={{ width: STORY_WIDTH }}>
-      <ImageScene first="1.1.webp" name="Eco Natura homepage" x={1484} y={85} width={1278} height={832} />
-      <ImageScene first="1.2.webp" second="1.3.webp" name="Eco Natura shop interface" x={2562} y={221} width={908} height={560} layer={2} elevated />
+      <VideoScene x={1423} y={107} width={1400} height={788} />
+      <ImageScene first="1.1.webp" second="1.2.webp" name="Eco Natura shop interface" x={2562} y={221} width={908} height={560} layer={2} elevated />
       <NextCases x={1058} y={138} />
 
       <Headline text="Lost" x={360} y={315} initial />
@@ -139,7 +161,7 @@ function DesktopWorld() {
       <Description x={4400} y={633} width={340}>{challenge}</Description>
 
       {/* The two replacements share the exact same scrubbed timeline. */}
-      <ImageScene first="1.4.webp" second="1.5.webp" name="Eco Natura products and mission" x={5219} y={210} width={909} height={545} direction="right" />
+      <ImageScene first="1.3.webp" second="1.4.webp" name="Eco Natura products and mission" x={5219} y={210} width={909} height={545} direction="right" />
       <ImageScene first="1.6.webp" second="1.7.webp" name="Eco Natura product details" x={6322} y={367} width={779} height={479} layer={2} direction="left" />
 
       <Headline text="Made" x={7574} y={315} />
@@ -464,15 +486,15 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
         <section className="px-6 pb-16 pt-32">
           <h1 className="max-w-[12ch] text-[clamp(42px,11vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">A More Conscious Way To Shop.</h1>
           <p className="mt-8 max-w-md" style={bodyStyle}>{intro}</p>
-          <img className="mt-10 w-full" src={`${ASSETS}1.1.webp`} alt="Eco Natura homepage" />
+          <video className="mt-10 block aspect-video w-full object-cover" src={ECO_VIDEO} aria-label="Eco Natura homepage video" autoPlay muted loop playsInline preload="metadata" />
         </section>
         <section className="px-6 pb-16">
-          <img className="w-full" src={`${ASSETS}1.3.webp`} alt="Eco Natura shop interface" loading="lazy" />
+          <img className="w-full" src={`${ASSETS}1.2.webp`} alt="Eco Natura shop interface" loading="lazy" />
         </section>
         <section className="px-6 py-20">
           <h2 className="max-w-[14ch] text-[clamp(42px,10vw,76px)] font-medium not-italic leading-[0.95] tracking-[-0.03em] text-accent">Eco Products Need A Store People Trust.</h2>
           <p className="mt-8 max-w-md" style={bodyStyle}>{challenge}</p>
-          <img className="mt-12 w-full" src={`${ASSETS}1.5.webp`} alt="Eco Natura project details" loading="lazy" />
+          <img className="mt-12 w-full" src={`${ASSETS}1.4.webp`} alt="Eco Natura project details" loading="lazy" />
         </section>
         <section className="px-6 pb-20">
           <img className="w-full" src={`${ASSETS}1.7.webp`} alt="Eco Natura product design" loading="lazy" />
