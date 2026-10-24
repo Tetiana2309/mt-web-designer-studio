@@ -1,4 +1,5 @@
-import { HashRouter, Navigate, Route, Routes } from 'react-router'
+import { useLayoutEffect } from 'react'
+import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
 
 import AboutUs from './components/AboutUs'
 import AboutUsTwo from './components/AboutUsTwo'
@@ -12,6 +13,20 @@ import NavigationBridge from './components/NavigationBridge'
 import Portfolio from './components/Portfolio'
 import ContactsPage from './ContactsPage'
 import Preloader from './components/Preloader'
+
+// ==========================================
+// SCROLL TO TOP ON PAGE CHANGE
+// ==========================================
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
 
 // ==========================================
 // PRELOADER
@@ -28,6 +43,7 @@ import Preloader from './components/Preloader'
 export default function App() {
   return (
     <HashRouter>
+      <ScrollToTop />
       <NavigationBridge />
 
       <Preloader />

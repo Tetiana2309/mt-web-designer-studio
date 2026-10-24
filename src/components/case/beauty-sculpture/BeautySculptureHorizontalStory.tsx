@@ -1,7 +1,6 @@
-import { Link } from 'react-router'
 import BeautySculptureOutro from './BeautySculptureOutro'
 import BeautySculptureLastCasesButton from './BeautySculptureLastCasesButton'
-import { Fragment, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useLayoutEffect, useRef, type ReactNode } from 'react'
 import gsap from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -196,9 +195,23 @@ function DesktopWorld() {
 }
 
 
+// Mobile-only copy: keep the same text while allowing a word-by-word color reveal.
+function MobileWords({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(' ').map((word, index) => (
+        <Fragment key={`${index}-${word}`}>
+          {index > 0 ? ' ' : null}
+          <span data-mobile-copy-word>{word}</span>
+        </Fragment>
+      ))}
+    </>
+  )
+}
+
 export default function BeautySculptureHorizontalStory({ chrome }: { chrome: ReactNode }) {
-  const [mobileCaseMenuOpen, setMobileCaseMenuOpen] = useState(false)
   const storyRef = useRef<HTMLDivElement>(null)
+  const mobileRef = useRef<HTMLDivElement>(null)
   const worldRef = useRef<HTMLDivElement>(null)
   const cameraRef = useRef<HTMLDivElement>(null)
   const outroOverlayRef = useRef<HTMLDivElement>(null)
@@ -489,6 +502,62 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
     }
   }, [])
 
+  // Mobile: the same staggered line reveal and word painting as desktop,
+  // triggered by vertical scrolling. Does not affect desktop/Lenis/Outro.
+  useLayoutEffect(() => {
+    const root = mobileRef.current
+    if (!root) return
+
+    const mm = gsap.matchMedia()
+    mm.add('(max-width: 899px) and (prefers-reduced-motion: no-preference)', () => {
+      const ctx = gsap.context(() => {
+        const groups = gsap.utils.toArray<HTMLElement>('[data-mobile-title-block]', root)
+        const copies = gsap.utils.toArray<HTMLElement>('[data-mobile-copy]', root)
+
+        groups.forEach((group, groupIndex) => {
+          const lines = gsap.utils.toArray<HTMLElement>('[data-mobile-title-line]', group)
+          const words = copies[groupIndex]
+            ? gsap.utils.toArray<HTMLElement>('[data-mobile-copy-word]', copies[groupIndex])
+            : []
+
+          // Match desktop: lines rise 16px; words paint gray to ink.
+          gsap.set(lines, { opacity: 0, y: 16 })
+          gsap.set(words, { color: '#B5B5B5' })
+
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: group,
+              start: 'top 82%',
+              toggleActions: 'play none none none',
+              once: true,
+              invalidateOnRefresh: true,
+            },
+          })
+
+          lines.forEach((line, index) => {
+            timeline.to(line, {
+              opacity: 1,
+              y: 0,
+              duration: 0.82,
+              ease: 'power2.out',
+            }, index * 0.16)
+          })
+
+          if (words.length) {
+            timeline.to(words, {
+              color: '#3C3A36',
+              duration: 0.25,
+              stagger: { amount: 0.92, from: 'start' },
+              ease: 'power1.out',
+            }, 0.48)
+          }
+        })
+      }, root)
+      return () => ctx.revert()
+    })
+    return () => mm.revert()
+  }, [])
+
   return (
     <>
       <div className="relative hidden min-[900px]:block" aria-label="BeautySculpture Community project story">
@@ -513,7 +582,7 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
       </div>
 
       {/* MOBILE CASE — Figma 390 px reference, proportional up to 440 px (iPhone 17 Pro Max). */}
-      <div className="min-[900px]:hidden bg-canvas">
+      <div ref={mobileRef} className="min-[900px]:hidden bg-canvas">
         <div
           className="relative mx-auto w-full overflow-hidden bg-canvas"
           style={{ maxWidth: 440, height: 'calc(min(100vw, 440px) * 5.666666667)' }}
@@ -522,63 +591,53 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
             className="absolute left-0 top-0 origin-top-left bg-canvas"
             style={{ width: 390, height: 2210, transform: 'scale(calc(min(100vw, 440px) / 390px))' }}
           >
-            {/* Figma chrome, positioned exactly for the mobile canvas. */}
-            <a href={`${import.meta.env.BASE_URL}`} className="absolute left-[20px] top-[40px] z-30 font-sans text-[22px] font-bold leading-[1.1] tracking-[-0.66px] text-accent" aria-label="M&T — Home">M&amp;T</a>
-            <button type="button" aria-expanded={mobileCaseMenuOpen} aria-controls="mobile-case-menu-5" onClick={() => setMobileCaseMenuOpen(!mobileCaseMenuOpen)} className="absolute right-[20px] top-[40px] z-40 cursor-pointer font-sans text-[22px] font-bold leading-[1.1] tracking-[-0.66px] text-accent">MENU</button>
-            {mobileCaseMenuOpen && (
-              <nav id="mobile-case-menu-5" aria-label="Mobile case navigation" className="absolute inset-0 z-30 flex flex-col gap-6 bg-canvas px-[20px] pt-[140px] font-sans text-[32px] font-medium text-accent">
-                <Link to="/" onClick={() => setMobileCaseMenuOpen(false)}>home</Link>
-                <Link to="/about" onClick={() => setMobileCaseMenuOpen(false)}>about us</Link>
-                <Link to="/portfolio" onClick={() => setMobileCaseMenuOpen(false)}>portfolio</Link>
-                <Link to="/contacts" onClick={() => setMobileCaseMenuOpen(false)}>contacts</Link>
-              </nav>
-            )}
-            <div className="absolute left-[20px] top-[124px] z-10 flex items-center gap-[28px] text-[18px] font-normal leading-[1.1] tracking-[-0.54px] text-accent opacity-70">
-              <Link to="/portfolio" className="flex items-center gap-[28px] border-b-[2px] border-accent pb-[5px]">last cases <span aria-hidden="true" className="text-[28px] leading-[18px]">←</span></Link>
+            {/* Existing case-navigation components, scaled to the 390px Figma mobile layout. */}
+            <div className="absolute left-[20px] top-[124px] z-10 h-[40px] w-[146px]">
+              <div className="origin-top-left scale-[0.8]"><BeautySculptureLastCasesButton /></div>
             </div>
-            
 
             {/* Intro video: Figma 350x220, no poster. */}
-            <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden bg-[#838383]">
-              <video src={BEAUTY_VIDEO} aria-label="Beauty Sculpture cinematic introduction" autoPlay muted loop playsInline preload="metadata" className="block h-full w-full object-cover" />
+            <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden">
+              <video src={BEAUTY_VIDEO} aria-label="Beauty Sculpture cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
             <img src={`${ASSETS}5-1.webp`} alt="Beauty Sculpture mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain" />
 
             {/* Original placeholder headings / descriptions from the design; editable later. */}
-            <div className="absolute top-[582px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
-              <span className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
-              <span className="absolute left-[167px] top-[27px] whitespace-nowrap">In The</span>
-              <span className="absolute left-[132px] top-[53px] whitespace-nowrap">Crowd.</span>
+            <div data-mobile-title-block className="absolute top-[582px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
+              <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Care</span>
+              <span data-mobile-title-line className="absolute left-[167px] top-[34px] whitespace-nowrap">Out Of</span>
+              <span data-mobile-title-line className="absolute left-[132px] top-[66px] whitespace-nowrap">Focus.</span>
             </div>
-            <p className="absolute left-[65px] top-[695px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink">{intro}</p>
+            <p data-mobile-copy className="absolute left-[65px] top-[695px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={intro} /></p>
             <img src={`${ASSETS}5-2.webp`} alt="Beauty Sculpture mobile screen 2" loading="lazy" className="absolute left-[20px] top-[831px] h-[194px] w-[100px] object-contain" />
             <img src={`${ASSETS}5-3.webp`} alt="Beauty Sculpture mobile screen 3" loading="lazy" className="absolute left-[270px] top-[831px] h-[194px] w-[100px] object-contain" />
-            <div className="absolute top-[1085px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
-              <span className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
-              <span className="absolute left-[167px] top-[27px] whitespace-nowrap">In The</span>
-              <span className="absolute left-[132px] top-[53px] whitespace-nowrap">Crowd.</span>
+            <div data-mobile-title-block className="absolute top-[1085px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
+              <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Beauty</span>
+              <span data-mobile-title-line className="absolute left-[167px] top-[34px] whitespace-nowrap">With</span>
+              <span data-mobile-title-line className="absolute left-[132px] top-[66px] whitespace-nowrap">Clarity.</span>
             </div>
-            <p className="absolute left-[65px] top-[1198px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink">{challenge}</p>
+            <p data-mobile-copy className="absolute left-[65px] top-[1198px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={challenge} /></p>
             <img src={`${ASSETS}5-4.webp`} alt="Beauty Sculpture mobile screen 4" loading="lazy" className="absolute left-[20px] top-[1334px] h-[194px] w-[100px] object-contain" />
             <img src={`${ASSETS}5-5.webp`} alt="Beauty Sculpture mobile screen 5" loading="lazy" className="absolute left-[145px] top-[1334px] h-[194px] w-[100px] object-contain" />
             <img src={`${ASSETS}5-6.webp`} alt="Beauty Sculpture mobile screen 6" loading="lazy" className="absolute left-[270px] top-[1334px] h-[194px] w-[100px] object-contain" />
-            <div className="absolute top-[1588px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
-              <span className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
-              <span className="absolute left-[167px] top-[27px] whitespace-nowrap">In The</span>
-              <span className="absolute left-[132px] top-[53px] whitespace-nowrap">Crowd.</span>
+            <div data-mobile-title-block className="absolute top-[1588px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
+              <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Made</span>
+              <span data-mobile-title-line className="absolute left-[167px] top-[34px] whitespace-nowrap">To Earn</span>
+              <span data-mobile-title-line className="absolute left-[132px] top-[66px] whitespace-nowrap">Trust.</span>
             </div>
-            <p className="absolute left-[65px] top-[1701px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink">{approach}</p>
+            <p data-mobile-copy className="absolute left-[65px] top-[1701px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={approach} /></p>
 
             <div className="absolute left-[20px] top-[1857px] whitespace-nowrap font-sans text-[40px] font-medium leading-[0.82] tracking-[-1.2px] text-accent opacity-10">
-              <p>Nature first.</p><p>Conscious choice.</p>
+              <p>Feel Confident.</p><p>Look Exceptional.</p>
             </div>
             <p className="absolute left-[20px] top-[1950px] w-[203px] font-sans text-[24px] font-medium italic leading-[0.95] tracking-[-0.72px] text-accent">Build A Brand That Drives Growth</p>
-            <div className="absolute left-[20px] top-[2039px] text-[18px] text-accent opacity-70"><Link to="/portfolio" className="border-b-[2px] border-accent pb-[5px]">last cases ←</Link></div>
-            <p className="absolute left-1/2 top-[2167px] -translate-x-1/2 whitespace-nowrap font-sans text-[18px] font-medium lowercase leading-[1.1] tracking-[-0.54px] text-ink opacity-85">We listen. We think. We deliver.</p>
+            {/* Existing case-navigation components, scaled to the 390px Figma mobile layout. */}
+            <div className="absolute left-[20px] top-[2039px] z-10 h-[40px] w-[146px]">
+              <div className="origin-top-left scale-[0.8]"><BeautySculptureLastCasesButton /></div>
+            </div>
           </div>
         </div>
-        <BeautySculptureOutro />
       </div>
     </>
   )
