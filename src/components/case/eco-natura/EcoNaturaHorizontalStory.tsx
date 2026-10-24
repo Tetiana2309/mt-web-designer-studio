@@ -238,11 +238,10 @@ function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
       transformOrigin: 'top left',
       force3D: true,
     })
-    gsap.set(shade.current, { opacity: 0 })
+    // Keep the backdrop opaque throughout the transition so no other mobile screens bleed through.
     gsap.set(cross.current, { opacity: 0 })
     selected.style.opacity = '0'
     anim.current = gsap.timeline()
-      .to(shade.current, { opacity: 1, duration: reduce ? 0 : 0.65, ease: 'power2.out' }, 0)
       .to(picture.current, {
         x: 0, y: 0, scaleX: 1, scaleY: 1,
         duration: reduce ? 0 : 0.8, ease: 'power3.inOut',
@@ -281,7 +280,6 @@ function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
         scaleY: dest.height / picture.current.offsetHeight,
         duration: reduce ? 0 : 0.75, ease: 'power3.inOut',
       }, 0)
-      .to(shade.current, { opacity: 0, duration: reduce ? 0 : 0.7, ease: 'power2.inOut' }, 0)
   }
 
   return selected ? createPortal(
