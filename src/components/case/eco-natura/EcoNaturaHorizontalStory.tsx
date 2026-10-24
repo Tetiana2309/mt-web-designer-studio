@@ -1,7 +1,8 @@
 import EcoNaturaOutro from './EcoNaturaOutro'
 import CtaButton from '../../../components/CtaButton'
 import NextCasesButton from './EcoNaturaNextCasesButton'
-import { Fragment, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { Fragment, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -187,6 +188,76 @@ function MobileWords({ text }: { text: string }) {
       ))}
     </>
   )
+}
+
+
+function EcoZoom({ rootRef }: { rootRef: React.RefObject<HTMLDivElement | null> }) {
+  const [selected, setSelected] = useState<HTMLImageElement | null>(null)
+  const shade = useRef<HTMLDivElement>(null)
+  const picture = useRef<HTMLImageElement>(null)
+  const cross = useRef<HTMLButtonElement>(null)
+  const anim = useRef<gsap.core.Timeline | null>(null)
+  const closing = useRef(false)
+
+  useLayoutEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const handler = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return
+      const image = event.target.closest<HTMLImageElement>('img[data-eco-zoom]')
+      if (image) setSelected(image)
+    }
+    root.addEventListener('click', handler)
+    return () => root.removeEventListener('click', handler)
+  }, [rootRef])
+
+  useLayoutEffect(() => {
+    if (!selected || !shade.current || !picture.current || !cross.current) return
+    closing.current = false
+    const overflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    const from = selected.getBoundingClientRect()
+    const w = Math.min(window.innerWidth - 36, 520)
+    const h = Math.min(window.innerHeight - 120, 1000)
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    gsap.set(shade.current, { opacity: 0 })
+    gsap.set(cross.current, { opacity: 0 })
+    gsap.set(picture.current, { position: 'fixed', left: from.left, top: from.top, width: from.width, height: from.height })
+    anim.current = gsap.timeline()
+      .to(shade.current, { opacity: 1, duration: reduce ? 0 : 0.45 }, 0)
+      .to(picture.current, { left: (window.innerWidth - w) / 2, top: (window.innerHeight - h) / 2, width: w, height: h, duration: reduce ? 0 : 0.65, ease: 'power3.inOut' }, 0)
+      .to(cross.current, { opacity: 1, duration: reduce ? 0 : 0.25 }, reduce ? 0 : 0.35)
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') cross.current?.click() }
+    document.addEventListener('keydown', escape)
+    return () => {
+      anim.current?.kill()
+      document.removeEventListener('keydown', escape)
+      document.documentElement.style.overflow = overflow
+    }
+  }, [selected])
+
+  const close = () => {
+    if (!selected || closing.current) return
+    closing.current = true
+    anim.current?.kill()
+    if (!shade.current || !picture.current || !cross.current) return setSelected(null)
+    const to = selected.getBoundingClientRect()
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    anim.current = gsap.timeline({ onComplete: () => setSelected(null) })
+      .to(cross.current, { opacity: 0, duration: reduce ? 0 : 0.15 }, 0)
+      .to(picture.current, { left: to.left, top: to.top, width: to.width, height: to.height, duration: reduce ? 0 : 0.6, ease: 'power3.inOut' }, 0)
+      .to(shade.current, { opacity: 0, duration: reduce ? 0 : 0.5 }, 0)
+  }
+
+  return selected ? createPortal(
+    <div className="fixed inset-0 z-[9999]" role="dialog" aria-modal="true" aria-label="Enlarged Eco Natura image">
+      <div ref={shade} className="absolute inset-0 bg-[#C7C7C7]/95" onClick={close} />
+      <img ref={picture} src={selected.currentSrc || selected.src} alt={selected.alt} draggable={false} className="pointer-events-none fixed max-w-none object-contain" />
+      <button ref={cross} type="button" aria-label="Close image" onClick={close} className="absolute right-[max(16px,env(safe-area-inset-right))] top-[max(20px,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center text-[#3A5F73]">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+      </button>
+    </div>, document.body
+  ) : null
 }
 
 export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode }) {
@@ -501,6 +572,14 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
         const groups = gsap.utils.toArray<HTMLElement>('[data-mobile-title-block]', root)
         const copies = gsap.utils.toArray<HTMLElement>('[data-mobile-copy]', root)
 
+        const hint = root.querySelector<HTMLElement>('[data-eco-tap-hint]')
+        const firstScreen = root.querySelector<HTMLElement>('img[data-eco-zoom]')
+        if (hint && firstScreen) {
+          gsap.timeline({ scrollTrigger: { trigger: firstScreen, start: 'top 82%', once: true } })
+            .fromTo(hint, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' })
+            .to(hint, { opacity: 0, duration: 0.5, delay: 3 })
+        }
+
         groups.forEach((group, groupIndex) => {
           const lines = gsap.utils.toArray<HTMLElement>('[data-mobile-title-line]', group)
           const words = copies[groupIndex]
@@ -594,8 +673,9 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
               <video src={ECO_VIDEO} aria-label="Eco Natura cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
-            <img src={`${ASSETS}1-1.webp`} alt="Eco Natura mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain" />
+            <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-1.webp`} alt="Eco Natura mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
 
+            <span data-eco-tap-hint className="pointer-events-none absolute left-[205px] top-[538px] w-[150px] text-center font-sans text-[16px] font-medium not-italic leading-[1.1] tracking-[-0.48px] text-[#3A5F73] lowercase opacity-0">tap to view</span>
             {/* Original placeholder headings / descriptions from the design; editable later. */}
             <div data-mobile-title-block className="absolute top-[582px] left-0 w-full font-sans text-[40px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
               <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Lost</span>
@@ -603,17 +683,17 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
               <span data-mobile-title-line className="absolute left-[132px] top-[66px] whitespace-nowrap">Crowd.</span>
             </div>
             <p data-mobile-copy className="absolute left-[65px] top-[695px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={intro} /></p>
-            <img src={`${ASSETS}1-2.webp`} alt="Eco Natura mobile screen 2" loading="lazy" className="absolute left-[20px] top-[831px] h-[194px] w-[100px] object-contain" />
-            <img src={`${ASSETS}1-3.webp`} alt="Eco Natura mobile screen 3" loading="lazy" className="absolute left-[270px] top-[831px] h-[194px] w-[100px] object-contain" />
+            <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-2.webp`} alt="Eco Natura mobile screen 2" loading="lazy" className="absolute left-[20px] top-[831px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-3.webp`} alt="Eco Natura mobile screen 3" loading="lazy" className="absolute left-[270px] top-[831px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
             <div data-mobile-title-block className="absolute top-[1085px] left-0 w-full font-sans text-[40px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
               <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Fresh</span>
               <span data-mobile-title-line className="absolute left-[167px] top-[34px] whitespace-nowrap">By</span>
               <span data-mobile-title-line className="absolute left-[132px] top-[66px] whitespace-nowrap">Nature.</span>
             </div>
             <p data-mobile-copy className="absolute left-[65px] top-[1198px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={challenge} /></p>
-            <img src={`${ASSETS}1-4.webp`} alt="Eco Natura mobile screen 4" loading="lazy" className="absolute left-[20px] top-[1334px] h-[194px] w-[100px] object-contain" />
-            <img src={`${ASSETS}1-5.webp`} alt="Eco Natura mobile screen 5" loading="lazy" className="absolute left-[145px] top-[1334px] h-[194px] w-[100px] object-contain" />
-            <img src={`${ASSETS}1-6.webp`} alt="Eco Natura mobile screen 6" loading="lazy" className="absolute left-[270px] top-[1334px] h-[194px] w-[100px] object-contain" />
+            <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-4.webp`} alt="Eco Natura mobile screen 4" loading="lazy" className="absolute left-[20px] top-[1334px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-5.webp`} alt="Eco Natura mobile screen 5" loading="lazy" className="absolute left-[145px] top-[1334px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-6.webp`} alt="Eco Natura mobile screen 6" loading="lazy" className="absolute left-[270px] top-[1334px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
             <div data-mobile-title-block className="absolute top-[1588px] left-0 w-full font-sans text-[40px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
               <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Made</span>
               <span data-mobile-title-line className="absolute left-[167px] top-[34px] whitespace-nowrap">To Earn</span>
@@ -636,6 +716,7 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
           </div>
         </div>
       </div>
+      <EcoZoom rootRef={mobileRef} />
     </>
   )
 }
