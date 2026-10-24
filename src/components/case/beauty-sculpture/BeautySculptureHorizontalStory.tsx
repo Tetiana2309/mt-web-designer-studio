@@ -658,7 +658,7 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
               <CtaButton />
             </div>
             {/* Existing case-navigation components, scaled to the 390px Figma mobile layout. */}
-            <div className="absolute left-[20px] top-[2250px] z-10 h-[40px] w-[146px]">
+            <div className="absolute left-[20px] top-[2250px] z-10 h-[40px] w-[146px]" onClickCapture={() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })}>
               <div className="origin-top-left scale-[0.8]"><BeautySculptureLastCasesButton /></div>
             </div>
           </div>
