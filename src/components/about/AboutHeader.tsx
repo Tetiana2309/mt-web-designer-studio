@@ -13,7 +13,7 @@ interface AboutHeaderProps {
 // desktop (logo, navigation, CTA) from 1280px.
 export default function AboutHeader({ menuOpen, menuButtonRef, onOpenMenu }: AboutHeaderProps) {
   return (
-    <header className="absolute top-[max(2.5rem,calc(env(safe-area-inset-top)+0.75rem))] right-[max(1.25rem,env(safe-area-inset-right))] left-[max(1.25rem,env(safe-area-inset-left))] flex items-start justify-between min-[1280px]:top-[clamp(14px,1.0417vw,20px)] min-[1280px]:right-[clamp(24px,2.0833vw,40px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-9.5">
+    <header className="absolute top-[40px] right-[max(1.25rem,env(safe-area-inset-right))] left-[max(1.25rem,env(safe-area-inset-left))] flex items-start justify-between min-[1280px]:top-[20px] min-[1280px]:right-[clamp(24px,2.0833vw,40px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-9.5">
       {/* LOGO */}
       <div className="overflow-hidden">
         <button
