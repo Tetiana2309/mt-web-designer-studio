@@ -598,7 +598,6 @@ export default function AboutUs() {
     <section
       ref={rootRef}
       style={stageStyle}
-      data-iphone-footer-page
       className="relative min-h-dvh overflow-x-clip bg-canvas font-sans text-ink max-[767px]:pb-[calc(max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))+calc(90*var(--v)))] min-[768px]:max-[1279px]:min-h-[calc(804*var(--t))]"
     >
       <div inert={menuOpen}>
