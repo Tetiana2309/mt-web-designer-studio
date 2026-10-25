@@ -51,7 +51,7 @@ function ContactsBackgroundLogo() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-[588px] z-0 overflow-hidden leading-none"
+      className="pointer-events-none absolute inset-x-0 top-[588px] z-0 hidden overflow-hidden leading-none min-[768px]:block"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -486,6 +486,17 @@ export default function ContactsPage() {
       `}</style>
 
       <ContactsBackgroundLogo />
+
+      {/* Mobile Figma composition: oversized M, ampersand, and T stack
+          behind the form, not a 1920px-wide horizontal logo shrunk down. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-[390px] z-0 flex flex-col items-center overflow-hidden text-accent/6 min-[768px]:hidden"
+      >
+        <span className="block h-[305px] text-[400px] leading-[0.8] font-bold tracking-[-0.12em]">M</span>
+        <span className="block h-[315px] text-[400px] leading-[0.8] font-bold tracking-[-0.12em]">&amp;</span>
+        <span className="block h-[350px] text-[420px] leading-[0.8] font-bold tracking-[-0.12em]">T</span>
+      </div>
 
       {/* ====================================
           CONTACT FORM
