@@ -27,7 +27,7 @@ const TABLET_BREAKPOINT = 600
 
 // Experiment only: Safari on iPhone gets taller animated stripes.
 // Browser chrome remains controlled by Safari, not by this element.
-const SAFARI_STRIPE_HEIGHT = 1000
+const SAFARI_STRIPE_HEIGHT = 1080
 
 function isIPhoneSafari(): boolean {
   if (typeof navigator === 'undefined') return false
