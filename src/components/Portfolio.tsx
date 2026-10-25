@@ -284,7 +284,7 @@ export default function Portfolio() {
         {/* Hint stays stationary, outside the rotating carousel. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute top-[76%] right-0 left-0 z-10 text-center min-[768px]:top-[78%] min-[1280px]:top-[81%]"
+          className="pointer-events-none absolute top-[79%] right-0 left-0 z-10 text-center min-[768px]:top-[81%] min-[1280px]:top-[85%]"
         >
           <span className="font-sans text-[16px] leading-[1.1] font-medium tracking-[-0.03em] text-accent lowercase">
             <span className="min-[1280px]:hidden">tap to explore</span>
