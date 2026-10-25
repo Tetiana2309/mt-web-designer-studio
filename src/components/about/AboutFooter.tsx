@@ -12,7 +12,7 @@ const footerPhrases = ['We listen.', 'We think.', 'We deliver.']
 // copyright, slogan and social links from 1280px.
 export default function AboutFooter() {
   return (
-    <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink lowercase min-[1280px]:right-[max(24px,2.0833vw)] min-[1280px]:bottom-[clamp(14px,1.0417vw,20px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
+    <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[40px] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink lowercase min-[1280px]:right-[max(24px,2.0833vw)] min-[1280px]:bottom-[20px] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
       {/* COPYRIGHT */}
       <div className="hidden overflow-hidden min-[1280px]:block">
         <p data-hero-copyright>© 2026 All rights reserved.</p>
