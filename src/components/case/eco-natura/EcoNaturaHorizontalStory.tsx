@@ -244,9 +244,9 @@ function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
     anim.current = gsap.timeline()
       .to(picture.current, {
         x: 0, y: 0, scaleX: 1, scaleY: 1,
-        duration: reduce ? 0 : 0.8, ease: 'power3.inOut',
+        duration: reduce ? 0 : 1.0, ease: 'power3.out',
       }, 0)
-      .to(cross.current, { opacity: 1, duration: reduce ? 0 : 0.3 }, reduce ? 0 : 0.42)
+      .to(cross.current, { opacity: 1, duration: reduce ? 0 : 0.38, ease: 'power2.out' }, reduce ? 0 : 0.55)
 
     const escape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') cross.current?.click()
@@ -278,7 +278,7 @@ function EcoZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
         y: `+=${dest.top - rect.top}`,
         scaleX: dest.width / picture.current.offsetWidth,
         scaleY: dest.height / picture.current.offsetHeight,
-        duration: reduce ? 0 : 0.75, ease: 'power3.inOut',
+        duration: reduce ? 0 : 0.95, ease: 'power3.inOut',
       }, 0)
   }
 
