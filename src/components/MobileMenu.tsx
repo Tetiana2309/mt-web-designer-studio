@@ -24,6 +24,16 @@ const MOBILE_STRIPES = 6
 const TABLET_STRIPES = 12
 const TABLET_BREAKPOINT = 600
 
+// Framer layout: the visible menu uses the viewport height, while its
+// animated artwork can use a taller canvas clipped by that viewport.
+const SAFARI_STRIPE_CANVAS_HEIGHT = 1100
+
+function isIPhoneSafari(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent
+  return /iPhone/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)
+}
+
 function getStripeCount(): number {
   if (typeof window === 'undefined') {
     return MOBILE_STRIPES
@@ -42,6 +52,7 @@ export default function MobileMenu({
   onClose,
 }: MobileMenuProps) {
   const [stripeCount] = useState(getStripeCount)
+  const [safariCanvas] = useState(isIPhoneSafari)
 
   const rootRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -448,6 +459,8 @@ export default function MobileMenu({
       aria-label="Menu"
       className="fixed inset-0 z-50 min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:hidden"
     >
+      {/* The visible menu remains viewport-height, independent of the stripe canvas. */}
+      <div className="absolute inset-x-0 top-0 h-full" style={safariCanvas ? { height: '100dvh' } : undefined}>
       {/* ====================================
           HEADER
       ==================================== */}
@@ -606,6 +619,8 @@ export default function MobileMenu({
         © 2026 All rights reserved.
       </p>
 
+      </div>
+
       {/* ====================================
           RESPONSIVE FRAGMENTS WITH M&T LOGO
           ORIGINAL — UNCHANGED
@@ -615,6 +630,12 @@ export default function MobileMenu({
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
       >
+        {/* The viewport clips the oversized Safari artwork; it never exposes
+            the case-study page below the open menu. */}
+        <div
+          className="absolute inset-x-0 top-0"
+          style={safariCanvas ? { height: `${SAFARI_STRIPE_CANVAS_HEIGHT}px` } : { height: '100%' }}
+        >
         {Array.from(
           { length: stripeCount },
           (_, index) => (
@@ -641,6 +662,7 @@ export default function MobileMenu({
                 style={{
                   width: `${stripeCount * 100}%`,
                   left: `${-index * 100}%`,
+                  ...(safariCanvas ? { height: '100dvh', bottom: 'auto' } : {}),
                 }}
               >
                 <div className="relative flex items-center justify-center">
@@ -664,6 +686,7 @@ export default function MobileMenu({
             </div>
           ),
         )}
+        </div>
       </div>
     </div>
   )
