@@ -552,7 +552,7 @@ export default function Hero() {
     >
       {/* SPIRAL — UNCHANGED */}
 
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 max-[767px]:opacity-50">
         <InfiniteSpiral images={previewImages} />
       </div>
 
@@ -649,7 +649,7 @@ export default function Hero() {
           <span
             data-hero-primary
             aria-hidden="true"
-            className="font-light text-ink min-[1280px]:font-light"
+            className="font-normal text-ink min-[1280px]:font-light"
           >
             <RevealWords text="We create websites that" />{' '}
           </span>
