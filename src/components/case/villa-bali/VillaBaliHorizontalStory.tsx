@@ -2,7 +2,8 @@ import VillaBaliOutro from './VillaBaliOutro'
 import CtaButton from '../../../components/CtaButton'
 import NextCasesButton from './VillaBaliNextCasesButton'
 import VillaBaliLastCasesButton from './VillaBaliLastCasesButton'
-import { Fragment, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { Fragment, useLayoutEffect, useRef, useState, type RefObject, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -198,6 +199,108 @@ function MobileWords({ text }: { text: string }) {
       ))}
     </>
   )
+}
+
+function CaseZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
+  const [selected, setSelected] = useState<HTMLImageElement | null>(null)
+  const shade = useRef<HTMLDivElement>(null)
+  const picture = useRef<HTMLImageElement>(null)
+  const cross = useRef<HTMLButtonElement>(null)
+  const anim = useRef<gsap.core.Timeline | null>(null)
+  const closing = useRef(false)
+
+  useLayoutEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const handler = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return
+      const image = event.target.closest<HTMLImageElement>('img[data-case-zoom]')
+      if (image) setSelected(image)
+    }
+    root.addEventListener('click', handler)
+    return () => root.removeEventListener('click', handler)
+  }, [rootRef])
+
+  useLayoutEffect(() => {
+    if (!selected || !shade.current || !picture.current || !cross.current) return
+    closing.current = false
+    const overflow = document.documentElement.style.overflow
+    const sourceOpacity = selected.style.opacity
+    document.documentElement.style.overflow = 'hidden'
+
+    const from = selected.getBoundingClientRect()
+    const maxWidth = window.innerWidth - 36
+    const maxHeight = window.innerHeight - 130
+    const ratio = (selected.naturalWidth || from.width) / (selected.naturalHeight || from.height)
+    const targetWidth = Math.min(maxWidth, maxHeight * ratio)
+    const targetHeight = targetWidth / ratio
+    const targetLeft = (window.innerWidth - targetWidth) / 2
+    const targetTop = (window.innerHeight - targetHeight) / 2
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Animate GPU transforms, not layout width/height/left/top (which jump on iOS Safari).
+    gsap.set(picture.current, {
+      position: 'fixed', left: targetLeft, top: targetTop,
+      width: targetWidth, height: targetHeight,
+      x: from.left - targetLeft, y: from.top - targetTop,
+      scaleX: from.width / targetWidth,
+      scaleY: from.height / targetHeight,
+      transformOrigin: 'top left',
+      force3D: true,
+    })
+    // Keep the backdrop opaque throughout the transition so no other mobile screens bleed through.
+    gsap.set(cross.current, { opacity: 0 })
+    selected.style.opacity = '0'
+    anim.current = gsap.timeline()
+      .to(picture.current, {
+        x: 0, y: 0, scaleX: 1, scaleY: 1,
+        duration: reduce ? 0 : 0.8, ease: 'power3.inOut',
+      }, 0)
+      .to(cross.current, { opacity: 1, duration: reduce ? 0 : 0.3 }, reduce ? 0 : 0.42)
+
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') cross.current?.click()
+    }
+    document.addEventListener('keydown', escape)
+    return () => {
+      anim.current?.kill()
+      document.removeEventListener('keydown', escape)
+      document.documentElement.style.overflow = overflow
+      selected.style.opacity = sourceOpacity
+    }
+  }, [selected])
+
+  const close = () => {
+    if (!selected || closing.current) return
+    closing.current = true
+    anim.current?.kill()
+    if (!shade.current || !picture.current || !cross.current) {
+      setSelected(null)
+      return
+    }
+    const dest = selected.getBoundingClientRect()
+    const rect = picture.current.getBoundingClientRect()
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    anim.current = gsap.timeline({ onComplete: () => setSelected(null) })
+      .to(cross.current, { opacity: 0, duration: reduce ? 0 : 0.2 }, 0)
+      .to(picture.current, {
+        x: `+=${dest.left - rect.left}`,
+        y: `+=${dest.top - rect.top}`,
+        scaleX: dest.width / picture.current.offsetWidth,
+        scaleY: dest.height / picture.current.offsetHeight,
+        duration: reduce ? 0 : 0.75, ease: 'power3.inOut',
+      }, 0)
+  }
+
+  return selected ? createPortal(
+    <div className="fixed inset-0 z-[9999] isolate" role="dialog" aria-modal="true" aria-label="Enlarged Villa Bali image">
+      <div ref={shade} className="absolute inset-0 bg-[#C7C7C7]" onClick={close} />
+      <img ref={picture} src={selected.currentSrc || selected.src} alt={selected.alt} draggable={false} className="pointer-events-none fixed max-w-none object-contain will-change-transform" />
+      <button ref={cross} type="button" aria-label="Close image" onClick={close} className="absolute right-[max(16px,env(safe-area-inset-right))] top-[max(20px,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center text-[#3A5F73]">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+      </button>
+    </div>, document.body
+  ) : null
 }
 
 export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode }) {
@@ -512,6 +615,14 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
         const groups = gsap.utils.toArray<HTMLElement>('[data-mobile-title-block]', root)
         const copies = gsap.utils.toArray<HTMLElement>('[data-mobile-copy]', root)
 
+        const hint = root.querySelector<HTMLElement>('[data-case-tap-hint]')
+        const firstScreen = root.querySelector<HTMLElement>('img[data-case-zoom]')
+        if (hint && firstScreen) {
+          gsap.timeline({ scrollTrigger: { trigger: firstScreen, start: 'top 82%', once: true } })
+            .fromTo(hint, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' })
+            .to(hint, { opacity: 0, duration: 0.5, delay: 3 })
+        }
+
         groups.forEach((group, groupIndex) => {
           const lines = gsap.utils.toArray<HTMLElement>('[data-mobile-title-line]', group)
           const words = copies[groupIndex]
@@ -609,7 +720,8 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
               <video src={VIDEO} aria-label="Villa Bali cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
-            <img src={`${ASSETS}3-1.webp`} alt="Villa Bali mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain" />
+            <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-1.webp`} alt="Villa Bali mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <span data-case-tap-hint className="pointer-events-none absolute left-[205px] top-[538px] w-[150px] text-center font-sans text-[16px] font-medium not-italic leading-[1.1] tracking-[-0.48px] text-[#3A5F73] lowercase opacity-0">tap to view</span>
 
             {/* Original placeholder headings / descriptions from the design; editable later. */}
             <div data-mobile-title-block className="absolute top-[582px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
@@ -618,17 +730,17 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
               <span data-mobile-title-line className="absolute left-[143px] top-[66px] whitespace-nowrap">Sight.</span>
             </div>
             <p data-mobile-copy className="absolute left-[65px] top-[695px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={intro} /></p>
-            <img src={`${ASSETS}3-2.webp`} alt="Villa Bali mobile screen 2" loading="lazy" className="absolute left-[20px] top-[831px] h-[194px] w-[100px] object-contain" />
-            <img src={`${ASSETS}3-3.webp`} alt="Villa Bali mobile screen 3" loading="lazy" className="absolute left-[270px] top-[831px] h-[194px] w-[100px] object-contain" />
+            <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-2.webp`} alt="Villa Bali mobile screen 2" loading="lazy" className="absolute left-[20px] top-[831px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-3.webp`} alt="Villa Bali mobile screen 3" loading="lazy" className="absolute left-[270px] top-[831px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
             <div data-mobile-title-block className="absolute top-[1085px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
               <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">A New</span>
               <span data-mobile-title-line className="absolute left-[167px] top-[34px] whitespace-nowrap">Way To</span>
               <span data-mobile-title-line className="absolute left-[132px] top-[66px] whitespace-nowrap">Explore.</span>
             </div>
             <p data-mobile-copy className="absolute left-[65px] top-[1198px] w-[260px] font-sans text-[16px] leading-[1.2] tracking-[-0.32px] text-ink"><MobileWords text={challenge} /></p>
-            <img src={`${ASSETS}3-4.webp`} alt="Villa Bali mobile screen 4" loading="lazy" className="absolute left-[20px] top-[1334px] h-[194px] w-[100px] object-contain" />
-            <img src={`${ASSETS}3-5.webp`} alt="Villa Bali mobile screen 5" loading="lazy" className="absolute left-[145px] top-[1334px] h-[194px] w-[100px] object-contain" />
-            <img src={`${ASSETS}3-6.webp`} alt="Villa Bali mobile screen 6" loading="lazy" className="absolute left-[270px] top-[1334px] h-[194px] w-[100px] object-contain" />
+            <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-4.webp`} alt="Villa Bali mobile screen 4" loading="lazy" className="absolute left-[20px] top-[1334px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-5.webp`} alt="Villa Bali mobile screen 5" loading="lazy" className="absolute left-[145px] top-[1334px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
+            <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-6.webp`} alt="Villa Bali mobile screen 6" loading="lazy" className="absolute left-[270px] top-[1334px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
             <div data-mobile-title-block className="absolute top-[1588px] left-0 w-full font-sans text-[32px] font-medium leading-[0.95] tracking-[-0.96px] text-accent">
               <span data-mobile-title-line className="absolute left-[132px] top-0 whitespace-nowrap">Ready</span>
               <span data-mobile-title-line className="absolute left-[162px] top-[34px] whitespace-nowrap">For</span>
@@ -654,6 +766,7 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
           </div>
         </div>
       </div>
+      <CaseZoom rootRef={mobileRef} />
     </>
   )
 }
