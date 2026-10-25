@@ -686,7 +686,6 @@ export default function AboutUsTwo() {
     <section
       ref={rootRef}
       style={stageStyle}
-      data-iphone-footer-page
       className="isolate relative min-h-dvh overflow-x-clip bg-canvas font-sans text-ink max-[1280px]:pb-[calc(max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))+104px)]"
     >
       {/* ====================================
