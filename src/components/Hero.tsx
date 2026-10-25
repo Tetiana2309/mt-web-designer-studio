@@ -559,7 +559,7 @@ export default function Hero() {
       <div inert={menuOpen}>
         {/* HEADER */}
 
-        <header className="absolute top-[max(2.5rem,calc(env(safe-area-inset-top)+0.75rem))] right-[max(1.25rem,env(safe-area-inset-right))] left-[max(1.25rem,env(safe-area-inset-left))] flex items-start justify-between min-[1280px]:top-[clamp(14px,1.0417vw,20px)] min-[1280px]:right-[clamp(24px,2.0833vw,40px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-9.5">
+        <header className="absolute top-[40px] right-[max(1.25rem,env(safe-area-inset-right))] left-[max(1.25rem,env(safe-area-inset-left))] flex items-start justify-between min-[1280px]:top-[20px] min-[1280px]:right-[clamp(24px,2.0833vw,40px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-9.5">
           {/* LOGO */}
 
           <div className="overflow-hidden">
@@ -671,7 +671,7 @@ export default function Hero() {
 
         {/* FOOTER */}
 
-        <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink lowercase min-[1280px]:right-[max(24px,2.0833vw)] min-[1280px]:bottom-[clamp(14px,1.0417vw,20px)] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
+        <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[40px] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink lowercase min-[1280px]:right-[max(24px,2.0833vw)] min-[1280px]:bottom-[20px] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
           {/* COPYRIGHT */}
 
           <div className="hidden overflow-hidden min-[1280px]:block">
