@@ -23,5 +23,7 @@ export default function setChromeTint(color: string) {
 
   // The root background is the other source Safari samples. Clearing the inline
   // value falls back to the stylesheet's canvas colour.
-  document.documentElement.style.backgroundColor = color === CHROME_CANVAS ? '' : color
+  const tint = color === CHROME_CANVAS ? '' : color
+  document.documentElement.style.backgroundColor = tint
+  document.body.style.backgroundColor = tint
 }
