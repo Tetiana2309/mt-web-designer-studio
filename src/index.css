@@ -101,3 +101,18 @@ body {
     transform: scale(var(--case-scale, 1));
   }
 }
+
+
+/* ==========================================
+   iOS SAFARI — ROOT BACKGROUND
+   Every page paints its own #c7c7c7 section, but nothing paints the root.
+   Safari tints its status bar / floating toolbar areas, and shows the area
+   beyond the document, with the root background (white by default).
+   Scoped to iOS WebKit so other browsers are untouched.
+========================================== */
+
+@supports (-webkit-touch-callout: none) {
+  html {
+    background-color: var(--color-canvas);
+  }
+}
