@@ -12,6 +12,7 @@ import Hero from './components/Hero'
 import NavigationBridge from './components/NavigationBridge'
 import Portfolio from './components/Portfolio'
 import ContactsPage from './ContactsPage'
+import TintLab from './TintLab'
 import Preloader from './components/Preloader'
 
 // ==========================================
@@ -135,6 +136,9 @@ export default function App() {
         />
 
         <Route path="/contacts" element={<ContactsPage />} />
+
+        {/* TEMPORARY: iOS Safari tint diagnostics. Remove with src/TintLab.tsx. */}
+        <Route path="/tint-lab" element={<TintLab />} />
 
         {/* ====================================
             FALLBACK
