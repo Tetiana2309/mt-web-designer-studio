@@ -465,7 +465,6 @@ export default function ContactsPage() {
   return (
     <section
       ref={rootRef}
-      data-iphone-footer-page
       className="relative isolate min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:min-h-[1002px]"
     >
       {/* ====================================
@@ -624,7 +623,7 @@ export default function ContactsPage() {
           EXISTING FOOTER — UNCHANGED
       ==================================== */}
 
-      <div data-iphone-footer-shell className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[95px] [&_button]:pointer-events-auto">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[95px] [&_button]:pointer-events-auto">
         <AboutFooter />
       </div>
 
