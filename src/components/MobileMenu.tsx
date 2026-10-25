@@ -467,7 +467,7 @@ export default function MobileMenu({
 
       <div
         ref={headerRef}
-        className="absolute top-[max(2.5rem,calc(env(safe-area-inset-top)+0.75rem))] right-[max(1.25rem,env(safe-area-inset-right))] left-[max(1.25rem,env(safe-area-inset-left))] flex items-start justify-between text-[clamp(22px,2.9vw,30px)] leading-[1.1] font-bold tracking-[-0.03em] text-accent"
+        className="absolute top-[40px] right-[max(1.25rem,env(safe-area-inset-right))] left-[max(1.25rem,env(safe-area-inset-left))] flex items-start justify-between text-[clamp(22px,2.9vw,30px)] leading-[1.1] font-bold tracking-[-0.03em] text-accent"
       >
         {/* LOGO — UNCHANGED */}
 
@@ -614,7 +614,7 @@ export default function MobileMenu({
 
       <p
         ref={copyrightRef}
-        className="absolute bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))] left-1/2 -translate-x-1/2 text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap lowercase"
+        className="absolute bottom-[40px] left-1/2 -translate-x-1/2 text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap lowercase"
       >
         © 2026 All rights reserved.
       </p>
