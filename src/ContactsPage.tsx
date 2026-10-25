@@ -103,7 +103,7 @@ function SectionTitle({
         className="order-2 block size-3 shrink-0 rounded-full bg-accent min-[1280px]:order-1"
       />
 
-      <h2 data-contact-title style={{ opacity: 0.25 }} className="order-1 m-0 text-[26px] font-light leading-[1.1] tracking-[-0.03em] text-accent min-[1280px]:order-2 min-[1280px]:text-[34px]">
+      <h2 data-contact-title style={{ opacity: 0.25 }} className="order-1 m-0 text-[26px] font-normal leading-[1.1] tracking-[-0.03em] text-accent min-[1280px]:order-2 min-[1280px]:text-[34px]">
         {children}
       </h2>
     </div>
