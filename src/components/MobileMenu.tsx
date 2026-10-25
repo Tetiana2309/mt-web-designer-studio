@@ -8,6 +8,7 @@ import {
 } from 'react'
 import gsap from 'gsap'
 
+import setChromeTint, { CHROME_ACCENT, CHROME_CANVAS } from '../chromeTint'
 import { navItems, socialItems } from '../navigation'
 
 const socialLinks: Record<string, string> = {
@@ -102,6 +103,9 @@ export default function MobileMenu({
       },
     })
 
+    // Safari chrome follows the blue stripes while they cover the viewport.
+    timeline.call(() => setChromeTint(CHROME_ACCENT), [], 0.35)
+
     // STEP 1: Hide navigation.
 
     timeline.to(links, {
@@ -178,6 +182,9 @@ export default function MobileMenu({
       ease: 'power3.inOut',
       overwrite: 'auto',
     })
+
+    // ...and returns to the canvas colour once the page is being revealed.
+    timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<+=0.5')
 
     timelineRef.current = timeline
   }, [stripeCount])
@@ -361,6 +368,10 @@ export default function MobileMenu({
         },
       })
 
+      // Safari chrome matches the blue stripes, then the gray menu.
+      setChromeTint(CHROME_ACCENT)
+      timeline.call(() => setChromeTint(CHROME_CANVAS), [], 1)
+
       // OPEN: Split M&T and description.
 
       timeline.to(stripes, {
@@ -417,6 +428,7 @@ export default function MobileMenu({
 
     return () => {
       timelineRef.current?.kill()
+      setChromeTint(CHROME_CANVAS)
 
       // ======================================
       // RESTORE SCROLL ON MENU UNMOUNT
