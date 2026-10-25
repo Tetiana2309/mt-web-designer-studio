@@ -88,3 +88,16 @@ body {
     scroll-behavior: auto;
   }
 }
+
+
+/* ==========================================
+   SAFARI — CASE CANVAS SCALE FALLBACK
+   Used only where `calc(length / length)` is
+   unsupported (see src/caseCanvasScale.ts).
+========================================== */
+
+@supports not (transform: scale(calc(2px / 1px))) {
+  [data-case-canvas] {
+    transform: scale(var(--case-scale, 1));
+  }
+}

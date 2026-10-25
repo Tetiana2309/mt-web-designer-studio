@@ -22,6 +22,14 @@ function ScrollToTop() {
   const { pathname } = useLocation()
 
   useLayoutEffect(() => {
+    // `html { scroll-behavior: smooth }` would animate this reset, so the next
+    // page can start (and measure its ScrollTriggers) mid-scroll. On phones
+    // the reset must be immediate.
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      return
+    }
+
     window.scrollTo(0, 0)
   }, [pathname])
 

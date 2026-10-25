@@ -592,7 +592,7 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
     const frame1 = requestAnimationFrame(() => {
       frame2 = requestAnimationFrame(() => {
         if (cancelled) return
-        window.scrollTo(0, 0)
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
         installMobileTriggers()
       })
     })
@@ -694,6 +694,7 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
         >
           <div
             className="absolute left-0 top-0 origin-top-left bg-canvas"
+            data-case-canvas
             style={{ width: 390, height: 2390, transform: 'scale(calc(min(100vw, 440px) / 390px))' }}
           >
             {/* Existing case-navigation components, scaled to the 390px Figma mobile layout. */}
