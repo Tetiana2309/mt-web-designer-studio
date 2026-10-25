@@ -119,8 +119,11 @@ export default function MobileMenu({
       },
     })
 
-    // Safari chrome follows the blue stripes while they cover the viewport.
-    timeline.call(() => setChromeTint(CHROME_ACCENT), [], 0.35)
+    // Once the stripes assemble, expose a real blue menu surface to Safari.
+    timeline.call(() => {
+      if (safariStripes) root.style.backgroundColor = CHROME_ACCENT
+      setChromeTint(CHROME_ACCENT)
+    }, [], 1.1)
 
     // STEP 1: Hide navigation.
 
@@ -184,6 +187,9 @@ export default function MobileMenu({
     timeline.set(root, {
       backgroundColor: 'transparent',
     })
+    if (safariStripes) {
+      timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<')
+    }
 
     // STEP 5: Reveal page.
 
@@ -203,7 +209,7 @@ export default function MobileMenu({
     timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<+=0.5')
 
     timelineRef.current = timeline
-  }, [stripeCount])
+  }, [stripeCount, safariStripes])
 
   // ==========================================
   // OPEN MENU — ORIGINAL GSAP
@@ -384,9 +390,14 @@ export default function MobileMenu({
         },
       })
 
-      // Safari chrome matches the blue stripes, then the gray menu.
+      // On Safari, the menu itself is blue while the stripes fully cover it.
+      // Restore the original gray surface as soon as they start separating.
+      if (safariStripes) root.style.backgroundColor = CHROME_ACCENT
       setChromeTint(CHROME_ACCENT)
-      timeline.call(() => setChromeTint(CHROME_CANVAS), [], 1)
+      timeline.call(() => {
+        if (safariStripes) root.style.backgroundColor = CHROME_CANVAS
+        setChromeTint(CHROME_CANVAS)
+      }, [], safariStripes ? 0.15 : 1)
 
       // OPEN: Split M&T and description.
 
@@ -444,6 +455,7 @@ export default function MobileMenu({
 
     return () => {
       timelineRef.current?.kill()
+      if (safariStripes) root.style.backgroundColor = ''
       setChromeTint(CHROME_CANVAS)
 
       // ======================================
@@ -462,7 +474,7 @@ export default function MobileMenu({
         onBreakpoint,
       )
     }
-  }, [closeMenu, stripeCount])
+  }, [closeMenu, stripeCount, safariStripes])
 
   // ==========================================
   // JSX — ORIGINAL DESIGN
