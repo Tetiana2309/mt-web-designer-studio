@@ -116,22 +116,3 @@ body {
     background-color: var(--color-canvas);
   }
 }
-
-
-/* iPhone 17 Pro Max display profile (440 CSS px, 3x).
-   Keep the About / Contacts footers 40px above Safari's visible viewport
-   rather than the bottom of a long scrolling document.
-   Only these three pages are opted in. */
-@supports (-webkit-touch-callout: none) {
-  @media (width: 440px) and (min-resolution: 3dppx) {
-    [data-iphone-footer-page] footer {
-      position: fixed;
-      bottom: 40px;
-    }
-
-    [data-iphone-footer-shell] {
-      position: fixed;
-      bottom: 0;
-    }
-  }
-}
