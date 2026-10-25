@@ -25,6 +25,21 @@ const MOBILE_STRIPES = 6
 const TABLET_STRIPES = 12
 const TABLET_BREAKPOINT = 600
 
+// Experiment only: Safari on iPhone gets taller animated stripes.
+// Browser chrome remains controlled by Safari, not by this element.
+const SAFARI_STRIPE_HEIGHT = 1000
+
+function isIPhoneSafari(): boolean {
+  if (typeof navigator === 'undefined') return false
+
+  const ua = navigator.userAgent
+  return (
+    /iPhone/.test(ua) &&
+    /Safari/.test(ua) &&
+    !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)
+  )
+}
+
 function getStripeCount(): number {
   if (typeof window === 'undefined') {
     return MOBILE_STRIPES
@@ -43,6 +58,7 @@ export default function MobileMenu({
   onClose,
 }: MobileMenuProps) {
   const [stripeCount] = useState(getStripeCount)
+  const [safariStripes] = useState(isIPhoneSafari)
 
   const rootRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -459,6 +475,7 @@ export default function MobileMenu({
       aria-modal="true"
       aria-label="Menu"
       className="fixed inset-0 z-50 min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:hidden"
+      style={safariStripes ? { overflow: 'visible' } : undefined}
     >
       {/* ====================================
           HEADER
@@ -626,6 +643,11 @@ export default function MobileMenu({
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
+        style={
+          safariStripes
+            ? { height: `${SAFARI_STRIPE_HEIGHT}px`, bottom: 'auto' }
+            : undefined
+        }
       >
         {Array.from(
           { length: stripeCount },
@@ -651,6 +673,9 @@ export default function MobileMenu({
               <div
                 className="pointer-events-none absolute top-0 bottom-0 flex items-center justify-center"
                 style={{
+                  // Keep the M&T logo centered in the *visible* website viewport,
+                  // even though the Safari stripe itself is 1000px tall.
+                  ...(safariStripes ? { height: '100dvh', bottom: 'auto' } : {}),
                   width: `${stripeCount * 100}%`,
                   left: `${-index * 100}%`,
                 }}
