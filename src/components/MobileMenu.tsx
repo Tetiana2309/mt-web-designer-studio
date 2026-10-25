@@ -8,7 +8,6 @@ import {
 } from 'react'
 import gsap from 'gsap'
 
-import setChromeTint, { CHROME_ACCENT, CHROME_CANVAS } from '../chromeTint'
 import { navItems, socialItems } from '../navigation'
 
 const socialLinks: Record<string, string> = {
@@ -24,21 +23,6 @@ interface MobileMenuProps {
 const MOBILE_STRIPES = 6
 const TABLET_STRIPES = 12
 const TABLET_BREAKPOINT = 600
-
-// Experiment only: Safari on iPhone gets taller animated stripes.
-// Browser chrome remains controlled by Safari, not by this element.
-const SAFARI_STRIPE_HEIGHT = 1080
-
-function isIPhoneSafari(): boolean {
-  if (typeof navigator === 'undefined') return false
-
-  const ua = navigator.userAgent
-  return (
-    /iPhone/.test(ua) &&
-    /Safari/.test(ua) &&
-    !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)
-  )
-}
 
 function getStripeCount(): number {
   if (typeof window === 'undefined') {
@@ -58,11 +42,6 @@ export default function MobileMenu({
   onClose,
 }: MobileMenuProps) {
   const [stripeCount] = useState(getStripeCount)
-  const [safariStripes] = useState(isIPhoneSafari)
-
-  // Only the iPhone Safari menu uses the blue surface and light labels.
-  const safariText = safariStripes ? { color: CHROME_CANVAS } : undefined
-  const safariHoverText = safariStripes ? { color: '#ffffff' } : undefined
 
   const rootRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -122,12 +101,6 @@ export default function MobileMenu({
         onCloseRef.current()
       },
     })
-
-    // Keep browser chrome blue throughout the Safari menu and blue transition.
-    timeline.call(() => {
-      if (safariStripes) document.body.style.backgroundColor = CHROME_ACCENT
-      setChromeTint(CHROME_ACCENT)
-    }, [], 1.1)
 
     // STEP 1: Hide navigation.
 
@@ -191,12 +164,6 @@ export default function MobileMenu({
     timeline.set(root, {
       backgroundColor: 'transparent',
     })
-    if (safariStripes) {
-      timeline.call(() => {
-        document.body.style.backgroundColor = ''
-        setChromeTint(CHROME_CANVAS)
-      }, [], '<')
-    }
 
     // STEP 5: Reveal page.
 
@@ -212,13 +179,8 @@ export default function MobileMenu({
       overwrite: 'auto',
     })
 
-    // Other browsers retain their original tint reset timing.
-    if (!safariStripes) {
-      timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<+=0.5')
-    }
-
     timelineRef.current = timeline
-  }, [stripeCount, safariStripes])
+  }, [stripeCount])
 
   // ==========================================
   // OPEN MENU — ORIGINAL GSAP
@@ -399,14 +361,6 @@ export default function MobileMenu({
         },
       })
 
-      // Safari's open menu is blue too: do not revert browser chrome to gray
-      // when the stripes move aside and reveal the menu.
-      if (safariStripes) document.body.style.backgroundColor = CHROME_ACCENT
-      setChromeTint(CHROME_ACCENT)
-      if (!safariStripes) {
-        timeline.call(() => setChromeTint(CHROME_CANVAS), [], 1)
-      }
-
       // OPEN: Split M&T and description.
 
       timeline.to(stripes, {
@@ -463,8 +417,6 @@ export default function MobileMenu({
 
     return () => {
       timelineRef.current?.kill()
-      if (safariStripes) document.body.style.backgroundColor = ''
-      setChromeTint(CHROME_CANVAS)
 
       // ======================================
       // RESTORE SCROLL ON MENU UNMOUNT
@@ -482,7 +434,7 @@ export default function MobileMenu({
         onBreakpoint,
       )
     }
-  }, [closeMenu, stripeCount, safariStripes])
+  }, [closeMenu, stripeCount])
 
   // ==========================================
   // JSX — ORIGINAL DESIGN
@@ -495,7 +447,6 @@ export default function MobileMenu({
       aria-modal="true"
       aria-label="Menu"
       className="fixed inset-0 z-50 min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:hidden"
-      style={safariStripes ? { overflow: 'visible', backgroundColor: CHROME_ACCENT } : undefined}
     >
       {/* ====================================
           HEADER
@@ -512,7 +463,6 @@ export default function MobileMenu({
           aria-label="M&T — Home"
           onClick={closeMenu}
           className="nav-link text-accent!"
-          style={safariText}
         >
           M&amp;T
         </button>
@@ -525,13 +475,11 @@ export default function MobileMenu({
           onClick={closeMenu}
           aria-label="Close menu"
           className="group/swap nav-link cursor-pointer uppercase text-accent!"
-          style={safariText}
         >
           <span className="relative block overflow-hidden">
             <span
               aria-hidden="true"
               className="block text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
-              style={safariText}
             >
               close
             </span>
@@ -539,7 +487,6 @@ export default function MobileMenu({
             <span
               aria-hidden="true"
               className="absolute inset-0 block translate-y-full text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
-              style={safariHoverText}
             >
               close
             </span>
@@ -581,7 +528,6 @@ export default function MobileMenu({
                     <span
                       aria-hidden="true"
                       className="block text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
-                      style={safariText}
                     >
                       {item}
                     </span>
@@ -591,7 +537,6 @@ export default function MobileMenu({
                     <span
                       aria-hidden="true"
                       className="absolute inset-0 block translate-y-full text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
-                      style={safariHoverText}
                     >
                       {item}
                     </span>
@@ -632,7 +577,6 @@ export default function MobileMenu({
                 <span
                   aria-hidden="true"
                   className="block transform-gpu text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
-                  style={safariText}
                 >
                   {item}
                 </span>
@@ -642,7 +586,6 @@ export default function MobileMenu({
                 <span
                   aria-hidden="true"
                   className="absolute inset-0 block translate-y-full transform-gpu text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
-                  style={safariHoverText}
                 >
                   {item}
                 </span>
@@ -659,7 +602,6 @@ export default function MobileMenu({
       <p
         ref={copyrightRef}
         className="absolute bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))] left-1/2 -translate-x-1/2 text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap lowercase"
-        style={safariText}
       >
         © 2026 All rights reserved.
       </p>
@@ -672,11 +614,6 @@ export default function MobileMenu({
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
-        style={
-          safariStripes
-            ? { height: `${SAFARI_STRIPE_HEIGHT}px`, bottom: 'auto' }
-            : undefined
-        }
       >
         {Array.from(
           { length: stripeCount },
@@ -702,9 +639,6 @@ export default function MobileMenu({
               <div
                 className="pointer-events-none absolute top-0 bottom-0 flex items-center justify-center"
                 style={{
-                  // Keep the M&T logo centered in the *visible* website viewport,
-                  // even though the Safari stripe itself is 1000px tall.
-                  ...(safariStripes ? { height: '100dvh', bottom: 'auto' } : {}),
                   width: `${stripeCount * 100}%`,
                   left: `${-index * 100}%`,
                 }}
