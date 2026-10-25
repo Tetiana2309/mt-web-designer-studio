@@ -24,16 +24,6 @@ const MOBILE_STRIPES = 6
 const TABLET_STRIPES = 12
 const TABLET_BREAKPOINT = 600
 
-// Framer reference: a 1100px outer animation canvas with a separate
-// viewport-height layer for visible menu content (iPhone Safari only).
-const SAFARI_ANIMATION_HEIGHT = 1100
-
-function isIPhoneSafari(): boolean {
-  if (typeof navigator === 'undefined') return false
-  const ua = navigator.userAgent
-  return /iPhone/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)
-}
-
 function getStripeCount(): number {
   if (typeof window === 'undefined') {
     return MOBILE_STRIPES
@@ -52,7 +42,6 @@ export default function MobileMenu({
   onClose,
 }: MobileMenuProps) {
   const [stripeCount] = useState(getStripeCount)
-  const [safariLayout] = useState(isIPhoneSafari)
 
   const rootRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -458,13 +447,7 @@ export default function MobileMenu({
       aria-modal="true"
       aria-label="Menu"
       className="fixed inset-0 z-50 min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:hidden"
-      style={safariLayout ? { height: `${SAFARI_ANIMATION_HEIGHT}px`, bottom: 'auto' } : undefined}
     >
-      {/* Framer-style viewport layer: menu content stays positioned in the visible viewport. */}
-      <div
-        className={safariLayout ? 'absolute inset-x-0 top-0' : 'contents'}
-        style={safariLayout ? { height: '100dvh' } : undefined}
-      >
       {/* ====================================
           HEADER
       ==================================== */}
@@ -623,8 +606,6 @@ export default function MobileMenu({
         © 2026 All rights reserved.
       </p>
 
-      </div>
-
       {/* ====================================
           RESPONSIVE FRAGMENTS WITH M&T LOGO
           ORIGINAL — UNCHANGED
@@ -633,7 +614,6 @@ export default function MobileMenu({
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 overflow-hidden"
-        style={safariLayout ? { height: `${SAFARI_ANIMATION_HEIGHT}px`, bottom: 'auto' } : undefined}
       >
         {Array.from(
           { length: stripeCount },
@@ -661,7 +641,6 @@ export default function MobileMenu({
                 style={{
                   width: `${stripeCount * 100}%`,
                   left: `${-index * 100}%`,
-                  ...(safariLayout ? { height: '100dvh', bottom: 'auto' } : {}),
                 }}
               >
                 <div className="relative flex items-center justify-center">
