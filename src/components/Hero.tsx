@@ -649,7 +649,7 @@ export default function Hero() {
           <span
             data-hero-primary
             aria-hidden="true"
-            className="font-light text-ink min-[1280px]:font-extralight"
+            className="font-light text-ink min-[1280px]:font-light"
           >
             <RevealWords text="We create websites that" />{' '}
           </span>
