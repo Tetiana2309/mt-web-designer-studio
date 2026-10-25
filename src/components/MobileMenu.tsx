@@ -60,6 +60,10 @@ export default function MobileMenu({
   const [stripeCount] = useState(getStripeCount)
   const [safariStripes] = useState(isIPhoneSafari)
 
+  // Only the iPhone Safari menu uses the blue surface and light labels.
+  const safariText = safariStripes ? { color: CHROME_CANVAS } : undefined
+  const safariHoverText = safariStripes ? { color: '#ffffff' } : undefined
+
   const rootRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -119,9 +123,9 @@ export default function MobileMenu({
       },
     })
 
-    // Once the stripes assemble, expose a real blue menu surface to Safari.
+    // Keep browser chrome blue throughout the Safari menu and blue transition.
     timeline.call(() => {
-      if (safariStripes) root.style.backgroundColor = CHROME_ACCENT
+      if (safariStripes) document.body.style.backgroundColor = CHROME_ACCENT
       setChromeTint(CHROME_ACCENT)
     }, [], 1.1)
 
@@ -188,7 +192,10 @@ export default function MobileMenu({
       backgroundColor: 'transparent',
     })
     if (safariStripes) {
-      timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<')
+      timeline.call(() => {
+        document.body.style.backgroundColor = ''
+        setChromeTint(CHROME_CANVAS)
+      }, [], '<')
     }
 
     // STEP 5: Reveal page.
@@ -205,8 +212,10 @@ export default function MobileMenu({
       overwrite: 'auto',
     })
 
-    // ...and returns to the canvas colour once the page is being revealed.
-    timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<+=0.5')
+    // Other browsers retain their original tint reset timing.
+    if (!safariStripes) {
+      timeline.call(() => setChromeTint(CHROME_CANVAS), [], '<+=0.5')
+    }
 
     timelineRef.current = timeline
   }, [stripeCount, safariStripes])
@@ -390,14 +399,13 @@ export default function MobileMenu({
         },
       })
 
-      // On Safari, the menu itself is blue while the stripes fully cover it.
-      // Restore the original gray surface as soon as they start separating.
-      if (safariStripes) root.style.backgroundColor = CHROME_ACCENT
+      // Safari's open menu is blue too: do not revert browser chrome to gray
+      // when the stripes move aside and reveal the menu.
+      if (safariStripes) document.body.style.backgroundColor = CHROME_ACCENT
       setChromeTint(CHROME_ACCENT)
-      timeline.call(() => {
-        if (safariStripes) root.style.backgroundColor = CHROME_CANVAS
-        setChromeTint(CHROME_CANVAS)
-      }, [], safariStripes ? 0.15 : 1)
+      if (!safariStripes) {
+        timeline.call(() => setChromeTint(CHROME_CANVAS), [], 1)
+      }
 
       // OPEN: Split M&T and description.
 
@@ -455,7 +463,7 @@ export default function MobileMenu({
 
     return () => {
       timelineRef.current?.kill()
-      if (safariStripes) root.style.backgroundColor = ''
+      if (safariStripes) document.body.style.backgroundColor = ''
       setChromeTint(CHROME_CANVAS)
 
       // ======================================
@@ -487,7 +495,7 @@ export default function MobileMenu({
       aria-modal="true"
       aria-label="Menu"
       className="fixed inset-0 z-50 min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:hidden"
-      style={safariStripes ? { overflow: 'visible' } : undefined}
+      style={safariStripes ? { overflow: 'visible', backgroundColor: CHROME_ACCENT } : undefined}
     >
       {/* ====================================
           HEADER
@@ -504,6 +512,7 @@ export default function MobileMenu({
           aria-label="M&T — Home"
           onClick={closeMenu}
           className="nav-link text-accent!"
+          style={safariText}
         >
           M&amp;T
         </button>
@@ -516,11 +525,13 @@ export default function MobileMenu({
           onClick={closeMenu}
           aria-label="Close menu"
           className="group/swap nav-link cursor-pointer uppercase text-accent!"
+          style={safariText}
         >
           <span className="relative block overflow-hidden">
             <span
               aria-hidden="true"
               className="block text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
+              style={safariText}
             >
               close
             </span>
@@ -528,6 +539,7 @@ export default function MobileMenu({
             <span
               aria-hidden="true"
               className="absolute inset-0 block translate-y-full text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
+              style={safariHoverText}
             >
               close
             </span>
@@ -569,6 +581,7 @@ export default function MobileMenu({
                     <span
                       aria-hidden="true"
                       className="block text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
+                      style={safariText}
                     >
                       {item}
                     </span>
@@ -578,6 +591,7 @@ export default function MobileMenu({
                     <span
                       aria-hidden="true"
                       className="absolute inset-0 block translate-y-full text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
+                      style={safariHoverText}
                     >
                       {item}
                     </span>
@@ -618,6 +632,7 @@ export default function MobileMenu({
                 <span
                   aria-hidden="true"
                   className="block transform-gpu text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
+                  style={safariText}
                 >
                   {item}
                 </span>
@@ -627,6 +642,7 @@ export default function MobileMenu({
                 <span
                   aria-hidden="true"
                   className="absolute inset-0 block translate-y-full transform-gpu text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
+                  style={safariHoverText}
                 >
                   {item}
                 </span>
@@ -643,6 +659,7 @@ export default function MobileMenu({
       <p
         ref={copyrightRef}
         className="absolute bottom-[max(3.75rem,calc(env(safe-area-inset-bottom)+1.5rem))] left-1/2 -translate-x-1/2 text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap lowercase"
+        style={safariText}
       >
         © 2026 All rights reserved.
       </p>
