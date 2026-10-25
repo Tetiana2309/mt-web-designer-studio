@@ -84,7 +84,7 @@ const values = [
     title: ['Full', 'Accountability'],
     description:
       'From concept to launch and beyond, we stay involved. We don’t disappear after release.',
-    indicator: 'bg-ink/50',
+    indicator: 'bg-accent/50',
   },
 ]
 
@@ -694,7 +694,7 @@ export default function AboutUsTwo() {
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 max-[767px]:opacity-50"
       >
         <InfiniteSpiral
           images={previewImages}
@@ -762,7 +762,7 @@ export default function AboutUsTwo() {
                 >
                   {/* TITLE */}
 
-                  <h2 className="absolute top-0 left-0 text-[calc(34*var(--u))] leading-[0.95] font-light tracking-[-0.03em] whitespace-nowrap text-accent capitalize opacity-70">
+                  <h2 className="absolute top-0 left-0 text-[calc(34*var(--u))] leading-[0.95] font-normal tracking-[-0.03em] whitespace-nowrap text-accent capitalize">
                     <SectionTitle
                       lines={title}
                     />
@@ -927,7 +927,7 @@ export default function AboutUsTwo() {
                 >
                   {/* TITLE */}
 
-                  <h2 className="text-[calc(26*var(--v))] leading-[0.95] font-light tracking-[-0.03em] whitespace-nowrap text-accent capitalize opacity-70">
+                  <h2 className="text-[calc(26*var(--v))] leading-[0.95] font-normal tracking-[-0.03em] whitespace-nowrap text-accent capitalize">
                     <SectionTitle
                       lines={[title.join(' ')]}
                     />
