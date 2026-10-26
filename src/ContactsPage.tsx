@@ -487,9 +487,21 @@ export default function ContactsPage() {
 
       <ContactsBackgroundLogo />
 
+      {/* On iPhone 17 Pro Max, lift the existing artwork without changing its scale. */}
+      <style>{`
+        @supports (-webkit-touch-callout: none) {
+          @media (width: 440px) and (min-resolution: 3dppx) {
+            [data-contacts-mobile-logo] {
+              top: calc(440px * 0.795 - 100px);
+            }
+          }
+        }
+      `}</style>
+
       {/* Exact mobile M&T SVG exported from Figma (already rotated). */}
       <div
         aria-hidden="true"
+        data-contacts-mobile-logo
         className="pointer-events-none absolute top-[calc(min(100vw,440px)*0.795)] left-1/2 z-0 w-full max-w-[440px] -translate-x-1/2 min-[768px]:hidden"
       >
         <svg
