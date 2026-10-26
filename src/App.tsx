@@ -1,4 +1,5 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useRef } from 'react'
+import gsap from 'gsap'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
 
 import AboutUs from './components/AboutUs'
@@ -37,6 +38,61 @@ function ScrollToTop() {
 }
 
 // ==========================================
+// DESKTOP EDITORIAL PAGE REVEAL
+// Only runs after an internal route change, never on first page load.
+// Does not alter the scroll, animations or the route components.
+// ==========================================
+
+function DesktopPageReveal() {
+  const { pathname } = useLocation()
+  const previousPath = useRef(pathname)
+  const curtain = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const changed = previousPath.current !== pathname
+    previousPath.current = pathname
+
+    const node = curtain.current
+    if (!node) return
+
+    gsap.killTweensOf(node)
+
+    if (
+      !changed ||
+      window.innerWidth < 1280 ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      gsap.set(node, { clipPath: 'inset(100% 0% 0% 0%)' })
+      return
+    }
+
+    // The neutral sheet is visible while the new page mounts, then uncovers
+    // it from bottom to top. No transformations of existing page elements.
+    gsap.fromTo(
+      node,
+      { clipPath: 'inset(0% 0% 0% 0%)' },
+      {
+        clipPath: 'inset(0% 0% 100% 0%)',
+        duration: 0.9,
+        ease: 'power3.inOut',
+        overwrite: true,
+      },
+    )
+
+    return () => { gsap.killTweensOf(node) }
+  }, [pathname])
+
+  return (
+    <div
+      ref={curtain}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[70] bg-canvas"
+      style={{ clipPath: 'inset(100% 0% 0% 0%)' }}
+    />
+  )
+}
+
+// ==========================================
 // PRELOADER
 // ==========================================
 
@@ -53,6 +109,7 @@ export default function App() {
     <HashRouter>
       <ScrollToTop />
       <NavigationBridge />
+      <DesktopPageReveal />
 
       <Preloader />
 
