@@ -73,7 +73,7 @@ function DesktopPageReveal() {
       { clipPath: 'inset(0% 0% 0% 0%)' },
       {
         clipPath: 'inset(0% 0% 100% 0%)',
-        duration: 0.9,
+        duration: 1.1,
         ease: 'power3.inOut',
         overwrite: true,
       },
