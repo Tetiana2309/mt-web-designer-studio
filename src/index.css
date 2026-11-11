@@ -287,3 +287,61 @@ body {
     font-size: clamp(72px, 6.25vw, 96px) !important;
   }
 }
+
+
+/* ==========================================
+   LANDSCAPE TOUCH TABLET — SHORT VIEWPORT
+   Lenovo Idea Tab class of displays: desktop-width CSS viewport with
+   considerably less height than the 1002px Figma desktop canvas.
+   Only About Us 1 / About Us 2; no header, footer, other pages or animation
+   changes. At 1440×1002 the original Figma positions remain unchanged.
+========================================== */
+
+@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) and (min-width: 1280px) and (max-width: 1535px) and (max-height: 900px) {
+  /* About Us 1 — compress vertical coordinates, keeping the full desktop
+     two-photo composition and 18px readable copy. */
+  [data-about-layout="desktop"] > h1[data-about-title-mask] {
+    top: min(118px, 11.776dvh);
+  }
+
+  [data-about-layout="desktop"] > [data-about-photo]:nth-child(1),
+  [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
+    top: min(325px, 32.435dvh);
+    height: min(478px, 47.705dvh);
+  }
+
+  [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(1) {
+    top: min(271px, 27.046dvh);
+  }
+
+  [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(2) {
+    top: min(357px, 35.629dvh);
+  }
+
+  [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(3) {
+    top: min(665px, 66.367dvh);
+  }
+
+  [data-about-layout="desktop"] > div:last-child {
+    top: min(781px, 77.944dvh);
+  }
+
+  /* About Us 2 — keep four values in their original order, but fit them
+     between the navigation and the footer on a short landscape screen. */
+  [data-about-two-layout="desktop"] > div:first-child {
+    top: min(189px, 18.862dvh);
+  }
+
+  [data-about-two-layout="desktop"] > [data-about-two-divider] {
+    top: min(231px, 23.054dvh);
+  }
+
+  [data-about-two-layout="desktop"] > ul {
+    top: min(338px, 33.733dvh);
+    gap: min(64px, 6.387dvh);
+  }
+
+  [data-about-two-layout="desktop"] > ul > [data-about-two-row] {
+    height: min(73px, 7.286dvh);
+  }
+}
