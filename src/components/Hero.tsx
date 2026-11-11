@@ -659,7 +659,7 @@ export default function Hero() {
             aria-hidden="true"
             className="font-semibold text-accent min-[1280px]:font-medium"
           >
-            <RevealWords text="drive results." />
+            <RevealWords text="drive results" />
           </span>
         </h1>
 
