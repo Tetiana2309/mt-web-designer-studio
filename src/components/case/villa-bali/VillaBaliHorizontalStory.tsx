@@ -353,6 +353,19 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
     const outroOverlay = outroOverlayRef.current
     if (!story || !world || !camera || !outroOverlay) return
 
+    // Anchor the opening video to the real viewport rather than the
+    // height-scaled 1002px canvas on compact desktop widths.
+    const alignIntroVideo = () => {
+      const video = world.querySelector<HTMLElement>('[data-case-intro-video]')
+      if (!video) return
+      const compact = window.innerWidth >= 1280 && window.innerWidth <= 1440
+      const worldScale = window.innerHeight / DESIGN_HEIGHT
+      gsap.set(video, {
+        left: compact ? window.innerWidth * 0.80 / worldScale : 1346,
+        top: compact ? 215 : 107,
+      })
+    }
+
     const mm = gsap.matchMedia()
 
     // The "next cases" link lives inside a world scaled to viewport height.
@@ -379,6 +392,7 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
         const cameraStop = (x: number) => -Math.min(maxCameraX(), Math.max(0, x)) * scale()
 
         gsap.set(world, { scale: scale(), transformOrigin: 'top left' })
+        alignIntroVideo()
         alignNextCases()
 
         const titleLines = gsap.utils.toArray<HTMLElement>(
@@ -582,6 +596,7 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
           invalidateOnRefresh: true,
           onRefresh: () => {
             gsap.set(world, { scale: scale(), transformOrigin: 'top left' })
+            alignIntroVideo()
             alignNextCases()
           },
 
@@ -599,6 +614,7 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
 
     mm.add('(min-width: 900px) and (prefers-reduced-motion: reduce)', () => {
       gsap.set(world, { scale: window.innerHeight / DESIGN_HEIGHT, transformOrigin: 'top left' })
+      alignIntroVideo()
       alignNextCases()
       gsap.set(world.querySelectorAll('[data-bali-title-line]'), { opacity: 1, y: 0 })
       gsap.set(world.querySelectorAll('[data-bali-word]'), { color: '#3C3A36' })
