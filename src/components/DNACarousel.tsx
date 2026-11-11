@@ -149,7 +149,7 @@ export default function DNACarousel({
 
   const layoutScale =
     viewportWidth >= 1280
-      ? 1
+      ? clamp(viewportWidth / 1700, 0.82, 1)
       : viewportWidth >= 768
         ? clamp(viewportWidth / 1280, 0.78, 1)
         : clamp(viewportWidth / 650, 0.53, 0.78)
