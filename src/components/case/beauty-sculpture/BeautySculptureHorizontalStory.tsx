@@ -693,7 +693,7 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
   return (
     <>
       <div className="relative hidden min-[900px]:block" aria-label="BeautySculpture Community project story">
-        <div className="pointer-events-none sticky top-0 z-40 mb-[-100dvh] h-dvh [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-40 h-dvh [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
           {chrome}
         </div>
         <div ref={storyRef} className="relative h-dvh w-full overflow-hidden bg-canvas">
