@@ -188,6 +188,7 @@ export default function Portfolio() {
 
         <div className="hidden min-[1280px]:block">
           <h1
+            data-portfolio-laptop-heading
             className="absolute top-[calc(129*var(--u))] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-center"
             style={{
               color: '#3A5F73',
