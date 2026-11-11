@@ -116,3 +116,40 @@ body {
     background-color: var(--color-canvas);
   }
 }
+
+
+/* ==========================================
+   COMPACT DESKTOP / 13-INCH RETINA LAPTOPS
+   The desktop breakpoint starts at 1280 CSS px, but the contact form
+   previously retained 1920px-sized fixed columns (619px + 755px).
+   Keep the original 1920px design and all phone/tablet layouts unchanged.
+========================================== */
+
+@media screen and (min-width: 1280px) and (max-width: 1535px) {
+  /* Use the available content width instead of overflowing the viewport. */
+  [data-contact-form] [data-contact-section],
+  [data-contact-form] [data-contact-send] {
+    grid-template-columns: minmax(190px, 30%) minmax(0, 1fr);
+    column-gap: 24px;
+  }
+
+  /* Four 168px choices do not fit into the narrower right-hand column. */
+  [data-contact-form] [data-contact-fields] {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  [data-contact-form] fieldset [data-contact-fields] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+
+  [data-contact-form] [data-contact-content] {
+    min-width: 0;
+  }
+
+  /* The 100px fixed portfolio heading is large on compact laptop displays. */
+  [data-portfolio-laptop-heading] {
+    font-size: clamp(72px, 6.25vw, 96px) !important;
+  }
+}
