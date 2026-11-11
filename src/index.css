@@ -309,44 +309,44 @@ body {
   /* ABOUT US ONE — keep the desktop columns, move contents vertically.
      Fixed text sizes stay readable; photos remain above the footer. */
   [data-about-layout="desktop"] > h1[data-about-title-mask] {
-    top: calc(0.108 * var(--about-short-stage));
+    top: max(78px, 10.8dvh);
   }
 
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(1),
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
-    top: calc(0.30 * var(--about-short-stage));
-    height: calc(0.48 * var(--about-short-stage));
+    top: max(216px, 30dvh);
+    height: max(346px, 48dvh);
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(1) {
-    top: calc(0.245 * var(--about-short-stage));
+    top: max(177px, 24.5dvh);
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(2) {
-    top: calc(0.365 * var(--about-short-stage));
+    top: max(263px, 36.5dvh);
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(3) {
-    top: calc(0.685 * var(--about-short-stage));
+    top: max(493px, 68.5dvh);
   }
 
   [data-about-layout="desktop"] > div:last-child {
-    top: calc(0.835 * var(--about-short-stage));
+    top: max(601px, 83.5dvh);
   }
 
   /* ABOUT US TWO — all four rows now end before the bottom footer.
      The source component already removes its desktop translate at <=1535px. */
   [data-about-two-layout="desktop"] > div:first-child {
-    top: calc(0.15 * var(--about-short-stage));
+    top: max(108px, 15dvh);
   }
 
   [data-about-two-layout="desktop"] > [data-about-two-divider] {
-    top: calc(0.20 * var(--about-short-stage));
+    top: max(144px, 20dvh);
   }
 
   [data-about-two-layout="desktop"] > ul {
-    top: calc(0.30 * var(--about-short-stage));
-    gap: calc(0.0625 * var(--about-short-stage));
+    top: max(216px, 30dvh);
+    gap: max(45px, 6.25dvh);
     translate: none;
   }
 
