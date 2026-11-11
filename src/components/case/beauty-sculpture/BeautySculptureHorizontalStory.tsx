@@ -143,14 +143,40 @@ function Headline({
   )
 }
 
+function threeLines(text: string): string[][] {
+  const words = text.split(' ')
+  const lengths = words.map((word) => word.length)
+  let best = [1, 2]
+  let bestScore = Infinity
+  for (let first = 1; first < words.length - 1; first++) {
+    for (let second = first + 1; second < words.length; second++) {
+      const sizes = [
+        lengths.slice(0, first).reduce((a, b) => a + b, 0) + first - 1,
+        lengths.slice(first, second).reduce((a, b) => a + b, 0) + second - first - 1,
+        lengths.slice(second).reduce((a, b) => a + b, 0) + words.length - second - 1,
+      ]
+      const score = Math.max(...sizes) - Math.min(...sizes)
+      if (score < bestScore) {
+        bestScore = score
+        best = [first, second]
+      }
+    }
+  }
+  return [words.slice(0, best[0]), words.slice(best[0], best[1]), words.slice(best[1])]
+}
+
 function Description({ children, x, y, width }: { children: ReactNode; x: number; y: number; width: number }) {
   return (
     <p data-beauty-copy className="absolute m-0" style={{ left: x, top: y, width, ...bodyStyle, fontSize: 18, letterSpacing: '-0.54px' }}>
-      {String(children).split(' ').map((word, index) => (
-        <Fragment key={`${index}-${word}`}>
-          {index > 0 ? ' ' : null}
-          <span data-beauty-word style={{ color: '#B5B5B5' }}>{word}</span>
-        </Fragment>
+      {threeLines(String(children)).map((line, lineIndex) => (
+        <span key={lineIndex} className="block whitespace-nowrap">
+          {line.map((word, index) => (
+            <Fragment key={`${lineIndex}-${index}-${word}`}>
+              {index > 0 ? ' ' : null}
+              <span data-beauty-word style={{ color: '#B5B5B5' }}>{word}</span>
+            </Fragment>
+          ))}
+        </span>
       ))}
     </p>
   )
