@@ -384,12 +384,8 @@ body {
     font-size: 78px !important;
   }
 
-  /* Shift the next-case control and the opening video slightly left,
-     keeping their vertical guide and GSAP scroll behavior unchanged. */
-  [data-case-next] {
-    left: 993px !important;
-  }
-
+  /* Move only the opening video; next-case alignment is calculated from
+     the actual viewport and horizontal-world scale in each case. */
   [data-case-intro-video] {
     left: 1256px !important;
   }
