@@ -361,8 +361,8 @@ export default function VillaBaliHorizontalStory({ chrome }: { chrome: ReactNode
       const compact = window.innerWidth >= 1280 && window.innerWidth <= 1440
       const worldScale = window.innerHeight / DESIGN_HEIGHT
       gsap.set(video, {
-        left: compact ? window.innerWidth * 0.80 / worldScale : 1346,
-        top: compact ? 215 : 107,
+        left: compact ? window.innerWidth * 0.72 / worldScale : 1346,
+        top: 107,
       })
     }
 
