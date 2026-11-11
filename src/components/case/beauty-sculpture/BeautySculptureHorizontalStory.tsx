@@ -96,7 +96,6 @@ function ImageScene({ first, second, third, name, x, y, width, height, layer = 1
 function VideoScene({ x, y, width, height }: { x: number; y: number; width: number; height: number }) {
   return (
     <div
-      data-case-intro-video
       data-beauty-media
       className="absolute overflow-hidden"
       style={{ left: x, top: y, width, height, zIndex: 1 }}
@@ -363,19 +362,6 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
     const outroOverlay = outroOverlayRef.current
     if (!story || !world || !camera || !outroOverlay) return
 
-    // Anchor the opening video to the real viewport rather than the
-    // height-scaled 1002px canvas on compact desktop widths.
-    const alignIntroVideo = () => {
-      const video = world.querySelector<HTMLElement>('[data-case-intro-video]')
-      if (!video) return
-      const compact = window.innerWidth >= 1280 && window.innerWidth <= 1440
-      const worldScale = window.innerHeight / DESIGN_HEIGHT
-      gsap.set(video, {
-        left: compact ? window.innerWidth * 0.72 / worldScale : 1346,
-        top: 107,
-      })
-    }
-
     const mm = gsap.matchMedia()
 
     mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
@@ -388,7 +374,6 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
         const cameraStop = (x: number) => -Math.min(maxCameraX(), Math.max(0, x)) * scale()
 
         gsap.set(world, { scale: scale(), transformOrigin: 'top left' })
-        alignIntroVideo()
 
         const titleLines = gsap.utils.toArray<HTMLElement>(
           '[data-beauty-title-line]', world,
@@ -596,10 +581,7 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
           animation: scene,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onRefresh: () => {
-            gsap.set(world, { scale: scale(), transformOrigin: 'top left' })
-            alignIntroVideo()
-          },
+          onRefresh: () => gsap.set(world, { scale: scale(), transformOrigin: 'top left' }),
 
         })
 
@@ -615,7 +597,6 @@ export default function BeautySculptureHorizontalStory({ chrome }: { chrome: Rea
 
     mm.add('(min-width: 900px) and (prefers-reduced-motion: reduce)', () => {
       gsap.set(world, { scale: window.innerHeight / DESIGN_HEIGHT, transformOrigin: 'top left' })
-      alignIntroVideo()
       gsap.set(world.querySelectorAll('[data-beauty-title-line]'), { opacity: 1, y: 0 })
       gsap.set(world.querySelectorAll('[data-beauty-word]'), { color: '#3C3A36' })
     })
