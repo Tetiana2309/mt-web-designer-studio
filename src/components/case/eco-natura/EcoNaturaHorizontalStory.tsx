@@ -345,6 +345,20 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
 
     const mm = gsap.matchMedia()
 
+    // The "next cases" link lives inside a world scaled to viewport height.
+    // Convert the shared 40px right screen guide back to world coordinates.
+    // This keeps its right edge aligned with LET'S TALK at 1280–1440px.
+    const alignNextCases = () => {
+      const next = world.querySelector<HTMLElement>('[data-case-next]')
+      if (!next) return
+      const compact = window.innerWidth >= 1280 && window.innerWidth <= 1440
+      const worldScale = window.innerHeight / DESIGN_HEIGHT
+      const x = compact
+        ? (window.innerWidth - 40) / worldScale - 182
+        : 1058
+      gsap.set(next, { left: x })
+    }
+
     mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
       const ctx = gsap.context(() => {
         const scale = () => window.innerHeight / DESIGN_HEIGHT
@@ -355,6 +369,7 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
         const cameraStop = (x: number) => -Math.min(maxCameraX(), Math.max(0, x)) * scale()
 
         gsap.set(world, { scale: scale(), transformOrigin: 'top left' })
+        alignNextCases()
 
         const titleLines = gsap.utils.toArray<HTMLElement>(
           '[data-eco-title-line]', world,
@@ -555,7 +570,10 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
           animation: scene,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onRefresh: () => gsap.set(world, { scale: scale(), transformOrigin: 'top left' }),
+          onRefresh: () => {
+            gsap.set(world, { scale: scale(), transformOrigin: 'top left' })
+            alignNextCases()
+          },
 
         })
 
@@ -571,6 +589,7 @@ export default function EcoNaturaHorizontalStory({ chrome }: { chrome: ReactNode
 
     mm.add('(min-width: 900px) and (prefers-reduced-motion: reduce)', () => {
       gsap.set(world, { scale: window.innerHeight / DESIGN_HEIGHT, transformOrigin: 'top left' })
+      alignNextCases()
       gsap.set(world.querySelectorAll('[data-eco-title-line]'), { opacity: 1, y: 0 })
       gsap.set(world.querySelectorAll('[data-eco-word]'), { color: '#3C3A36' })
     })
