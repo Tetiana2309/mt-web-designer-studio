@@ -365,3 +365,65 @@ body {
     height: 73px;
   }
 }
+
+
+/* ==========================================
+   DESKTOP POLISH — 1280 TO 1440
+   Preserve the approved 1920px design and mobile/tablet layouts.
+========================================== */
+
+@media screen and (min-width: 1280px) and (max-width: 1440px) {
+  /* The slogan, not its left edge, is centered between the footer rails. */
+  [data-footer-slogan] {
+    left: 50% !important;
+    translate: -50% 0;
+  }
+
+  /* User-approved 78px title for compact desktop Portfolio. */
+  [data-portfolio-laptop-heading] {
+    font-size: 78px !important;
+  }
+
+  /* Shift the next-case control and the opening video slightly left,
+     keeping their vertical guide and GSAP scroll behavior unchanged. */
+  [data-case-next] {
+    left: 993px !important;
+  }
+
+  [data-case-intro-video] {
+    left: 1256px !important;
+  }
+}
+
+/* The DNA helix must not end at a hard vertical crop on desktop. */
+@media screen and (min-width: 1280px) {
+  [data-portfolio-dna-frame] [aria-roledescription="carousel"] {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 6%,
+      #000 94%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 6%,
+      #000 94%,
+      transparent 100%
+    );
+  }
+}
+
+/* Horizontal case worlds are uniformly scaled by viewport height (1002px
+   design canvas). Compensate their copy on short desktop displays so the
+   text remains visually close to the 18px original instead of shrinking. */
+@media screen and (min-width: 1280px) and (max-width: 1440px) and (max-height: 950px) {
+  [data-eco-copy],
+  [data-bali-copy],
+  [data-zone-copy],
+  [data-beauty-copy] {
+    font-size: clamp(18px, calc(43px - 2.5dvh), 27px) !important;
+    width: clamp(340px, calc(700px - 33dvh), 460px) !important;
+  }
+}
