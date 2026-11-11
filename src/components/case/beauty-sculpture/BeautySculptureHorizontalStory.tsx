@@ -96,6 +96,7 @@ function ImageScene({ first, second, third, name, x, y, width, height, layer = 1
 function VideoScene({ x, y, width, height }: { x: number; y: number; width: number; height: number }) {
   return (
     <div
+      data-case-intro-video
       data-beauty-media
       className="absolute overflow-hidden"
       style={{ left: x, top: y, width, height, zIndex: 1 }}
