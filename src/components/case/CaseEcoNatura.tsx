@@ -42,7 +42,7 @@ export default function CaseEcoNatura() {
       </div>
 
       <div inert={menuOpen}>
-        <EcoNaturaHorizontalStory chrome={null} />
+        <EcoNaturaHorizontalStory />
         <div className="relative h-24 min-[900px]:hidden">
           <AboutFooter />
         </div>
