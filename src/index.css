@@ -393,6 +393,11 @@ body {
   [data-case-intro-video] {
     left: 1256px !important;
   }
+
+  /* Eco Natura's source video starts 77px farther right than the others. */
+  [data-case-intro-video][data-eco-media] {
+    left: 1333px !important;
+  }
 }
 
 /* The DNA helix must not end at a hard vertical crop on desktop. */
