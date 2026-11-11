@@ -48,7 +48,7 @@ export default function CaseZone() {
       </div>
 
       <div inert={menuOpen}>
-        <ZoneHorizontalStory chrome={null} />
+        <ZoneHorizontalStory />
 
         <div className="relative h-24 min-[900px]:hidden">
           <AboutFooter />
