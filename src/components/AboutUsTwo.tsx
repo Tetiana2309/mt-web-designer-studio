@@ -694,7 +694,7 @@ export default function AboutUsTwo() {
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 max-[767px]:opacity-50"
+        className="pointer-events-none absolute inset-0 -z-10 max-[767px]:opacity-50 min-[1280px]:max-[1535px]:hidden"
       >
         <InfiniteSpiral
           images={previewImages}
@@ -747,7 +747,7 @@ export default function AboutUsTwo() {
               left: margin,
               right: margin,
             }}
-            className="absolute top-[calc(50%+79*var(--u))] flex -translate-y-1/2 flex-col gap-[calc(64*var(--u))]"
+            className="absolute top-[calc(50%+79*var(--u))] flex min-[1536px]:-translate-y-1/2 flex-col gap-[calc(64*var(--u))]"
           >
             {values.map(
               ({
