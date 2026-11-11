@@ -207,8 +207,27 @@ body {
     top: 338px;
     left: 40px !important;
     right: 40px !important;
+    /* Tailwind v4's translate utility is independent of transform.
+       Cancel the inherited -50% vertical translation explicitly. */
+    translate: none;
     transform: none;
     gap: 64px;
+  }
+
+  /* Figma's compact desktop uses a clean background without the
+     rotating portfolio-card spiral; preserve the original at 1920px. */
+  section:has([data-about-two-layout="desktop"]) > div[aria-hidden="true"] {
+    opacity: 0;
+  }
+
+  /* Match the three intro-label positions on the 1440px frame. */
+  [data-about-two-layout="desktop"] > div:first-child > p:nth-child(2) {
+    left: calc(50% - 111px);
+  }
+
+  [data-about-two-layout="desktop"] > div:first-child > p:nth-child(3) {
+    left: auto;
+    right: 3px;
   }
 
   [data-about-two-layout="desktop"] > ul > [data-about-two-row] {
