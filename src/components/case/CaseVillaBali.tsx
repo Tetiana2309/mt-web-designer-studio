@@ -50,7 +50,7 @@ export default function CaseVillaBali() {
       </div>
 
       <div inert={menuOpen}>
-        <VillaBaliHorizontalStory chrome={null} />
+        <VillaBaliHorizontalStory />
 
         <div className="relative h-24 min-[900px]:hidden">
           <AboutFooter />
