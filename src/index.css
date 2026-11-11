@@ -438,3 +438,15 @@ body {
     font-size: clamp(18px, calc(18px * (1002px / 100dvh)), 26px) !important;
   }
 }
+
+
+/* All five desktop case stories: allow full-size copy to wrap in three
+   lines instead of the compact four-line column. Mobile is unchanged. */
+@media screen and (min-width: 1280px) {
+  [data-bali-copy],
+  [data-eco-copy],
+  [data-zone-copy],
+  [data-beauty-copy] {
+    width: 500px !important;
+  }
+}
