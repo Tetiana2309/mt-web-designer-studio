@@ -131,7 +131,7 @@ function Description({ children, x, y, width }: { children: ReactNode; x: number
 
 function NextCases({ x, y }: { x: number; y: number }) {
   return (
-    <div className="absolute z-10" style={{ left: x, top: y }}>
+    <div data-case-next className="absolute z-10" style={{ left: x, top: y }}>
       <NextCasesButton />
     </div>
   )
@@ -148,7 +148,7 @@ function LastCase({ x, y }: { x: number; y: number }) {
 function DesktopWorld() {
   return (
     <div className="relative h-250.5 bg-canvas" style={{ width: STORY_WIDTH }}>
-      <div data-bali-media className="absolute overflow-hidden" style={{ left: 1346, top: 107, width: 1400, height: 788, zIndex: 1 }}>
+      <div data-case-intro-video data-bali-media className="absolute overflow-hidden" style={{ left: 1346, top: 107, width: 1400, height: 788, zIndex: 1 }}>
         <video
           src={CAPONE_VIDEO}
           aria-label="Capone Agency cinematic introduction"
