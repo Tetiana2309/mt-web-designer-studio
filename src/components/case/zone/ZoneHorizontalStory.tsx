@@ -314,7 +314,7 @@ function CaseZoom({ rootRef }: { rootRef: RefObject<HTMLDivElement | null> }) {
   ) : null
 }
 
-export default function ZoneHorizontalStory({ chrome }: { chrome: ReactNode }) {
+export default function ZoneHorizontalStory() {
   const storyRef = useRef<HTMLDivElement>(null)
   const mobileRef = useRef<HTMLDivElement>(null)
   const worldRef = useRef<HTMLDivElement>(null)
@@ -694,9 +694,6 @@ export default function ZoneHorizontalStory({ chrome }: { chrome: ReactNode }) {
   return (
     <>
       <div className="relative hidden min-[900px]:block" aria-label="Zone Community project story">
-        <div className="pointer-events-none fixed inset-x-0 top-0 z-40 h-dvh [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
-          {chrome}
-        </div>
         <div ref={storyRef} className="relative h-dvh w-full overflow-hidden bg-canvas">
           <div ref={cameraRef} className="absolute left-0 top-0 will-change-transform">
             <div ref={worldRef} className="absolute left-0 top-0">
