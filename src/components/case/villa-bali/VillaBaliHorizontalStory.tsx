@@ -78,6 +78,7 @@ function ImageScene({ first, second, name, x, y, width, height, layer = 1, direc
 function VideoScene({ x, y, width, height }: { x: number; y: number; width: number; height: number }) {
   return (
     <div
+      data-case-intro-video
       data-bali-media
       className="absolute overflow-hidden"
       style={{ left: x, top: y, width, height, zIndex: 1 }}
@@ -141,7 +142,7 @@ function Description({ children, x, y, width }: { children: ReactNode; x: number
 
 function NextCases({ x, y }: { x: number; y: number }) {
   return (
-    <div className="absolute z-10" style={{ left: x, top: y }}>
+    <div data-case-next className="absolute z-10" style={{ left: x, top: y }}>
       <NextCasesButton />
     </div>
   )
