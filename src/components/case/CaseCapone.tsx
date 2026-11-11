@@ -49,7 +49,7 @@ export default function CaseCapone() {
       </div>
 
       <div inert={menuOpen}>
-        <CaponeHorizontalStory chrome={null} />
+        <CaponeHorizontalStory />
 
         <div className="relative h-24 min-[900px]:hidden">
           <AboutFooter />
