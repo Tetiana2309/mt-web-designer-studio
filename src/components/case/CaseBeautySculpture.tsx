@@ -43,8 +43,12 @@ export default function CaseBeautySculpture() {
         />
       </div>
 
+      <div className="pointer-events-none fixed inset-0 z-40 hidden min-[900px]:block [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+        {chrome}
+      </div>
+
       <div inert={menuOpen}>
-        <BeautySculptureHorizontalStory chrome={chrome} />
+        <BeautySculptureHorizontalStory chrome={null} />
 
         <div className="relative h-24 min-[900px]:hidden">
           <AboutFooter />
