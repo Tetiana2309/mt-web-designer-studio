@@ -290,58 +290,67 @@ body {
 
 
 /* ==========================================
-   LANDSCAPE TOUCH TABLET — SHORT VIEWPORT
-   Lenovo Idea Tab class of displays: desktop-width CSS viewport with
-   considerably less height than the 1002px Figma desktop canvas.
-   Only About Us 1 / About Us 2; no header, footer, other pages or animation
-   changes. At 1440×1002 the original Figma positions remain unchanged.
+   SHORT LANDSCAPE DESKTOP VIEWPORT — ABOUT ONLY
+   For 1280–1535px wide windows around 746px tall (including
+   Lenovo landscape and browser responsive preview).
+   Match by viewport geometry, not hardware/pointer capabilities.
+   Preserve the Figma 1440x1002 layout on normal-height displays.
 ========================================== */
 
-@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) and (min-width: 1280px) and (max-width: 1535px) and (max-height: 900px) {
-  /* About Us 1 — compress vertical coordinates, keeping the full desktop
-     two-photo composition and 18px readable copy. */
+@media screen and (orientation: landscape) and (min-width: 1280px) and (max-width: 1535px) and (max-height: 900px) {
+  /* For extremely short browser windows, allow normal vertical scrolling
+     instead of making the footer cover the last text. */
+  section:has([data-about-layout="desktop"]),
+  section:has([data-about-two-layout="desktop"]) {
+    --about-short-stage: max(720px, 100dvh);
+    min-height: var(--about-short-stage);
+  }
+
+  /* ABOUT US ONE — keep the desktop columns, move contents vertically.
+     Fixed text sizes stay readable; photos remain above the footer. */
   [data-about-layout="desktop"] > h1[data-about-title-mask] {
-    top: min(118px, 11.776dvh);
+    top: calc(0.108 * var(--about-short-stage));
   }
 
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(1),
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
-    top: min(325px, 32.435dvh);
-    height: min(478px, 47.705dvh);
+    top: calc(0.30 * var(--about-short-stage));
+    height: calc(0.48 * var(--about-short-stage));
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(1) {
-    top: min(271px, 27.046dvh);
+    top: calc(0.245 * var(--about-short-stage));
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(2) {
-    top: min(357px, 35.629dvh);
+    top: calc(0.365 * var(--about-short-stage));
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(3) {
-    top: min(665px, 66.367dvh);
+    top: calc(0.685 * var(--about-short-stage));
   }
 
   [data-about-layout="desktop"] > div:last-child {
-    top: min(781px, 77.944dvh);
+    top: calc(0.835 * var(--about-short-stage));
   }
 
-  /* About Us 2 — keep four values in their original order, but fit them
-     between the navigation and the footer on a short landscape screen. */
+  /* ABOUT US TWO — all four rows now end before the bottom footer.
+     The source component already removes its desktop translate at <=1535px. */
   [data-about-two-layout="desktop"] > div:first-child {
-    top: min(189px, 18.862dvh);
+    top: calc(0.15 * var(--about-short-stage));
   }
 
   [data-about-two-layout="desktop"] > [data-about-two-divider] {
-    top: min(231px, 23.054dvh);
+    top: calc(0.20 * var(--about-short-stage));
   }
 
   [data-about-two-layout="desktop"] > ul {
-    top: min(338px, 33.733dvh);
-    gap: min(64px, 6.387dvh);
+    top: calc(0.30 * var(--about-short-stage));
+    gap: calc(0.0625 * var(--about-short-stage));
+    translate: none;
   }
 
   [data-about-two-layout="desktop"] > ul > [data-about-two-row] {
-    height: min(73px, 7.286dvh);
+    height: 73px;
   }
 }
