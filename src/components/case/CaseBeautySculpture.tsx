@@ -48,7 +48,7 @@ export default function CaseBeautySculpture() {
       </div>
 
       <div inert={menuOpen}>
-        <BeautySculptureHorizontalStory chrome={null} />
+        <BeautySculptureHorizontalStory />
 
         <div className="relative h-24 min-[900px]:hidden">
           <AboutFooter />
