@@ -318,7 +318,7 @@ body {
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
     top: max(158px, 22dvh);
     height: min(478px, 53dvh);
-    width: calc(min(478px, 53dvh) * 420 / 478);
+    width: min(420px, 46.569dvh);
   }
 
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(1) {
@@ -326,7 +326,7 @@ body {
   }
 
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
-    left: calc(48px + min(478px, 53dvh) * 420 / 478);
+    left: calc(48px + min(420px, 46.569dvh));
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(1) {
