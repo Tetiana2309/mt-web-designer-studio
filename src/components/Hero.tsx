@@ -682,7 +682,7 @@ export default function Hero() {
 
           {/* SLOGAN */}
 
-          <p className="absolute left-1/2 -translate-x-1/2 opacity-85 min-[1280px]:left-[48.696%] min-[1280px]:translate-x-0 min-[1280px]:opacity-100">
+          <p data-footer-slogan className="absolute left-1/2 -translate-x-1/2 opacity-85 min-[1280px]:left-[48.696%] min-[1280px]:translate-x-0 min-[1280px]:opacity-100">
             {footerPhrases.map((phrase, index) => (
               <span
                 key={phrase}
