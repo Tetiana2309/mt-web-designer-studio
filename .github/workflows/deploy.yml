@@ -45,6 +45,7 @@ jobs:
 
     permissions:
       contents: read
+      actions: read
       pages: write
       id-token: write
 
@@ -62,9 +63,8 @@ jobs:
           ARTIFACT_NAME: github-pages-${{ github.run_id }}
         run: |
           for attempt in $(seq 1 12); do
-            count=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?per_page=100" \
-              --jq '[.artifacts[] | select(.name == env.ARTIFACT_NAME)] | length' 2>/dev/null || echo 0)
-            if [ "$count" = "1" ]; then
+            if gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?per_page=100" \
+              --jq '.artifacts[].name' 2>/dev/null | grep -Fxq "$ARTIFACT_NAME"; then
               echo "Pages artifact is available: $ARTIFACT_NAME"
               sleep 15
               exit 0
