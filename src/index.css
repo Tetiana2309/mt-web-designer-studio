@@ -312,10 +312,21 @@ body {
     top: max(78px, 10.8dvh);
   }
 
+  /* Keep the original Figma photo aspect ratio (420 × 478). The previous
+     height-only override made object-cover crop the women's heads. */
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(1),
   [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
-    top: max(216px, 30dvh);
-    height: max(346px, 48dvh);
+    top: max(158px, 22dvh);
+    height: min(478px, 53dvh);
+    width: calc(min(478px, 53dvh) * 420 / 478);
+  }
+
+  [data-about-layout="desktop"] > [data-about-photo]:nth-child(1) {
+    left: 40px;
+  }
+
+  [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
+    left: calc(48px + min(478px, 53dvh) * 420 / 478);
   }
 
   [data-about-layout="desktop"] > p[data-about-description]:nth-of-type(1) {
