@@ -405,3 +405,36 @@ body {
     );
   }
 }
+
+
+/* TARGETED DESKTOP FIXES — 2026-11-11
+   Only About photos, desktop header nav and case description typography. */
+
+/* Keep navigation type size consistent across the 1535/1536 breakpoint.
+   The compact-desktop rule above already uses 20px. */
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  header nav[aria-label="Main navigation"] .nav-link {
+    font-size: 20px;
+  }
+}
+
+/* On short desktop screens, line up both photo bottoms with the
+   "read more" text baseline without altering their size or crop. */
+@media screen and (orientation: landscape) and (min-width: 1280px) and (max-width: 1440px) and (max-height: 900px) {
+  [data-about-layout="desktop"] > [data-about-photo]:nth-child(1),
+  [data-about-layout="desktop"] > [data-about-photo]:nth-child(2) {
+    top: calc(max(601px, 83.5dvh) + 22px - min(478px, 53dvh));
+  }
+}
+
+/* Case worlds scale with viewport height (1002px design canvas).
+   Counter-scale only the paragraph font, not images, headings or positions.
+   Keep the existing 18px fallback in browsers without typed CSS division. */
+@media screen and (min-width: 1280px) and (max-width: 1920px) and (max-height: 1001px) {
+  [data-bali-copy],
+  [data-eco-copy],
+  [data-zone-copy],
+  [data-beauty-copy] {
+    font-size: clamp(18px, calc(18px * (1002px / 100dvh)), 26px) !important;
+  }
+}
