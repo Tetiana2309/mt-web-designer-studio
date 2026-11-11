@@ -251,6 +251,7 @@ export default function Portfolio() {
         <div
           onPointerDownCapture={handleCarouselPointerDown}
           onClick={handleCarouselClick}
+          data-portfolio-dna-frame
           className="absolute inset-x-0 top-[25%] bottom-[13%] min-[1280px]:top-[23%] min-[1280px]:bottom-[13%]"
         >
           <DNACarousel
