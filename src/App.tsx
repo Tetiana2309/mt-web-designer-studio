@@ -14,6 +14,7 @@ import NavigationBridge from './components/NavigationBridge'
 import Portfolio from './components/Portfolio'
 import ContactsPage from './ContactsPage'
 import Preloader from './components/Preloader'
+import SeoMetadata from './components/SeoMetadata'
 
 // ==========================================
 // SCROLL TO TOP ON PAGE CHANGE
@@ -106,6 +107,7 @@ function DesktopPageReveal() {
 export default function App() {
   return (
     <BrowserRouter>
+      <SeoMetadata />
       <ScrollToTop />
       <NavigationBridge />
       <DesktopPageReveal />

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.mt-web-designer-studio.com/sitemap.xml
