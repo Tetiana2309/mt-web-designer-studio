@@ -10,13 +10,43 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.mt-web-designer-studio.com/" />
     <meta property="og:site_name" content="M&T Web Designer Studio" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.mt-web-designer-studio.com/" />
+    <meta property="og:title" content="M&T Web Designer Studio | Web Design &amp; Development" />
+    <meta property="og:description" content="Custom websites, business websites, landing pages and e-commerce web design and development for brands and businesses." />
+    <meta name="twitter:card" content="summary" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "M&T Web Designer Studio",
-        "alternateName": "M&T Studio",
-        "url": "https://www.mt-web-designer-studio.com/"
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.mt-web-designer-studio.com/#website",
+            "name": "M&T Web Designer Studio",
+            "alternateName": "M&T Studio",
+            "url": "https://www.mt-web-designer-studio.com/",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://www.mt-web-designer-studio.com/#organization" }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://www.mt-web-designer-studio.com/#organization",
+            "name": "M&T Web Designer Studio",
+            "url": "https://www.mt-web-designer-studio.com/",
+            "description": "Web design and website development studio creating custom websites, business websites, landing pages and e-commerce experiences.",
+            "sameAs": ["https://t.me/mtwebdesignerstudio"],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Website design and development",
+              "itemListElement": [
+                { "@type": "OfferCatalog", "name": "Landing page design and development" },
+                { "@type": "OfferCatalog", "name": "Business and corporate website design and development" },
+                { "@type": "OfferCatalog", "name": "E-commerce website design and development" },
+                { "@type": "OfferCatalog", "name": "Custom website design and development" }
+              ]
+            }
+          }
+        ]
       }
     </script>
   </head>
