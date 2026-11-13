@@ -38,4 +38,4 @@ jobs:
           security: strict
           local-dir: ./dist/
           server-dir: ./
-          dry-run: true
+          dry-run: false
