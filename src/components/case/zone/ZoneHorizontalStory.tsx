@@ -95,12 +95,13 @@ function VideoScene({ x, y, width, height }: { x: number; y: number; width: numb
     >
       <video
         src={ZONE_VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/zone.webp`}
         aria-label="Zone Community cinematic introduction"
         autoPlay
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         className="absolute inset-0 block h-full w-full max-w-none object-cover"
       />
     </div>
@@ -758,7 +759,8 @@ export default function ZoneHorizontalStory() {
 
             {/* Intro video: Figma 350x220, no poster. */}
             <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden">
-              <video src={ZONE_VIDEO} aria-label="Zone cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
+              <video src={ZONE_VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/zone.webp`} aria-label="Zone cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
             <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}4-1.webp`} alt="Zone mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />

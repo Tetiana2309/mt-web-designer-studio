@@ -27,6 +27,9 @@ jobs:
       - name: Build website
         run: npm run build
 
+      - name: Generate video preview frames
+        run: bash .github/scripts/generate-video-posters.sh
+
       - name: Test FTPS connection
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:

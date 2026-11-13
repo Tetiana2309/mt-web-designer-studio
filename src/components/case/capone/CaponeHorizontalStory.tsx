@@ -177,12 +177,13 @@ function DesktopWorld() {
       <div data-bali-media className="absolute overflow-hidden" style={{ left: 1346, top: 107, width: 1400, height: 788, zIndex: 1 }}>
         <video
           src={CAPONE_VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/capone.webp`}
           aria-label="Capone Agency cinematic introduction"
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           className="absolute inset-0 block h-full w-full max-w-none object-cover"
         />
       </div>
@@ -748,7 +749,8 @@ export default function CaponeHorizontalStory() {
 
             {/* Intro video: Figma 350x220, no poster. */}
             <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden">
-              <video src={CAPONE_VIDEO} aria-label="Capone cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
+              <video src={CAPONE_VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/capone.webp`} aria-label="Capone cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
             <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}2-1.webp`} alt="Capone mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
