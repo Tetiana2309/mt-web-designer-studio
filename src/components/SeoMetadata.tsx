@@ -4,8 +4,8 @@ import { useLocation } from 'react-router'
 const origin = 'https://www.mt-web-designer-studio.com'
 const metadata: Record<string, { title: string; description: string }> = {
   '/': {
-    title: 'M&T Web Designer Studio | Creative Web Design Agency',
-    description: 'M&T Web Designer Studio creates distinctive websites and digital experiences. Explore our creative portfolio and contact the studio.',
+    title: 'M&T Web Designer Studio | Web Design & Development',
+    description: 'Custom website design and development for businesses and brands. From concept to launch, we build modern websites that help your business grow.',
   },
   '/about': {
     title: 'About Us | M&T Web Designer Studio',
