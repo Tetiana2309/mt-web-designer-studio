@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router'
 
 import AboutUs from './components/AboutUs'
 import AboutUsTwo from './components/AboutUsTwo'
@@ -101,12 +101,11 @@ function DesktopPageReveal() {
 // APP ROUTER
 // ==========================================
 
-// HashRouter keeps deep links working
-// on GitHub Pages without server rewrites.
+// Clean URLs on the custom domain are supported by the Apache SPA fallback.
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ScrollToTop />
       <NavigationBridge />
       <DesktopPageReveal />
@@ -202,7 +201,7 @@ export default function App() {
           element={<Navigate to="/" replace />}
         />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 
