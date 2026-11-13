@@ -197,7 +197,7 @@ function DesktopWorld() {
   return (
     <div className="relative h-250.5 bg-canvas" style={{ width: STORY_WIDTH }}>
       <VideoScene x={1346} y={107} width={1400} height={788} />
-      <ImageScene first="5.1.webp" second="5.2.webp" name="Zone Community shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
+      <ImageScene first="5.1.webp" second="5.2.webp" name="Zone Community website interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
       <NextCases x={1058} y={138} />
       <LastCase x={40} y={138} />
 
@@ -212,8 +212,8 @@ function DesktopWorld() {
       <Description x={4305} y={633} width={340}>{challenge}</Description>
 
       {/* The two replacements share the exact same scrubbed timeline. */}
-      <ImageScene first="5.4.webp" second="5.5.webp" name="Zone Community products and mission" x={5168} y={199} width={1010} height={568} direction="right" />
-      <ImageScene first="5.6.webp" second="5.7.webp" name="Zone Community product details" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
+      <ImageScene first="5.4.webp" second="5.5.webp" name="Zone Community discussions and shared content" x={5168} y={199} width={1010} height={568} direction="right" />
+      <ImageScene first="5.6.webp" second="5.7.webp" name="Zone Community website and community features" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
 
       <Headline text="Fans" x={7599} y={315} />
       <Headline text="Now" x={7744} y={408} />
