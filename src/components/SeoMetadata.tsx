@@ -57,8 +57,20 @@ export default function SeoMetadata() {
     const description = document.querySelector<HTMLMetaElement>('meta[name="description"]')
     if (description) description.content = entry.description
 
+    const pageUrl = origin + (pathname === '/' ? '/' : pathname)
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
-    if (canonical) canonical.href = origin + (pathname === '/' ? '/' : pathname)
+    if (canonical) canonical.href = pageUrl
+
+    // Keep sharing metadata in sync when a visitor navigates between pages.
+    const socialFields: Record<string, string> = {
+      'og:title': entry.title,
+      'og:description': entry.description,
+      'og:url': pageUrl,
+    }
+    for (const [property, value] of Object.entries(socialFields)) {
+      const meta = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`)
+      if (meta) meta.content = value
+    }
   }, [pathname])
 
   return null
