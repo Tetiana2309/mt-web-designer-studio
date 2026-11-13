@@ -4,6 +4,6 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/mt-web-designer-studio/',
+  base: '/',
   plugins: [react(), tailwindcss()],
 })
