@@ -3,6 +3,7 @@ import CtaButton from '../../../components/CtaButton'
 import BeautySculptureLastCasesButton from './BeautySculptureLastCasesButton'
 import { Fragment, useLayoutEffect, useRef, useState, type RefObject, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import CaseVideo from '../CaseVideo'
 import gsap from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -100,17 +101,12 @@ function VideoScene({ x, y, width, height }: { x: number; y: number; width: numb
       className="absolute overflow-hidden"
       style={{ left: x, top: y, width, height, zIndex: 1 }}
     >
-      <video
-        src={BEAUTY_VIDEO}
+      <CaseVideo
+          src={BEAUTY_VIDEO}
           poster={`${import.meta.env.BASE_URL}posters/beauty-sculpture.webp`}
-        aria-label="Beauty Sculpture cinematic introduction"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 block h-full w-full max-w-none object-cover"
-      />
+          label="Beauty Sculpture cinematic introduction"
+          className="absolute inset-0 block h-full w-full max-w-none object-cover"
+        />
     </div>
   )
 }
@@ -755,8 +751,12 @@ export default function BeautySculptureHorizontalStory() {
 
             {/* Intro video: Figma 350x220, no poster. */}
             <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden">
-              <video src={BEAUTY_VIDEO}
-          poster={`${import.meta.env.BASE_URL}posters/beauty-sculpture.webp`} aria-label="Beauty Sculpture cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
+              <CaseVideo
+          src={BEAUTY_VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/beauty-sculpture.webp`}
+          label="Beauty Sculpture cinematic introduction"
+          className="block h-full w-full object-cover"
+        />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
             <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}5-1.webp`} alt="Beauty Sculpture mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />

@@ -3,6 +3,7 @@ import CtaButton from '../../../components/CtaButton'
 import NextCasesButton from './EcoNaturaNextCasesButton'
 import { Fragment, useLayoutEffect, useRef, useState, type RefObject, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import CaseVideo from '../CaseVideo'
 import gsap from 'gsap'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -80,17 +81,12 @@ function VideoScene({ x, y, width, height }: { x: number; y: number; width: numb
       className="absolute overflow-hidden"
       style={{ left: x, top: y, width, height, zIndex: 1, boxShadow: '0 12px 35px rgba(23, 43, 54, 0.045), 0 30px 80px rgba(23, 43, 54, 0.035)' }}
     >
-      <video
-        src={ECO_VIDEO}
+      <CaseVideo
+          src={ECO_VIDEO}
           poster={`${import.meta.env.BASE_URL}posters/eco-natura.webp`}
-        aria-label="Eco Natura homepage video"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 block h-full w-full object-cover"
-      />
+          label="Eco Natura homepage video"
+          className="absolute inset-0 block h-full w-full object-cover"
+        />
     </div>
   )
 }
@@ -728,8 +724,12 @@ export default function EcoNaturaHorizontalStory() {
 
             {/* Intro video: Figma 350x220, no poster. */}
             <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden">
-              <video src={ECO_VIDEO}
-          poster={`${import.meta.env.BASE_URL}posters/eco-natura.webp`} aria-label="Eco Natura cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
+              <CaseVideo
+          src={ECO_VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/eco-natura.webp`}
+          label="Eco Natura cinematic introduction"
+          className="block h-full w-full object-cover"
+        />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
             <img data-eco-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}1-1.webp`} alt="Eco Natura mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />

@@ -9,7 +9,12 @@ if ! command -v ffmpeg >/dev/null 2>&1; then
 fi
 
 while IFS='|' read -r input output; do
-  ffmpeg -nostdin -hide_banner -loglevel error -y -i "public/videos/$input" \
+  # Skip initial black/fade-in frames for these two intros.
+  seek=0
+  case "$output" in
+    eco-natura|beauty-sculpture) seek=1.5 ;;
+  esac
+  ffmpeg -nostdin -hide_banner -loglevel error -y -ss "$seek" -i "public/videos/$input" \
     -frames:v 1 -vf "scale=1280:-2" -q:v 70 "dist/posters/$output.webp"
   test -s "dist/posters/$output.webp"
 done <<'VIDEOS'
