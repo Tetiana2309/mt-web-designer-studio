@@ -49,7 +49,7 @@ export default function SeoMetadata() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    const entry = metadata[pathname] ?? metadata['/']
+    const entry = metadata[pathname] ?? metadata['/']!
     document.title = entry.title
 
     const description = document.querySelector<HTMLMetaElement>('meta[name="description"]')
