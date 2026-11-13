@@ -9,7 +9,7 @@ if ! command -v ffmpeg >/dev/null 2>&1; then
 fi
 
 while IFS='|' read -r input output; do
-  ffmpeg -hide_banner -loglevel error -y -i "public/videos/$input" \
+  ffmpeg -nostdin -hide_banner -loglevel error -y -i "public/videos/$input" \
     -frames:v 1 -vf "scale=1280:-2" -q:v 70 "dist/posters/$output.webp"
   test -s "dist/posters/$output.webp"
 done <<'VIDEOS'
