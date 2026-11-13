@@ -187,7 +187,7 @@ function DesktopWorld() {
           className="absolute inset-0 block h-full w-full max-w-none object-cover"
         />
       </div>
-      <ImageScene first="3.1.webp" second="3.2.webp" name="Luxury Villas Bali shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
+      <ImageScene first="3.1.webp" second="3.2.webp" name="Capone Agency website interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
       <NextCases x={1058} y={138} />
       <LastCase x={40} y={138} />
 
@@ -202,14 +202,14 @@ function DesktopWorld() {
       <Description x={4275} y={633} width={340}>{challenge}</Description>
 
       {/* The two replacements share the exact same scrubbed timeline. */}
-      <ImageScene first="3.3.webp" second="3.4.webp" name="Luxury Villas Bali products and mission" x={5168} y={199} width={1010} height={568} direction="right" />
-      <ImageScene first="3.5.webp" second="3.6.webp" name="Luxury Villas Bali product details" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
+      <ImageScene first="3.3.webp" second="3.4.webp" name="Capone Agency branding and services" x={5168} y={199} width={1010} height={568} direction="right" />
+      <ImageScene first="3.5.webp" second="3.6.webp" name="Capone Agency website details" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
 
       <Headline text="Ready" x={7599} y={315} />
       <Headline text="To" x={7751} y={408} />
       <Headline text="Grow." x={7676} y={500} />
       <Description x={7755} y={633} width={340}>{approach}</Description>
-      <ImageScene first="3.1.webp" name="Luxury Villas Bali final website view" x={8548} y={217} width={1010} height={568} />
+      <ImageScene first="3.1.webp" name="Capone Agency final website view" x={8548} y={217} width={1010} height={568} />
     </div>
   )
 }
@@ -710,7 +710,7 @@ export default function CaponeHorizontalStory() {
 
   return (
     <>
-      <div className="relative hidden min-[900px]:block" aria-label="Luxury Villas Bali project story">
+      <div className="relative hidden min-[900px]:block" aria-label="Capone Agency project story">
         <div ref={storyRef} className="relative h-dvh w-full overflow-hidden bg-canvas">
           <div ref={cameraRef} className="absolute left-0 top-0 will-change-transform">
             <div ref={worldRef} className="absolute left-0 top-0">
