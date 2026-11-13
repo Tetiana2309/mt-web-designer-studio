@@ -193,7 +193,7 @@ function DesktopWorld() {
   return (
     <div className="relative h-250.5 bg-canvas" style={{ width: STORY_WIDTH }}>
       <VideoScene x={1346} y={107} width={1400} height={788} />
-      <ImageScene first="4.1.webp" second="4.2.webp" name="BeautySculpture Community shop interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
+      <ImageScene first="4.1.webp" second="4.2.webp" name="Beauty Sculpture clinic website interface" x={2512} y={217} width={1009} height={568} layer={2} elevated />
       <LastCase x={40} y={138} />
 
       <Headline text="Care" x={484} y={315} initial />
@@ -207,14 +207,14 @@ function DesktopWorld() {
       <Description x={4305} y={633} width={340}>{challenge}</Description>
 
       {/* The two replacements share the exact same scrubbed timeline. */}
-      <ImageScene first="4.6.webp" second="4.7.webp" name="BeautySculpture Community products and mission" x={5168} y={199} width={1010} height={568} direction="right" />
-      <ImageScene first="4.8.webp" second="4.9.webp" name="BeautySculpture Community product details" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
+      <ImageScene first="4.6.webp" second="4.7.webp" name="Beauty Sculpture aesthetic treatments and clinic services" x={5168} y={199} width={1010} height={568} direction="right" />
+      <ImageScene first="4.8.webp" second="4.9.webp" name="Beauty Sculpture treatment information and website details" x={6279} y={363} width={866} height={487} layer={2} direction="left" />
 
       <Headline text="Made" x={7599} y={315} />
       <Headline text="To Earn" x={7744} y={408} />
       <Headline text="Trust." x={7676} y={500} />
       <Description x={7755} y={633} width={340}>{approach}</Description>
-      <ImageScene first="4.1.webp" name="BeautySculpture Community final website view" x={8548} y={217} width={1010} height={568} />
+      <ImageScene first="4.1.webp" name="Beauty Sculpture final website view" x={8548} y={217} width={1010} height={568} />
     </div>
   )
 }
@@ -715,7 +715,7 @@ export default function BeautySculptureHorizontalStory() {
 
   return (
     <>
-      <div className="relative hidden min-[900px]:block" aria-label="BeautySculpture Community project story">
+      <div className="relative hidden min-[900px]:block" aria-label="Beauty Sculpture clinic website project story">
         <div ref={storyRef} className="relative h-dvh w-full overflow-hidden bg-canvas">
           <div ref={cameraRef} className="absolute left-0 top-0 will-change-transform">
             <div ref={worldRef} className="absolute left-0 top-0">
