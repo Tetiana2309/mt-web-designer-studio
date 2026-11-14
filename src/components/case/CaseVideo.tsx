@@ -12,8 +12,11 @@ type CaseVideoProps = {
 // viewport observers during first entry and between client-side routes.
 export default function CaseVideo({ src, poster, label, className }: CaseVideoProps) {
   const webm = src.replace(/\.mp4(\?.*)?$/i, '.webm$1')
+  const animated = poster.replace('/posters/', '/animated/')
   const ref = useRef<HTMLVideoElement>(null)
   const [needsPlay, setNeedsPlay] = useState(false)
+  const [playing, setPlaying] = useState(false)
+  const [animatedAvailable, setAnimatedAvailable] = useState(true)
 
   const start = useCallback(() => {
     const video = ref.current
@@ -29,6 +32,7 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
   useEffect(() => {
     const video = ref.current
     if (!video) return
+    setPlaying(false)
     // Direct, eager attempt as soon as the component mounts. Browsers can
     // temporarily delay play() until metadata arrives: retry on canplay below.
     start()
@@ -46,6 +50,14 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
 
   return (
     <div className="relative h-full w-full overflow-hidden">
+      <img
+        src={animatedAvailable ? animated : poster}
+        onError={() => setAnimatedAvailable(false)}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        className="absolute inset-0 block h-full w-full object-cover"
+      />
       <video
         ref={ref}
         poster={poster}
@@ -57,14 +69,16 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
         preload="auto"
         onLoadedData={start}
         onCanPlay={start}
-        onPlaying={() => setNeedsPlay(false)}
-        onError={() => setNeedsPlay(true)}
+        onPlaying={() => { setNeedsPlay(false); setPlaying(true) }}
+        onPause={() => setPlaying(false)}
+        onError={() => { setNeedsPlay(true); setPlaying(false) }}
         className={className}
+        style={{ opacity: playing ? 1 : 0, transition: "opacity 180ms ease" }}
       >
         <source src={webm} type="video/webm" />
         <source src={src} type="video/mp4" />
       </video>
-      {needsPlay && (
+      {needsPlay && !animatedAvailable && (
         <button
           type="button"
           onClick={(event) => { event.stopPropagation(); start() }}
