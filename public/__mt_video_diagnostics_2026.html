@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>Temporary media diagnosis</title><body><h1>Media diagnosis</h1><pre id="results">Starting</pre><script>
 (async()=>{
- const names=['Video EcoNature.mp4','Video Capone.mp4','Video VillaBali.mp4','Video Zone.mp4','Video BeautySculpture.mp4'], report={ua:navigator.userAgent,canPlay:document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'),files:{}};
+ const names=['Video EcoNature.webm','Video Capone.webm','Video VillaBali.webm','Video Zone.webm','Video BeautySculpture.webm'], report={ua:navigator.userAgent,canPlay:document.createElement('video').canPlayType('video/webm; codecs="vp9"'),files:{}};
  const render=()=>document.getElementById('results').textContent=JSON.stringify(report,null,2);
  render();
  await Promise.all(names.map(async name=>{
