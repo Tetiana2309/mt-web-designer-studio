@@ -11,6 +11,7 @@ type CaseVideoProps = {
 // intersection callback: the GSAP-transformed desktop world can confuse
 // viewport observers during first entry and between client-side routes.
 export default function CaseVideo({ src, poster, label, className }: CaseVideoProps) {
+  const webm = src.replace(/\.mp4(\?.*)?$/i, '.webm$1')
   const ref = useRef<HTMLVideoElement>(null)
   const [needsPlay, setNeedsPlay] = useState(false)
 
@@ -47,7 +48,6 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
     <div className="relative h-full w-full overflow-hidden">
       <video
         ref={ref}
-        src={src}
         poster={poster}
         aria-label={label}
         autoPlay
@@ -60,7 +60,10 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
         onPlaying={() => setNeedsPlay(false)}
         onError={() => setNeedsPlay(true)}
         className={className}
-      />
+      >
+        <source src={webm} type="video/webm" />
+        <source src={src} type="video/mp4" />
+      </video>
       {needsPlay && (
         <button
           type="button"
