@@ -1,7 +1,9 @@
+import { Link } from 'react-router'
+
 export default function ZoneNextCasesButton() {
   return (
-    <a
-      href="#/portfolio/beauty-sculpture"
+    <Link
+      to="/portfolio/beauty-sculpture"
       aria-label="next cases"
       className="group flex w-[182px] flex-col items-start gap-[6px] no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3A5F73]"
       style={{
@@ -26,6 +28,6 @@ export default function ZoneNextCasesButton() {
         </span>
       </span>
       <span aria-hidden="true" className="block h-[2px] w-[182px] shrink-0" style={{ opacity: 0.7, background: '#3A5F73' }} />
-    </a>
+    </Link>
   )
 }
