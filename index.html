@@ -53,6 +53,35 @@
   <body>
     <div id="root"></div>
     <div id="mt-boot-screen" aria-hidden="true" style="position:fixed;inset:0;z-index:2147483647;background:#C7C7C7;pointer-events:none"></div>
+    <script>
+      // Recover navigation from a previously cached version that still uses
+      // hash-based case links (e.g. /portfolio/eco-natura#/portfolio/capone).
+      // A path change must reload the correct page, not append a hash.
+      (() => {
+        const recoverLegacyCaseRoute = () => {
+          const hash = window.location.hash
+          if (!/^#\/portfolio\/[a-z0-9-]+$/.test(hash)) return
+          const destination = hash.slice(1)
+          if (destination === window.location.pathname) {
+            history.replaceState(history.state, '', destination + window.location.search)
+            return
+          }
+          window.location.replace(destination + window.location.search)
+        }
+        window.addEventListener('hashchange', recoverLegacyCaseRoute)
+        document.addEventListener('click', (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
+          const link = target.closest('a[href^="#/portfolio/"]')
+          if (!link) return
+          const destination = link.getAttribute('href').slice(1)
+          if (!/^\/portfolio\/[a-z0-9-]+$/.test(destination)) return
+          event.preventDefault()
+          window.location.assign(destination)
+        }, true)
+        recoverLegacyCaseRoute()
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
