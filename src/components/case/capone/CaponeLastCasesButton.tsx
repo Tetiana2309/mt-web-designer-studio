@@ -1,8 +1,10 @@
+import { Link } from 'react-router'
+
 
 export default function CaponeLastCasesButton() {
   return (
-    <a
-      href="#/portfolio/eco-natura"
+    <Link
+      to="/portfolio/eco-natura"
       aria-label="last case"
       className="group flex w-[182px] flex-col items-start gap-[6px] no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3A5F73]"
       style={{
@@ -50,6 +52,6 @@ export default function CaponeLastCasesButton() {
           background: '#3A5F73',
         }}
       />
-    </a>
+    </Link>
   )
 }
