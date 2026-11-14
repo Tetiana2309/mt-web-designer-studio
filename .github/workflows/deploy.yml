@@ -36,6 +36,9 @@ jobs:
       - name: Generate video preview frames
         run: bash .github/scripts/generate-video-posters.sh
 
+      - name: Prepare browser-compatible videos
+        run: bash .github/scripts/normalize-case-videos.sh
+
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
