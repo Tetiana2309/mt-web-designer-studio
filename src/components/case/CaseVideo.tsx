@@ -7,40 +7,67 @@ type CaseVideoProps = {
   className: string
 }
 
-// A muted case video must begin playing on mount, not only after a scroll
-// intersection callback: the GSAP-transformed desktop world can confuse
-// viewport observers during first entry and between client-side routes.
+// All five portfolio cases use this exact media renderer. The animation from
+// the original film stays visible until real video playback is confirmed by
+// advancing media time; onPlaying alone is not proof of moving frames.
 export default function CaseVideo({ src, poster, label, className }: CaseVideoProps) {
   const webm = src.replace(/\.mp4(\?.*)?$/i, '.webm$1')
   const animated = poster.replace('/posters/', '/animated/')
   const ref = useRef<HTMLVideoElement>(null)
-  const [needsPlay, setNeedsPlay] = useState(false)
-  const [playing, setPlaying] = useState(false)
+  const lastTime = useRef<number | null>(null)
+  const lastAdvance = useRef(0)
+  const [moving, setMoving] = useState(false)
   const [animatedAvailable, setAnimatedAvailable] = useState(true)
+  const [showPlay, setShowPlay] = useState(false)
 
   const start = useCallback(() => {
     const video = ref.current
-    if (!video || document.hidden || !video.paused && !video.ended) return
+    if (!video || document.hidden) return
     video.muted = true
     video.defaultMuted = true
-    const promise = video.play()
-    if (promise) {
-      void promise.then(() => setNeedsPlay(false)).catch(() => setNeedsPlay(true))
-    }
+    if (!video.paused && !video.ended) return
+    void video.play().catch(() => {
+      // The animated frames remain visible if the codec is unsupported.
+      setMoving(false)
+      setShowPlay(true)
+    })
   }, [])
 
   useEffect(() => {
     const video = ref.current
     if (!video) return
-    setPlaying(false)
-    // Direct, eager attempt as soon as the component mounts. Browsers can
-    // temporarily delay play() until metadata arrives: retry on canplay below.
-    start()
+
+    lastTime.current = null
+    lastAdvance.current = 0
+    setMoving(false)
+    setAnimatedAvailable(true)
+    setShowPlay(false)
+
+    // Confirm that playback is continuing, not merely that play() resolved.
+    const watch = window.setInterval(() => {
+      if (document.hidden || !video || video.paused || video.readyState < 2) {
+        setMoving(false)
+        return
+      }
+      const now = performance.now()
+      const t = video.currentTime
+      if (lastTime.current !== null && Math.abs(t - lastTime.current) > 0.10) {
+        lastAdvance.current = now
+        setMoving(true)
+        setShowPlay(false)
+      } else if (now - lastAdvance.current > 2000) {
+        setMoving(false)
+      }
+      lastTime.current = t
+    }, 350)
+
     const resume = () => { if (!document.hidden) start() }
+    start()
     document.addEventListener('visibilitychange', resume)
     window.addEventListener('pageshow', resume)
     window.addEventListener('focus', resume)
     return () => {
+      window.clearInterval(watch)
       document.removeEventListener('visibilitychange', resume)
       window.removeEventListener('pageshow', resume)
       window.removeEventListener('focus', resume)
@@ -56,7 +83,7 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
         alt=""
         aria-hidden="true"
         draggable={false}
-        className="absolute inset-0 block h-full w-full object-cover"
+        className="pointer-events-none absolute inset-0 block h-full w-full object-cover"
       />
       <video
         ref={ref}
@@ -69,16 +96,17 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
         preload="auto"
         onLoadedData={start}
         onCanPlay={start}
-        onPlaying={() => { setNeedsPlay(false); setPlaying(true) }}
-        onPause={() => setPlaying(false)}
-        onError={() => { setNeedsPlay(true); setPlaying(false) }}
+        onError={() => { setMoving(false); setShowPlay(true) }}
+        onWaiting={() => setMoving(false)}
+        onStalled={() => setMoving(false)}
+        onPause={() => setMoving(false)}
         className={className}
-        style={{ opacity: playing ? 1 : 0, transition: "opacity 180ms ease" }}
+        style={{ opacity: moving ? 1 : 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}
       >
         <source src={webm} type="video/webm" />
         <source src={src} type="video/mp4" />
       </video>
-      {needsPlay && !animatedAvailable && (
+      {showPlay && !animatedAvailable && (
         <button
           type="button"
           onClick={(event) => { event.stopPropagation(); start() }}
