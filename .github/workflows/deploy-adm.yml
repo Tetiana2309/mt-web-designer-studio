@@ -6,6 +6,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Never upload two builds to the same production directory simultaneously.
+concurrency:
+  group: mt-studio-production-ftps
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
