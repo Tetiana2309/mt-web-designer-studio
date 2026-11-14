@@ -1,8 +1,10 @@
+import { Link } from 'react-router'
+
 
 export default function CaponeNextCasesButton() {
   return (
-    <a
-      href="#/portfolio/villa-bali"
+    <Link
+      to="/portfolio/villa-bali"
       aria-label="next cases"
       className="group flex w-[182px] flex-col items-start gap-[6px] no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3A5F73]"
       style={{
@@ -50,6 +52,6 @@ export default function CaponeNextCasesButton() {
           background: '#3A5F73',
         }}
       />
-    </a>
+    </Link>
   )
 }
