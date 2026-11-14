@@ -1,8 +1,10 @@
+import { Link } from 'react-router'
+
 
 export default function VillaBaliLastCasesButton() {
   return (
-    <a
-      href="#/portfolio/capone"
+    <Link
+      to="/portfolio/capone"
       aria-label="last case"
       className="group flex w-[182px] flex-col items-start gap-[6px] no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3A5F73]"
       style={{
@@ -50,7 +52,7 @@ export default function VillaBaliLastCasesButton() {
           background: '#3A5F73',
         }}
       />
-    </a>
+    </Link>
   )
 }
 
