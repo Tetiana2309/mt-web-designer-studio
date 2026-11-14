@@ -40,6 +40,9 @@ jobs:
       - name: Prepare browser-compatible videos
         run: bash .github/scripts/normalize-case-videos.sh
 
+      - name: Encode WebM fallbacks for browser compatibility
+        run: bash .github/scripts/generate-browser-webm.sh
+
       - name: Test FTPS connection
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
