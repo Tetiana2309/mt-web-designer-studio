@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type CaseVideoProps = {
   src: string
@@ -7,56 +7,41 @@ type CaseVideoProps = {
   className: string
 }
 
-// Native poster stays visible until a real frame is rendered. Avoid an
-// additional <img> layer hiding video when autoplay is delayed or blocked.
+// A muted case video must begin playing on mount, not only after a scroll
+// intersection callback: the GSAP-transformed desktop world can confuse
+// viewport observers during first entry and between client-side routes.
 export default function CaseVideo({ src, poster, label, className }: CaseVideoProps) {
   const ref = useRef<HTMLVideoElement>(null)
   const [needsPlay, setNeedsPlay] = useState(false)
 
+  const start = useCallback(() => {
+    const video = ref.current
+    if (!video || document.hidden || !video.paused && !video.ended) return
+    video.muted = true
+    video.defaultMuted = true
+    const promise = video.play()
+    if (promise) {
+      void promise.then(() => setNeedsPlay(false)).catch(() => setNeedsPlay(true))
+    }
+  }, [])
+
   useEffect(() => {
     const video = ref.current
     if (!video) return
-
-    let disposed = false
-    let visible = false
-    video.muted = true
-
-    const tryPlay = () => {
-      if (!visible || document.hidden) return
-      const result = video.play()
-      if (result) {
-        void result.then(() => {
-          if (!disposed) setNeedsPlay(false)
-        }).catch(() => {
-          if (!disposed) setNeedsPlay(true)
-        })
-      }
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      visible = entries.some((entry) => entry.isIntersecting)
-      if (visible) tryPlay()
-      else video.pause()
-    }, { threshold: 0.01 })
-
-    observer.observe(video)
-    const onVisible = () => { if (!document.hidden) tryPlay() }
-    document.addEventListener('visibilitychange', onVisible)
-    window.addEventListener('pageshow', onVisible)
+    // Direct, eager attempt as soon as the component mounts. Browsers can
+    // temporarily delay play() until metadata arrives: retry on canplay below.
+    start()
+    const resume = () => { if (!document.hidden) start() }
+    document.addEventListener('visibilitychange', resume)
+    window.addEventListener('pageshow', resume)
+    window.addEventListener('focus', resume)
     return () => {
-      disposed = true
-      observer.disconnect()
-      document.removeEventListener('visibilitychange', onVisible)
-      window.removeEventListener('pageshow', onVisible)
+      document.removeEventListener('visibilitychange', resume)
+      window.removeEventListener('pageshow', resume)
+      window.removeEventListener('focus', resume)
+      video.pause()
     }
-  }, [src])
-
-  const requestPlay = () => {
-    const video = ref.current
-    if (!video) return
-    video.muted = true
-    void video.play().then(() => setNeedsPlay(false)).catch(() => setNeedsPlay(true))
-  }
+  }, [src, start])
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -69,16 +54,17 @@ export default function CaseVideo({ src, poster, label, className }: CaseVideoPr
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
+        onLoadedData={start}
+        onCanPlay={start}
         onPlaying={() => setNeedsPlay(false)}
         onError={() => setNeedsPlay(true)}
-        onClick={needsPlay ? requestPlay : undefined}
         className={className}
       />
       {needsPlay && (
         <button
           type="button"
-          onClick={requestPlay}
+          onClick={(event) => { event.stopPropagation(); start() }}
           aria-label={`Play ${label}`}
           className="absolute bottom-4 left-4 z-10 cursor-pointer rounded-full bg-black/65 px-5 py-2 font-sans text-sm font-medium text-white"
         >
