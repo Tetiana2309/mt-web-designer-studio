@@ -1,3 +1,4 @@
+import CaseVideo from '../CaseVideo'
 import VillaBaliOutro from './VillaBaliOutro'
 import CtaButton from '../../../components/CtaButton'
 import NextCasesButton from './VillaBaliNextCasesButton'
@@ -82,17 +83,12 @@ function VideoScene({ x, y, width, height }: { x: number; y: number; width: numb
       className="absolute overflow-hidden"
       style={{ left: x, top: y, width, height, zIndex: 1 }}
     >
-      <video
-        src={VIDEO}
+      <CaseVideo
+          src={VIDEO}
           poster={`${import.meta.env.BASE_URL}posters/villa-bali.webp`}
-        aria-label="Luxury Villas Bali cinematic introduction"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 block h-full w-full max-w-none object-cover"
-      />
+          label="Luxury Villas Bali cinematic introduction"
+          className="absolute inset-0 block h-full w-full max-w-none object-cover"
+        />
     </div>
   )
 }
@@ -741,8 +737,12 @@ export default function VillaBaliHorizontalStory() {
 
             {/* Intro video: Figma 350x220, no poster. */}
             <div className="absolute left-[20px] top-[212px] h-[220px] w-[350px] overflow-hidden">
-              <video src={VIDEO}
-          poster={`${import.meta.env.BASE_URL}posters/villa-bali.webp`} aria-label="Villa Bali cinematic introduction" autoPlay muted loop playsInline preload="auto" className="block h-full w-full object-cover" />
+              <CaseVideo
+          src={VIDEO}
+          poster={`${import.meta.env.BASE_URL}posters/villa-bali.webp`}
+          label="Villa Bali cinematic introduction"
+          className="block h-full w-full object-cover"
+        />
             </div>
             {/* First overlapping phone mockup: Figma 100x194. */}
             <img data-case-zoom role="button" tabIndex={0} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.click() } }} src={`${ASSETS}3-1.webp`} alt="Villa Bali mobile screen 1" draggable={false} className="absolute left-[225px] top-[328px] h-[194px] w-[100px] object-contain cursor-zoom-in" />
