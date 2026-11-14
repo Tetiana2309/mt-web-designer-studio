@@ -43,6 +43,9 @@ jobs:
       - name: Encode WebM fallbacks for browser compatibility
         run: bash .github/scripts/generate-browser-webm.sh
 
+      - name: Generate animated video previews for all five case studies
+        run: bash .github/scripts/generate-animated-previews.sh
+
       - name: Test FTPS connection
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
