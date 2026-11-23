@@ -531,27 +531,6 @@ export default function ContactsPage() {
           data-contact-form
           className="flex w-full flex-col gap-y-[60px] min-[1280px]:gap-y-[60px] "
         >
-          {/* PROJECT DETAILS */}
-          <div data-contact-section className="grid items-start gap-y-6 min-[1280px]:grid-cols-[minmax(0,619px)_minmax(0,755px)] min-[1280px]:gap-x-0">
-            <SectionTitle>Project Details</SectionTitle>
-            <div data-contact-content>
-              <label
-                htmlFor="project-details"
-                className="mb-[14px] block text-[16px] leading-[1.1] min-[1280px]:text-[18px]"
-              >
-                <PaintWords text="“Be precise. What are we building, why does it matter, and what result must it deliver?”" />
-              </label>
-              <textarea
-                data-contact-fields
-                id="project-details"
-                name="projectDetails"
-                rows={4}
-                placeholder="Define the project. Goals, structure, deadlines, expectations."
-                className={`${inputStyle} h-[168px] resize-y py-[15px] min-[1280px]:h-[112px]`}
-              />
-            </div>
-          </div>
-
           {/* PROJECT TYPE */}
           <div data-contact-section className="grid items-start gap-y-6 min-[1280px]:grid-cols-[minmax(0,619px)_minmax(0,755px)] min-[1280px]:gap-x-0">
             <SectionTitle>Project Type</SectionTitle>
@@ -571,6 +550,27 @@ export default function ContactsPage() {
               </div>
               <ProjectTypeHint text={detail ?? ''} />
             </fieldset>
+          </div>
+
+          {/* PROJECT DETAILS */}
+          <div data-contact-section className="grid items-start gap-y-6 min-[1280px]:grid-cols-[minmax(0,619px)_minmax(0,755px)] min-[1280px]:gap-x-0">
+            <SectionTitle>Project Details</SectionTitle>
+            <div data-contact-content>
+              <label
+                htmlFor="project-details"
+                className="mb-[14px] block text-[16px] leading-[1.1] min-[1280px]:text-[18px]"
+              >
+                <PaintWords text="Share a few words about your goals, timeline, or ideas." />
+              </label>
+              <textarea
+                data-contact-fields
+                id="project-details"
+                name="projectDetails"
+                rows={4}
+                placeholder="Define the project. Goals, structure, deadlines, expectations."
+                className={`${inputStyle} h-[168px] resize-y py-[15px] min-[1280px]:h-[112px]`}
+              />
+            </div>
           </div>
 
           {/* YOUR BUDGET */}
