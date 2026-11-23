@@ -536,7 +536,7 @@ export default function ContactsPage() {
             <SectionTitle>Project Type</SectionTitle>
             <fieldset data-contact-content className="min-w-0">
               <legend className="mb-[14px] text-[16px] min-[1280px]:text-[18px]">
-                <PaintWords text="“Tell us what you'd like to build.”" />
+                <PaintWords text="Tell us what you'd like to build." />
               </legend>
               <div data-contact-fields className="grid grid-cols-2 gap-[18px_17px] min-[1280px]:grid-cols-[repeat(4,minmax(0,168px))] min-[1280px]:justify-between min-[1280px]:gap-x-0">
                 {types.map((type) => (
@@ -578,7 +578,7 @@ export default function ContactsPage() {
             <SectionTitle>Your Budget</SectionTitle>
             <fieldset data-contact-content className="min-w-0">
               <legend className="mb-[14px] text-[16px] min-[1280px]:text-[18px]">
-                <PaintWords text="“Choose the range that feels right.”" />
+                <PaintWords text="Choose the range that feels right." />
               </legend>
               <div data-contact-fields className="grid grid-cols-2 gap-[18px_17px] min-[1280px]:grid-cols-4 min-[1280px]:gap-x-[40px]">
                 {budgets.map((item) => (
