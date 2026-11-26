@@ -46,7 +46,13 @@ jobs:
       - name: Generate animated video previews for all five case studies
         run: bash .github/scripts/generate-animated-previews.sh
 
-      - name: Test FTPS connection
+      # The ADM.TOOLS FTPS server can unexpectedly close an otherwise valid
+      # secure session (FIN). Retry transient disconnects, but report a real
+      # failure if all attempts are exhausted. All attempts target the same
+      # production directory and are serialized by the workflow concurrency.
+      - name: Deploy to ADM.TOOLS (attempt 1/3)
+        id: ftps_1
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -58,3 +64,49 @@ jobs:
           local-dir: ./dist/
           server-dir: ./
           dry-run: false
+
+      - name: Retry after FTPS disconnect
+        if: steps.ftps_1.outcome == 'failure'
+        run: sleep 20
+
+      - name: Deploy to ADM.TOOLS (attempt 2/3)
+        id: ftps_2
+        if: steps.ftps_1.outcome == 'failure'
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          security: strict
+          local-dir: ./dist/
+          server-dir: ./
+          dry-run: false
+
+      - name: Retry after second FTPS disconnect
+        if: steps.ftps_1.outcome == 'failure' && steps.ftps_2.outcome == 'failure'
+        run: sleep 40
+
+      - name: Deploy to ADM.TOOLS (attempt 3/3)
+        id: ftps_3
+        if: steps.ftps_1.outcome == 'failure' && steps.ftps_2.outcome == 'failure'
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          security: strict
+          local-dir: ./dist/
+          server-dir: ./
+          dry-run: false
+
+      - name: Fail if ADM.TOOLS rejected all three attempts
+        if: steps.ftps_1.outcome != 'success' && steps.ftps_2.outcome != 'success' && steps.ftps_3.outcome != 'success'
+        run: |
+          echo "::error::FTPS deployment failed on all three attempts. Check ADM.TOOLS availability and FTP credentials."
+          exit 1
