@@ -8,7 +8,7 @@ import {
 } from 'react'
 import gsap from 'gsap'
 
-import { navItems, socialItems } from '../navigation'
+import { navItems, socialItems, displayLinkLabel } from '../navigation'
 import CtaButton from './CtaButton'
 import InfiniteSpiral from './InfiniteSpiral'
 import MobileMenu from './MobileMenu'
@@ -625,8 +625,8 @@ export default function Hero() {
                   className="overflow-hidden"
                 >
                   <TextSwapButton
-                    label={item}
-                    className="nav-link font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.54px] lowercase"
+                    label={displayLinkLabel(item)}
+                    className="nav-link font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.54px] normal-case"
                   />
                 </li>
               ))}
@@ -671,7 +671,7 @@ export default function Hero() {
 
         {/* FOOTER */}
 
-        <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[40px] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink lowercase min-[1280px]:right-[max(24px,2.0833vw)] min-[1280px]:bottom-[20px] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
+        <footer className="absolute right-[max(1.25rem,env(safe-area-inset-right))] bottom-[40px] left-[max(1.25rem,env(safe-area-inset-left))] flex h-5 items-start justify-between font-sans text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] whitespace-nowrap text-ink normal-case min-[1280px]:right-[max(24px,2.0833vw)] min-[1280px]:bottom-[20px] min-[1280px]:left-[clamp(24px,2.0833vw,40px)] min-[1280px]:h-5.5 min-[1280px]:text-[clamp(16px,1.0417vw,20px)]">
           {/* COPYRIGHT */}
 
           <div className="hidden overflow-hidden min-[1280px]:block">
@@ -715,16 +715,16 @@ export default function Hero() {
                   href={socialLinks[item]}
                   target={item === 'email' ? undefined : '_blank'}
                   rel={item === 'email' ? undefined : 'noopener noreferrer'}
-                  aria-label={item}
-                  className="group/swap nav-link relative inline-block cursor-pointer align-top font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.6px] lowercase"
+                  aria-label={displayLinkLabel(item)}
+                  className="group/swap nav-link relative inline-block cursor-pointer align-top font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.6px] normal-case"
                 >
                   <span data-hero-link-reveal className="block">
                     <span className="relative block overflow-hidden">
                       <span aria-hidden="true" className="block transform-gpu text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full">
-                        {item}
+                        {displayLinkLabel(item)}
                       </span>
                       <span aria-hidden="true" className="absolute inset-0 block translate-y-full transform-gpu text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0">
-                        {item}
+                        {displayLinkLabel(item)}
                       </span>
                     </span>
                   </span>

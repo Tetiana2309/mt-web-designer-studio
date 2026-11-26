@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import { navItems } from '../../navigation'
+import { navItems, displayLinkLabel } from '../../navigation'
 import CtaButton from '../CtaButton'
 import TextSwapButton from './TextSwapButton'
 
@@ -65,8 +65,8 @@ export default function AboutHeader({ menuOpen, menuButtonRef, onOpenMenu }: Abo
           {navItems.map((item) => (
             <li key={item} data-hero-nav-mask className="overflow-hidden">
               <TextSwapButton
-                label={item}
-                className="nav-link font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.54px] lowercase"
+                label={displayLinkLabel(item)}
+                className="nav-link font-sans text-[clamp(16px,1.0417vw,20px)] leading-[1.1] font-medium tracking-[-0.54px] normal-case"
               />
             </li>
           ))}

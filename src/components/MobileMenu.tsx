@@ -8,7 +8,7 @@ import {
 } from 'react'
 import gsap from 'gsap'
 
-import { navItems, socialItems } from '../navigation'
+import { navItems, socialItems, displayLinkLabel } from '../navigation'
 
 const socialLinks: Record<string, string> = {
   telegram: 'https://t.me/mtwebdesignerstudio',
@@ -523,9 +523,9 @@ export default function MobileMenu({
             >
               <button
                 type="button"
-                aria-label={item}
+                aria-label={displayLinkLabel(item)}
                 onClick={closeMenu}
-                className="group/swap nav-link block cursor-pointer text-[1em] leading-[1.1] font-normal tracking-[-0.03em] lowercase"
+                className="group/swap nav-link block cursor-pointer text-[1em] leading-[1.1] font-normal tracking-[-0.03em] normal-case"
               >
                 {/* GSAP ANIMATES OUTER WRAPPER */}
 
@@ -542,7 +542,7 @@ export default function MobileMenu({
                       aria-hidden="true"
                       className="block text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
                     >
-                      {item}
+                      {displayLinkLabel(item)}
                     </span>
 
                     {/* HOVER / FOCUS TEXT */}
@@ -551,7 +551,7 @@ export default function MobileMenu({
                       aria-hidden="true"
                       className="absolute inset-0 block translate-y-full text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
                     >
-                      {item}
+                      {displayLinkLabel(item)}
                     </span>
                   </span>
                 </span>
@@ -580,9 +580,9 @@ export default function MobileMenu({
               href={socialLinks[item]}
               target={item === 'email' ? undefined : '_blank'}
               rel={item === 'email' ? undefined : 'noopener noreferrer'}
-              aria-label={item}
+              aria-label={displayLinkLabel(item)}
               onClick={closeMenu}
-              className="group/swap nav-link relative inline-block cursor-pointer text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] lowercase opacity-85"
+              className="group/swap nav-link relative inline-block cursor-pointer text-[clamp(18px,2.4vw,20px)] leading-[1.1] font-medium tracking-[-0.03em] normal-case opacity-85"
             >
               <span className="relative block overflow-hidden">
                 {/* ORIGINAL TEXT */}
@@ -591,7 +591,7 @@ export default function MobileMenu({
                   aria-hidden="true"
                   className="block transform-gpu text-ink transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:-translate-y-full group-focus-visible/swap:-translate-y-full"
                 >
-                  {item}
+                  {displayLinkLabel(item)}
                 </span>
 
                 {/* HOVER / FOCUS TEXT */}
@@ -600,7 +600,7 @@ export default function MobileMenu({
                   aria-hidden="true"
                   className="absolute inset-0 block translate-y-full transform-gpu text-accent transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none group-hover/swap:translate-y-0 group-focus-visible/swap:translate-y-0"
                 >
-                  {item}
+                  {displayLinkLabel(item)}
                 </span>
               </span>
             </a>
@@ -674,7 +674,7 @@ export default function MobileMenu({
 
                   {/* WEB DESIGNER STUDIO */}
 
-                  <span className="absolute right-0 bottom-full font-sans text-[20px] leading-[1.1] font-normal tracking-[-0.6px] lowercase whitespace-nowrap text-canvas">
+                  <span className="absolute right-0 bottom-full font-sans text-[20px] leading-[1.1] font-normal tracking-[-0.6px] normal-case whitespace-nowrap text-canvas">
                     web
                     <br />
                     designer

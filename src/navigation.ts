@@ -10,3 +10,7 @@ export const navRoutes: Record<string, string> = {
   portfolio: '/portfolio',
   contacts: '/contacts',
 }
+
+// Display labels only; the lowercase route/link keys stay unchanged.
+export const displayLinkLabel = (item: string) =>
+  item === 'whatsapp' ? 'WhatsApp' : item.charAt(0).toUpperCase() + item.slice(1)
