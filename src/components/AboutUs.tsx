@@ -581,6 +581,61 @@ export default function AboutUs() {
   useChromeIntro(rootRef)
   useAboutIntro(rootRef)
 
+  // Center the desktop and tablet copy vertically against the two photos.
+  // Keep exactly 60px between the end of paragraph two and paragraph three.
+  // Mobile (<768px) keeps its existing layout completely unchanged.
+  useLayoutEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+
+    const update = () => {
+      for (const mode of ['desktop', 'tablet'] as const) {
+        const layout = root.querySelector<HTMLElement>(`[data-about-layout="${mode}"]`)
+        if (!layout) continue
+
+        const descriptions = Array.from(layout.querySelectorAll<HTMLElement>('[data-about-description]'))
+        const photos = Array.from(layout.querySelectorAll<HTMLElement>('[data-about-photo]'))
+        const readMore = layout.querySelector<HTMLElement>('[data-about-readmore]')
+        if (descriptions.length !== 3 || photos.length !== 2 || !readMore) continue
+
+        // Offset values remain stable while GSAP reveals the text/photos.
+        const photoFrame = mode === 'tablet' ? photos[0].parentElement : photos[0]
+        if (!photoFrame || !photoFrame.offsetHeight) continue
+
+        const firstGap = mode === 'desktop' ? 24 : 18
+        const thirdGap = 60
+        const linkGap = 28
+        const [first, second, third] = descriptions
+        const totalHeight = first.offsetHeight + firstGap +
+          second.offsetHeight + thirdGap +
+          third.offsetHeight + linkGap + readMore.offsetHeight
+
+        const top = Math.round(photoFrame.offsetTop + (photoFrame.offsetHeight - totalHeight) / 2)
+        first.style.top = `${top}px`
+        second.style.top = `${top + first.offsetHeight + firstGap}px`
+        third.style.top = `${top + first.offsetHeight + firstGap + second.offsetHeight + thirdGap}px`
+        readMore.style.top = `${top + totalHeight - readMore.offsetHeight}px`
+      }
+    }
+
+    const observer = new ResizeObserver(update)
+    root.querySelectorAll<HTMLElement>(
+      '[data-about-layout="desktop"] [data-about-photo], ' +
+      '[data-about-layout="desktop"] [data-about-description], ' +
+      '[data-about-layout="tablet"] [data-about-photo], ' +
+      '[data-about-layout="tablet"] [data-about-description]'
+    ).forEach(node => observer.observe(node))
+
+    void document.fonts.ready.then(update)
+    window.addEventListener('resize', update, { passive: true })
+    update()
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', update)
+    }
+  }, [])
+
   // ======================================
   // TEXT SIZES — UNCHANGED
   // ======================================
