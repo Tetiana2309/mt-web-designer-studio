@@ -31,7 +31,6 @@ const types = [
   },
 ]
 
-const budgets = ['$800–1k', '$1-3k', '$3-5k', '$5k+']
 
 // Web3Forms access keys are intended for use in client-side forms.
 const WEB3FORMS_ACCESS_KEY = '3919c149-68a1-499d-a576-05ff28c9913e'
@@ -336,8 +335,6 @@ export default function ContactsPage() {
   const [projectType, setProjectType] =
     useState('')
 
-  const [budget, setBudget] = useState('')
-
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -431,7 +428,6 @@ export default function ContactsPage() {
     formData.set('subject', 'New project enquiry — M&T Web Designer Studio')
     formData.set('from_name', 'M&T Web Designer Studio website')
     formData.set('projectType', projectType || 'Not selected')
-    formData.set('budget', budget || 'Not selected')
 
     setIsSubmitting(true)
     setMessage('Sending your enquiry...')
@@ -449,7 +445,6 @@ export default function ContactsPage() {
 
       form.reset()
       setProjectType('')
-      setBudget('')
       setMessage('Thank you! Your enquiry has been sent successfully.')
     } catch {
       setMessage('Your enquiry could not be sent. Please try again.')
@@ -571,26 +566,6 @@ export default function ContactsPage() {
                 className={`${inputStyle} h-[168px] resize-y py-[15px] min-[1280px]:h-[112px]`}
               />
             </div>
-          </div>
-
-          {/* YOUR BUDGET */}
-          <div data-contact-section className="grid items-start gap-y-6 min-[1280px]:grid-cols-[minmax(0,619px)_minmax(0,755px)] min-[1280px]:gap-x-0">
-            <SectionTitle>Your Budget</SectionTitle>
-            <fieldset data-contact-content className="min-w-0">
-              <legend className="mb-[14px] text-[16px] min-[1280px]:text-[18px]">
-                <PaintWords text="Choose the range that feels right." />
-              </legend>
-              <div data-contact-fields className="grid grid-cols-2 gap-[18px_17px] min-[1280px]:grid-cols-4 min-[1280px]:gap-x-[40px]">
-                {budgets.map((item) => (
-                  <Choice
-                    key={item}
-                    label={item}
-                    checked={budget === item}
-                    choose={() => setBudget(item)}
-                  />
-                ))}
-              </div>
-            </fieldset>
           </div>
 
           {/* CONTACT DETAILS */}
