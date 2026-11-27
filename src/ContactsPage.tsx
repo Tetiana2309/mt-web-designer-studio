@@ -473,7 +473,7 @@ export default function ContactsPage() {
            footer inside the visible viewport instead of the old 1002px frame. */
         @media (min-width: 1280px) and (max-height: 1001px) {
           [data-contacts-background-logo] {
-            top: max(220px, calc(100dvh - 530px));
+            top: 50dvh;
           }
         }
         [data-contact-form] input:-webkit-autofill,
