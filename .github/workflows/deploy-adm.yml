@@ -63,6 +63,14 @@ jobs:
           security: strict
           local-dir: ./dist/
           server-dir: ./
+          # Media is already on ADM.TOOLS. Do not re-upload 45 MB of unchanged
+          # videos on every text/CSS update or delete remote media files.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            videos/**
+            **/videos/**
           dry-run: false
 
       - name: Retry after FTPS disconnect
@@ -83,6 +91,14 @@ jobs:
           security: strict
           local-dir: ./dist/
           server-dir: ./
+          # Media is already on ADM.TOOLS. Do not re-upload 45 MB of unchanged
+          # videos on every text/CSS update or delete remote media files.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            videos/**
+            **/videos/**
           dry-run: false
 
       - name: Retry after second FTPS disconnect
@@ -103,6 +119,14 @@ jobs:
           security: strict
           local-dir: ./dist/
           server-dir: ./
+          # Media is already on ADM.TOOLS. Do not re-upload 45 MB of unchanged
+          # videos on every text/CSS update or delete remote media files.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            videos/**
+            **/videos/**
           dry-run: false
 
       - name: Fail if ADM.TOOLS rejected all three attempts
