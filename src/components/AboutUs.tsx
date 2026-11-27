@@ -599,13 +599,16 @@ export default function AboutUs() {
         if (descriptions.length !== 3 || photos.length !== 2 || !readMore) continue
 
         // Offset values remain stable while GSAP reveals the text/photos.
-        const photoFrame = mode === 'tablet' ? photos[0].parentElement : photos[0]
+        const photo = photos[0]
+        if (!photo) continue
+        const photoFrame = mode === 'tablet' ? photo.parentElement : photo
         if (!photoFrame || !photoFrame.offsetHeight) continue
 
         const firstGap = mode === 'desktop' ? 24 : 18
         const thirdGap = 60
         const linkGap = 28
         const [first, second, third] = descriptions
+        if (!first || !second || !third) continue
         const totalHeight = first.offsetHeight + firstGap +
           second.offsetHeight + thirdGap +
           third.offsetHeight + linkGap + readMore.offsetHeight
