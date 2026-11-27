@@ -50,6 +50,7 @@ function ContactsBackgroundLogo() {
   return (
     <div
       aria-hidden="true"
+      data-contacts-background-logo
       className="pointer-events-none absolute inset-x-0 top-[588px] z-0 hidden overflow-hidden leading-none min-[768px]:block"
     >
       <svg
@@ -460,7 +461,7 @@ export default function ContactsPage() {
   return (
     <section
       ref={rootRef}
-      className="relative isolate min-h-dvh overflow-hidden bg-canvas font-sans text-ink min-[1280px]:min-h-[1002px]"
+      className="relative isolate min-h-dvh overflow-hidden bg-canvas font-sans text-ink"
     >
       {/* ====================================
           ORIGINAL M&T BACKGROUND SVG
@@ -468,6 +469,13 @@ export default function ContactsPage() {
 
       {/* Keep browser autofill from changing the original canvas-colored inputs. */}
       <style>{`
+        /* On shorter desktop displays, keep the decorative letters and the
+           footer inside the visible viewport instead of the old 1002px frame. */
+        @media (min-width: 1280px) and (max-height: 1001px) {
+          [data-contacts-background-logo] {
+            top: max(180px, calc(100dvh - 570px));
+          }
+        }
         [data-contact-form] input:-webkit-autofill,
         [data-contact-form] input:-webkit-autofill:hover,
         [data-contact-form] input:-webkit-autofill:focus,
@@ -519,7 +527,7 @@ export default function ContactsPage() {
           CONTACT FORM
       ==================================== */}
 
-      <main className="relative z-10 mx-auto min-h-dvh max-w-[1920px] px-5 pb-[150px] pt-[124px] min-[1280px]:min-h-[1002px] min-[1280px]:pl-[max(40px,calc(25%+26px))] min-[1280px]:pr-[40px] min-[1280px]:pt-[138px] min-[1280px]:pb-[108px]">
+      <main className="relative z-10 mx-auto min-h-dvh max-w-[1920px] px-5 pb-[150px] pt-[124px] min-[1280px]:min-h-dvh min-[1280px]:pl-[max(40px,calc(25%+26px))] min-[1280px]:pr-[40px] min-[1280px]:pt-[138px] min-[1280px]:pb-[68px]">
         <form
           onSubmit={handleSubmit}
           aria-label="Project enquiry"
